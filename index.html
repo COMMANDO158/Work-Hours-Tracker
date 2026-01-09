@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -25,553 +24,550 @@
             --border: #333;
             --border-hover: #444;
         }
-
-```
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
-    
-    body {
-        font-family: 'Inter', sans-serif;
-        background: radial-gradient(ellipse at top, #1a0a0f 0%, #0a0a0a 50%, #000000 100%);
-        color: var(--light);
-        min-height: 100vh;
-        padding: 20px;
-        position: relative;
-    }
-    
-    body::before {
-        content: '';
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: 
-            radial-gradient(circle at 20% 30%, rgba(220, 20, 60, 0.08) 0%, transparent 50%),
-            radial-gradient(circle at 80% 70%, rgba(220, 20, 60, 0.06) 0%, transparent 50%);
-        pointer-events: none;
-        z-index: 0;
-    }
-    
-    .container {
-        max-width: 520px;
-        margin: 0 auto;
-        position: relative;
-        z-index: 1;
-    }
-    
-    header {
-        text-align: center;
-        margin-bottom: 35px;
-        padding: 25px;
-        background: linear-gradient(135deg, rgba(220, 20, 60, 0.1) 0%, rgba(26, 26, 26, 0.6) 100%);
-        border-radius: 20px;
-        border: 1px solid var(--border);
-        box-shadow: 0 8px 32px rgba(220, 20, 60, 0.15);
-    }
-    
-    h1 {
-        font-size: 2.5rem;
-        font-weight: 900;
-        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 50%, var(--secondary) 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        margin-bottom: 10px;
-        letter-spacing: 1px;
-    }
-    
-    .subtitle {
-        color: var(--gray);
-        font-size: 1.05rem;
-        line-height: 1.7;
-    }
-    
-    /* Mode Toggle */
-    .mode-toggle {
-        display: flex;
-        background: var(--card-bg);
-        border-radius: 50px;
-        padding: 6px;
-        margin-bottom: 30px;
-        border: 1px solid var(--border);
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    }
-    
-    .mode-btn {
-        flex: 1;
-        padding: 14px;
-        border: none;
-        background: transparent;
-        color: var(--gray);
-        font-size: 1rem;
-        font-weight: 700;
-        cursor: pointer;
-        border-radius: 50px;
-        transition: all 0.3s ease;
-        letter-spacing: 0.5px;
-    }
-    
-    .mode-btn:hover {
-        color: var(--primary-light);
-    }
-    
-    .mode-btn.active {
-        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-        color: white;
-        box-shadow: 0 4px 15px var(--primary-glow);
-    }
-    
-    .mode-content {
-        display: none;
-    }
-    
-    .mode-content.active {
-        display: block;
-        animation: fadeIn 0.5s ease;
-    }
-    
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    
-    /* Focus Card */
-    .focus-card {
-        background: linear-gradient(135deg, rgba(26, 26, 26, 0.9) 0%, rgba(18, 18, 18, 0.9) 100%);
-        border-radius: 24px;
-        padding: 35px;
-        margin-bottom: 25px;
-        border: 1px solid var(--border);
-        text-align: center;
-        transition: all 0.3s ease;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .focus-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 2px;
-        background: linear-gradient(90deg, transparent, var(--primary), transparent);
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    }
-    
-    .focus-card:hover::before {
-        opacity: 1;
-    }
-    
-    .focus-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 12px 40px rgba(220, 20, 60, 0.2);
-        border-color: var(--border-hover);
-    }
-    
-    .timer-display {
-        font-size: 4rem;
-        font-weight: 900;
-        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        margin: 25px 0;
-        font-variant-numeric: tabular-nums;
-        letter-spacing: 3px;
-        text-shadow: 0 0 30px var(--primary-glow);
-    }
-    
-    .timer-display.running {
-        animation: pulse 2s ease-in-out infinite;
-    }
-    
-    @keyframes pulse {
-        0%, 100% { filter: drop-shadow(0 0 20px var(--primary-glow)); }
-        50% { filter: drop-shadow(0 0 35px var(--primary-glow)); }
-    }
-    
-    /* Simple Controls */
-    .simple-controls {
-        display: flex;
-        gap: 12px;
-        justify-content: center;
-        margin-bottom: 25px;
-    }
-    
-    .simple-btn {
-        padding: 16px 32px;
-        border: none;
-        border-radius: 50px;
-        font-size: 1.05rem;
-        font-weight: 700;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        transition: all 0.3s ease;
-        flex: 1;
-        max-width: 150px;
-        justify-content: center;
-        letter-spacing: 0.5px;
-    }
-    
-    .simple-btn-primary {
-        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-        color: white;
-        box-shadow: 0 6px 20px var(--primary-glow);
-    }
-    
-    .simple-btn-primary:hover:not(:disabled) {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 25px var(--primary-glow);
-    }
-    
-    .simple-btn-secondary {
-        background: transparent;
-        color: var(--gray);
-        border: 2px solid var(--border);
-    }
-    
-    .simple-btn-secondary:hover:not(:disabled) {
-        border-color: var(--primary);
-        color: var(--primary);
-        transform: translateY(-3px);
-    }
-    
-    .simple-btn:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-    }
-    
-    /* Today's Focus */
-    .today-focus {
-        margin: 25px 0;
-        padding: 20px;
-        background: rgba(220, 20, 60, 0.08);
-        border-radius: 15px;
-        border-left: 4px solid var(--primary);
-        border: 1px solid rgba(220, 20, 60, 0.2);
-    }
-    
-    .focus-input {
-        width: 100%;
-        background: transparent;
-        border: none;
-        color: var(--light);
-        font-size: 1.1rem;
-        padding: 10px;
-        outline: none;
-        text-align: center;
-        font-weight: 500;
-    }
-    
-    .focus-input::placeholder {
-        color: var(--gray);
-        font-style: italic;
-        font-weight: 400;
-    }
-    
-    /* Progress */
-    .progress-container {
-        margin: 25px 0;
-    }
-    
-    .progress-label {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 10px;
-        font-size: 0.95rem;
-        color: var(--gray);
-        font-weight: 600;
-    }
-    
-    .progress-bar {
-        height: 10px;
-        background: var(--border);
-        border-radius: 10px;
-        overflow: hidden;
-        border: 1px solid var(--border);
-    }
-    
-    .progress-fill {
-        height: 100%;
-        background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 50%, var(--secondary) 100%);
-        border-radius: 10px;
-        width: 0%;
-        transition: width 0.8s ease;
-        box-shadow: 0 0 15px var(--primary-glow);
-    }
-    
-    /* Weekly Overview - Simplified */
-    .week-overview {
-        display: grid;
-        grid-template-columns: repeat(7, 1fr);
-        gap: 8px;
-        margin-top: 25px;
-    }
-    
-    .day-dot {
-        aspect-ratio: 1;
-        background: var(--card-elevated);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.75rem;
-        font-weight: 700;
-        transition: all 0.3s ease;
-        border: 2px solid var(--border);
-        color: var(--gray);
-    }
-    
-    .day-dot.active {
-        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-        border-color: var(--primary);
-        transform: scale(1.15);
-        box-shadow: 0 0 20px var(--primary-glow);
-        color: white;
-    }
-    
-    .day-dot.completed {
-        background: linear-gradient(135deg, var(--success) 0%, var(--secondary) 100%);
-        border-color: var(--success);
-        color: var(--dark);
-    }
-    
-    /* Completion Message */
-    .completion-message {
-        background: linear-gradient(135deg, rgba(255, 148, 168, 0.1) 0%, rgba(255, 107, 157, 0.1) 100%);
-        border: 2px solid var(--success);
-        border-radius: 15px;
-        padding: 25px;
-        margin-top: 25px;
-        text-align: center;
-        display: none;
-    }
-    
-    .completion-message.show {
-        display: block;
-        animation: fadeIn 0.5s ease;
-    }
-    
-    .completion-message h3 {
-        color: var(--success);
-        margin-bottom: 10px;
-        font-size: 1.3rem;
-    }
-    
-    .completion-message p {
-        color: var(--light);
-        line-height: 1.7;
-    }
-    
-    /* Stats - Simple */
-    .simple-stats {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 15px;
-        margin-top: 25px;
-    }
-    
-    .stat-item {
-        background: var(--card-bg);
-        padding: 20px 15px;
-        border-radius: 16px;
-        text-align: center;
-        border: 1px solid var(--border);
-        transition: all 0.3s ease;
-    }
-    
-    .stat-item:hover {
-        border-color: var(--primary);
-        transform: translateY(-3px);
-        box-shadow: 0 8px 25px var(--primary-glow);
-    }
-    
-    .stat-value {
-        font-size: 2rem;
-        font-weight: 900;
-        color: var(--primary);
-        margin-bottom: 8px;
-        font-variant-numeric: tabular-nums;
-    }
-    
-    .stat-label {
-        font-size: 0.9rem;
-        color: var(--gray);
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-    
-    /* Review Mode Styling */
-    .review-card-title {
-        margin-bottom: 25px;
-        color: var(--primary);
-        font-size: 1.5rem;
-        font-weight: 800;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 12px;
-    }
-    
-    .insight-box {
-        margin-top: 25px;
-        padding: 20px;
-        background: linear-gradient(135deg, rgba(255, 71, 87, 0.1) 0%, rgba(176, 0, 32, 0.1) 100%);
-        border-radius: 12px;
-        border-left: 4px solid var(--warning);
-        border: 1px solid rgba(255, 71, 87, 0.2);
-    }
-    
-    .insight-box h4 {
-        color: var(--warning);
-        margin-bottom: 12px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-size: 1.1rem;
-    }
-    
-    .insight-box p {
-        color: var(--gray);
-        font-size: 0.95rem;
-        line-height: 1.7;
-    }
-    
-    /* Notification */
-    .notification {
-        position: fixed;
-        bottom: 30px;
-        right: 30px;
-        background: var(--card-bg);
-        border-radius: 16px;
-        padding: 18px 22px;
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        transform: translateX(500px);
-        opacity: 0;
-        transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        z-index: 1000;
-        max-width: 350px;
-        border: 2px solid var(--border);
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
-    }
-    
-    .notification.show {
-        transform: translateX(0);
-        opacity: 1;
-    }
-    
-    .notification-icon {
-        width: 42px;
-        height: 42px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-        color: white;
-        font-size: 1.1rem;
-        box-shadow: 0 0 20px var(--primary-glow);
-    }
-    
-    .notification-content {
-        flex: 1;
-    }
-    
-    .notification-content h4 {
-        font-size: 1rem;
-        margin-bottom: 4px;
-        font-weight: 700;
-    }
-    
-    .notification-content p {
-        font-size: 0.9rem;
-        color: var(--gray);
-        line-height: 1.5;
-    }
-    
-    /* Footer */
-    footer {
-        text-align: center;
-        margin-top: 40px;
-        color: var(--gray);
-        font-size: 0.9rem;
-        padding: 25px 20px;
-        border-top: 1px solid var(--border);
-        background: rgba(26, 26, 26, 0.5);
-        border-radius: 15px;
-    }
-    
-    .weekly-review-link {
-        color: var(--primary);
-        text-decoration: none;
-        font-weight: 700;
-        margin-top: 12px;
-        display: inline-block;
-        transition: all 0.3s ease;
-    }
-    
-    .weekly-review-link:hover {
-        color: var(--primary-light);
-        transform: translateY(-2px);
-    }
-    
-    /* Responsive */
-    @media (max-width: 580px) {
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(ellipse at top, #1a0a0f 0%, #0a0a0a 50%, #000000 100%);
+            color: var(--light);
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(220, 20, 60, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(220, 20, 60, 0.06) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        
         .container {
-            max-width: 100%;
+            max-width: 520px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 35px;
+            padding: 25px;
+            background: linear-gradient(135deg, rgba(220, 20, 60, 0.1) 0%, rgba(26, 26, 26, 0.6) 100%);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            box-shadow: 0 8px 32px rgba(220, 20, 60, 0.15);
         }
         
         h1 {
-            font-size: 2rem;
-        }
-        
-        .timer-display {
-            font-size: 3rem;
-            letter-spacing: 2px;
-        }
-        
-        .simple-btn {
-            padding: 14px 24px;
-            font-size: 0.95rem;
-            max-width: 130px;
-        }
-        
-        .notification {
-            left: 20px;
-            right: 20px;
-            max-width: none;
-        }
-    }
-    
-    @media (max-width: 400px) {
-        .timer-display {
             font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 50%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
         }
         
+        .subtitle {
+            color: var(--gray);
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+        
+        /* Mode Toggle */
+        .mode-toggle {
+            display: flex;
+            background: var(--card-bg);
+            border-radius: 50px;
+            padding: 6px;
+            margin-bottom: 30px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .mode-btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            background: transparent;
+            color: var(--gray);
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+        }
+        
+        .mode-btn:hover {
+            color: var(--primary-light);
+        }
+        
+        .mode-btn.active {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            box-shadow: 0 4px 15px var(--primary-glow);
+        }
+        
+        .mode-content {
+            display: none;
+        }
+        
+        .mode-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Focus Card */
+        .focus-card {
+            background: linear-gradient(135deg, rgba(26, 26, 26, 0.9) 0%, rgba(18, 18, 18, 0.9) 100%);
+            border-radius: 24px;
+            padding: 35px;
+            margin-bottom: 25px;
+            border: 1px solid var(--border);
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .focus-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .focus-card:hover::before {
+            opacity: 1;
+        }
+        
+        .focus-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(220, 20, 60, 0.2);
+            border-color: var(--border-hover);
+        }
+        
+        .timer-display {
+            font-size: 4rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 25px 0;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: 3px;
+            text-shadow: 0 0 30px var(--primary-glow);
+        }
+        
+        .timer-display.running {
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { filter: drop-shadow(0 0 20px var(--primary-glow)); }
+            50% { filter: drop-shadow(0 0 35px var(--primary-glow)); }
+        }
+        
+        /* Simple Controls */
         .simple-controls {
-            flex-wrap: wrap;
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 25px;
         }
         
         .simple-btn {
-            max-width: none;
-            flex-basis: 100%;
+            padding: 16px 32px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            flex: 1;
+            max-width: 150px;
+            justify-content: center;
+            letter-spacing: 0.5px;
         }
-    }
-</style>
-```
-
+        
+        .simple-btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            box-shadow: 0 6px 20px var(--primary-glow);
+        }
+        
+        .simple-btn-primary:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px var(--primary-glow);
+        }
+        
+        .simple-btn-secondary {
+            background: transparent;
+            color: var(--gray);
+            border: 2px solid var(--border);
+        }
+        
+        .simple-btn-secondary:hover:not(:disabled) {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-3px);
+        }
+        
+        .simple-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* Today's Focus */
+        .today-focus {
+            margin: 25px 0;
+            padding: 20px;
+            background: rgba(220, 20, 60, 0.08);
+            border-radius: 15px;
+            border-left: 4px solid var(--primary);
+            border: 1px solid rgba(220, 20, 60, 0.2);
+        }
+        
+        .focus-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: var(--light);
+            font-size: 1.1rem;
+            padding: 10px;
+            outline: none;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .focus-input::placeholder {
+            color: var(--gray);
+            font-style: italic;
+            font-weight: 400;
+        }
+        
+        /* Progress */
+        .progress-container {
+            margin: 25px 0;
+        }
+        
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+            color: var(--gray);
+            font-weight: 600;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background: var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 50%, var(--secondary) 100%);
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.8s ease;
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+        
+        /* Weekly Overview - Simplified */
+        .week-overview {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            margin-top: 25px;
+        }
+        
+        .day-dot {
+            aspect-ratio: 1;
+            background: var(--card-elevated);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            border: 2px solid var(--border);
+            color: var(--gray);
+        }
+        
+        .day-dot.active {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-color: var(--primary);
+            transform: scale(1.15);
+            box-shadow: 0 0 20px var(--primary-glow);
+            color: white;
+        }
+        
+        .day-dot.completed {
+            background: linear-gradient(135deg, var(--success) 0%, var(--secondary) 100%);
+            border-color: var(--success);
+            color: var(--dark);
+        }
+        
+        /* Completion Message */
+        .completion-message {
+            background: linear-gradient(135deg, rgba(255, 148, 168, 0.1) 0%, rgba(255, 107, 157, 0.1) 100%);
+            border: 2px solid var(--success);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 25px;
+            text-align: center;
+            display: none;
+        }
+        
+        .completion-message.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .completion-message h3 {
+            color: var(--success);
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .completion-message p {
+            color: var(--light);
+            line-height: 1.7;
+        }
+        
+        /* Stats - Simple */
+        .simple-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 25px;
+        }
+        
+        .stat-item {
+            background: var(--card-bg);
+            padding: 20px 15px;
+            border-radius: 16px;
+            text-align: center;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+        
+        .stat-item:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px var(--primary-glow);
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-variant-numeric: tabular-nums;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--gray);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Review Mode Styling */
+        .review-card-title {
+            margin-bottom: 25px;
+            color: var(--primary);
+            font-size: 1.5rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        
+        .insight-box {
+            margin-top: 25px;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(255, 71, 87, 0.1) 0%, rgba(176, 0, 32, 0.1) 100%);
+            border-radius: 12px;
+            border-left: 4px solid var(--warning);
+            border: 1px solid rgba(255, 71, 87, 0.2);
+        }
+        
+        .insight-box h4 {
+            color: var(--warning);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .insight-box p {
+            color: var(--gray);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+        
+        /* Notification */
+        .notification {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 18px 22px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transform: translateX(500px);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 1000;
+            max-width: 350px;
+            border: 2px solid var(--border);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        
+        .notification-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            font-size: 1.1rem;
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+        
+        .notification-content {
+            flex: 1;
+        }
+        
+        .notification-content h4 {
+            font-size: 1rem;
+            margin-bottom: 4px;
+            font-weight: 700;
+        }
+        
+        .notification-content p {
+            font-size: 0.9rem;
+            color: var(--gray);
+            line-height: 1.5;
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: var(--gray);
+            font-size: 0.9rem;
+            padding: 25px 20px;
+            border-top: 1px solid var(--border);
+            background: rgba(26, 26, 26, 0.5);
+            border-radius: 15px;
+        }
+        
+        .weekly-review-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 700;
+            margin-top: 12px;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        
+        .weekly-review-link:hover {
+            color: var(--primary-light);
+            transform: translateY(-2px);
+        }
+        
+        /* Responsive */
+        @media (max-width: 580px) {
+            .container {
+                max-width: 100%;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .timer-display {
+                font-size: 3rem;
+                letter-spacing: 2px;
+            }
+            
+            .simple-btn {
+                padding: 14px 24px;
+                font-size: 0.95rem;
+                max-width: 130px;
+            }
+            
+            .notification {
+                left: 20px;
+                right: 20px;
+                max-width: none;
+            }
+        }
+        
+        @media (max-width: 400px) {
+            .timer-display {
+                font-size: 2.5rem;
+            }
+            
+            .simple-controls {
+                flex-wrap: wrap;
+            }
+            
+            .simple-btn {
+                max-width: none;
+                flex-basis: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -579,579 +575,576 @@
             <h1><i class="fas fa-brain"></i> FlowFocus</h1>
             <p class="subtitle">A calm space to track your 30 weekly hours. No clutter, just progress.</p>
         </header>
-
-```
-    <!-- Simple Mode Toggle -->
-    <div class="mode-toggle">
-        <button class="mode-btn active" data-mode="focus">Focus</button>
-        <button class="mode-btn" data-mode="review">Weekly Review</button>
-    </div>
-    
-    <!-- Focus Mode -->
-    <div id="focus-mode" class="mode-content active">
-        <div class="focus-card">
-            <div class="timer-display" id="timer">00:00:00</div>
-            
-            <div class="simple-controls">
-                <button class="simple-btn simple-btn-primary" id="startBtn">
-                    <i class="fas fa-play"></i> Start
-                </button>
-                <button class="simple-btn simple-btn-secondary" id="pauseBtn" disabled>
-                    <i class="fas fa-pause"></i> Pause
-                </button>
-                <button class="simple-btn simple-btn-primary" id="finishBtn" disabled>
-                    <i class="fas fa-check"></i> Done
-                </button>
-            </div>
-            
-            <div class="today-focus">
-                <input type="text" class="focus-input" id="focusInput" 
-                       placeholder="What are you working on today? (Optional)">
-            </div>
-            
-            <div class="progress-container">
-                <div class="progress-label">
-                    <span>Today's Progress (6h goal)</span>
-                    <span id="todayProgressText">0%</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="todayProgressBar"></div>
-                </div>
-            </div>
-            
-            <div class="week-overview" id="weekOverview"></div>
+        
+        <!-- Simple Mode Toggle -->
+        <div class="mode-toggle">
+            <button class="mode-btn active" data-mode="focus">Focus</button>
+            <button class="mode-btn" data-mode="review">Weekly Review</button>
         </div>
         
-        <div class="simple-stats">
-            <div class="stat-item">
-                <div class="stat-value" id="todayTotal">0h 0m</div>
-                <div class="stat-label">Today</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-value" id="weekTotal">0h 0m</div>
-                <div class="stat-label">This Week</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-value" id="streakCount">0</div>
-                <div class="stat-label">Day Streak</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-value" id="remainingHours">30h</div>
-                <div class="stat-label">To Goal</div>
-            </div>
-        </div>
-        
-        <div class="completion-message" id="completionMessage">
-            <h3><i class="fas fa-check-circle"></i> Weekly Goal Met!</h3>
-            <p>You've completed your 30 hours for this week. Well done!</p>
-        </div>
-    </div>
-    
-    <!-- Weekly Review Mode -->
-    <div id="review-mode" class="mode-content">
-        <div class="focus-card">
-            <h3 class="review-card-title">
-                <i class="fas fa-chart-simple"></i> Weekly Review
-            </h3>
-            
-            <div class="simple-stats" style="margin-top: 0;">
-                <div class="stat-item">
-                    <div class="stat-value" id="reviewWeekTotal">0h 0m</div>
-                    <div class="stat-label">Total Hours</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value" id="reviewAvgDaily">0h 0m</div>
-                    <div class="stat-label">Daily Average</div>
-                </div>
-            </div>
-            
-            <div class="progress-container" style="margin: 30px 0;">
-                <div class="progress-label">
-                    <span>Weekly Goal Progress</span>
-                    <span id="reviewProgressText">0%</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="reviewProgressBar"></div>
-                </div>
-            </div>
-            
-            <div class="insight-box">
-                <h4>
-                    <i class="fas fa-lightbulb"></i> One Insight
-                </h4>
-                <p id="weeklyInsight">
-                    Complete at least one work session to see your weekly insight.
-                </p>
-            </div>
-            
-            <div style="margin-top: 30px; text-align: center;">
-                <button class="simple-btn simple-btn-secondary" id="backToFocusBtn" style="max-width: 200px;">
-                    <i class="fas fa-arrow-left"></i> Back to Focus Mode
-                </button>
-            </div>
-        </div>
-    </div>
-    
-    <footer>
-        <p>Designed for focus, not perfection • Data saved in your browser</p>
-        <a href="focus-time-analytics.html" class="weekly-review-link">
-            <i class="fas fa-chart-line"></i> View Detailed Analytics
-        </a>
-    </footer>
-</div>
-
-<!-- Notification -->
-<div class="notification" id="notification">
-    <div class="notification-icon">
-        <i class="fas fa-check"></i>
-    </div>
-    <div class="notification-content">
-        <h4 id="notificationTitle">Timer Started</h4>
-        <p id="notificationMessage">Ready to focus!</p>
-    </div>
-</div>
-
-<script>
-    // DOM Elements
-    const timerDisplay = document.getElementById('timer');
-    const startBtn = document.getElementById('startBtn');
-    const pauseBtn = document.getElementById('pauseBtn');
-    const finishBtn = document.getElementById('finishBtn');
-    const focusInput = document.getElementById('focusInput');
-    const todayProgressBar = document.getElementById('todayProgressBar');
-    const todayProgressText = document.getElementById('todayProgressText');
-    const todayTotal = document.getElementById('todayTotal');
-    const weekTotal = document.getElementById('weekTotal');
-    const streakCount = document.getElementById('streakCount');
-    const remainingHours = document.getElementById('remainingHours');
-    const weekOverview = document.getElementById('weekOverview');
-    const completionMessage = document.getElementById('completionMessage');
-    
-    // Review mode elements
-    const reviewWeekTotal = document.getElementById('reviewWeekTotal');
-    const reviewAvgDaily = document.getElementById('reviewAvgDaily');
-    const reviewProgressBar = document.getElementById('reviewProgressBar');
-    const reviewProgressText = document.getElementById('reviewProgressText');
-    const weeklyInsight = document.getElementById('weeklyInsight');
-    const backToFocusBtn = document.getElementById('backToFocusBtn');
-    
-    // Mode elements
-    const modeBtns = document.querySelectorAll('.mode-btn');
-    const modeContents = document.querySelectorAll('.mode-content');
-    
-    // Notification
-    const notification = document.getElementById('notification');
-    const notificationTitle = document.getElementById('notificationTitle');
-    const notificationMessage = document.getElementById('notificationMessage');
-    
-    // Timer variables
-    let timerInterval;
-    let startTime;
-    let pausedTime = 0;
-    let isRunning = false;
-    let todaySeconds = 0;
-    let todaySavedSeconds = 0;
-    
-    // Weekly tracking
-    const weeklyGoalSeconds = 30 * 3600;
-    const dailyGoalSeconds = 6 * 3600;
-    let weekData = {};
-    let currentStreak = 0;
-    
-    // Days of the week
-    const daysOfWeek = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
-    
-    // Initialize
-    function init() {
-        loadData();
-        updateDisplay();
-        renderWeekOverview();
-        checkWeekReset();
-        
-        // Event listeners
-        startBtn.addEventListener('click', startTimer);
-        pauseBtn.addEventListener('click', pauseTimer);
-        finishBtn.addEventListener('click', finishDay);
-        focusInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                e.target.blur();
-                showNotification('Focus Set', 'Great! Now start your timer.', 'info');
-            }
-        });
-        
-        // Mode switching
-        modeBtns.forEach(btn => {
-            btn.addEventListener('click', () => switchMode(btn.dataset.mode));
-        });
-        
-        backToFocusBtn.addEventListener('click', () => switchMode('focus'));
-        
-        // Initial welcome
-        setTimeout(() => {
-            showNotification('Welcome to FlowFocus', 'Start with 25 minutes. Just begin.', 'info');
-        }, 1000);
-    }
-    
-    // Switch between modes
-    function switchMode(mode) {
-        modeBtns.forEach(btn => {
-            btn.classList.remove('active');
-            if (btn.dataset.mode === mode) btn.classList.add('active');
-        });
-        
-        modeContents.forEach(content => {
-            content.classList.remove('active');
-            if (content.id === `${mode}-mode`) {
-                content.classList.add('active');
-                if (mode === 'review') updateReviewMode();
-            }
-        });
-    }
-    
-    // Check for week reset on Saturday
-    function checkWeekReset() {
-        const lastReset = localStorage.getItem('flowFocusLastReset');
-        const today = new Date();
-        const todayDay = today.getDay();
-        
-        // If today is Saturday (6) and we haven't reset this week
-        if (todayDay === 6) {
-            const todayKey = getTodayKey();
-            if (lastReset !== todayKey) {
-                // Show week summary before reset
-                const weekTotalSeconds = getWeekTotalSeconds();
-                const weekHours = Math.floor(weekTotalSeconds / 3600);
-                const weekMinutes = Math.floor((weekTotalSeconds % 3600) / 60);
+        <!-- Focus Mode -->
+        <div id="focus-mode" class="mode-content active">
+            <div class="focus-card">
+                <div class="timer-display" id="timer">00:00:00</div>
                 
-                if (weekTotalSeconds > 0) {
-                    showNotification(
-                        'Week Complete!',
-                        `Last week you worked ${weekHours}h ${weekMinutes}m. Starting fresh week on Saturday!`,
-                        'info'
-                    );
+                <div class="simple-controls">
+                    <button class="simple-btn simple-btn-primary" id="startBtn">
+                        <i class="fas fa-play"></i> Start
+                    </button>
+                    <button class="simple-btn simple-btn-secondary" id="pauseBtn" disabled>
+                        <i class="fas fa-pause"></i> Pause
+                    </button>
+                    <button class="simple-btn simple-btn-primary" id="finishBtn" disabled>
+                        <i class="fas fa-check"></i> Done
+                    </button>
+                </div>
+                
+                <div class="today-focus">
+                    <input type="text" class="focus-input" id="focusInput" 
+                           placeholder="What are you working on today? (Optional)">
+                </div>
+                
+                <div class="progress-container">
+                    <div class="progress-label">
+                        <span>Today's Progress (6h goal)</span>
+                        <span id="todayProgressText">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="todayProgressBar"></div>
+                    </div>
+                </div>
+                
+                <div class="week-overview" id="weekOverview"></div>
+            </div>
+            
+            <div class="simple-stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="todayTotal">0h 0m</div>
+                    <div class="stat-label">Today</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="weekTotal">0h 0m</div>
+                    <div class="stat-label">This Week</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="streakCount">0</div>
+                    <div class="stat-label">Day Streak</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="remainingHours">30h</div>
+                    <div class="stat-label">To Goal</div>
+                </div>
+            </div>
+            
+            <div class="completion-message" id="completionMessage">
+                <h3><i class="fas fa-check-circle"></i> Weekly Goal Met!</h3>
+                <p>You've completed your 30 hours for this week. Well done!</p>
+            </div>
+        </div>
+        
+        <!-- Weekly Review Mode -->
+        <div id="review-mode" class="mode-content">
+            <div class="focus-card">
+                <h3 class="review-card-title">
+                    <i class="fas fa-chart-simple"></i> Weekly Review
+                </h3>
+                
+                <div class="simple-stats" style="margin-top: 0;">
+                    <div class="stat-item">
+                        <div class="stat-value" id="reviewWeekTotal">0h 0m</div>
+                        <div class="stat-label">Total Hours</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="reviewAvgDaily">0h 0m</div>
+                        <div class="stat-label">Daily Average</div>
+                    </div>
+                </div>
+                
+                <div class="progress-container" style="margin: 30px 0;">
+                    <div class="progress-label">
+                        <span>Weekly Goal Progress</span>
+                        <span id="reviewProgressText">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="reviewProgressBar"></div>
+                    </div>
+                </div>
+                
+                <div class="insight-box">
+                    <h4>
+                        <i class="fas fa-lightbulb"></i> One Insight
+                    </h4>
+                    <p id="weeklyInsight">
+                        Complete at least one work session to see your weekly insight.
+                    </p>
+                </div>
+                
+                <div style="margin-top: 30px; text-align: center;">
+                    <button class="simple-btn simple-btn-secondary" id="backToFocusBtn" style="max-width: 200px;">
+                        <i class="fas fa-arrow-left"></i> Back to Focus Mode
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Designed for focus, not perfection • Data saved in your browser</p>
+            <a href="weekly-reflection.html" class="weekly-review-link">
+                <i class="fas fa-chart-simple"></i> Weekly Reflection
+            </a>
+        </footer>
+    </div>
+    
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <div class="notification-icon">
+            <i class="fas fa-check"></i>
+        </div>
+        <div class="notification-content">
+            <h4 id="notificationTitle">Timer Started</h4>
+            <p id="notificationMessage">Ready to focus!</p>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const timerDisplay = document.getElementById('timer');
+        const startBtn = document.getElementById('startBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const finishBtn = document.getElementById('finishBtn');
+        const focusInput = document.getElementById('focusInput');
+        const todayProgressBar = document.getElementById('todayProgressBar');
+        const todayProgressText = document.getElementById('todayProgressText');
+        const todayTotal = document.getElementById('todayTotal');
+        const weekTotal = document.getElementById('weekTotal');
+        const streakCount = document.getElementById('streakCount');
+        const remainingHours = document.getElementById('remainingHours');
+        const weekOverview = document.getElementById('weekOverview');
+        const completionMessage = document.getElementById('completionMessage');
+        
+        // Review mode elements
+        const reviewWeekTotal = document.getElementById('reviewWeekTotal');
+        const reviewAvgDaily = document.getElementById('reviewAvgDaily');
+        const reviewProgressBar = document.getElementById('reviewProgressBar');
+        const reviewProgressText = document.getElementById('reviewProgressText');
+        const weeklyInsight = document.getElementById('weeklyInsight');
+        const backToFocusBtn = document.getElementById('backToFocusBtn');
+        
+        // Mode elements
+        const modeBtns = document.querySelectorAll('.mode-btn');
+        const modeContents = document.querySelectorAll('.mode-content');
+        
+        // Notification
+        const notification = document.getElementById('notification');
+        const notificationTitle = document.getElementById('notificationTitle');
+        const notificationMessage = document.getElementById('notificationMessage');
+        
+        // Timer variables
+        let timerInterval;
+        let startTime;
+        let pausedTime = 0;
+        let isRunning = false;
+        let todaySeconds = 0;
+        let todaySavedSeconds = 0;
+        
+        // Weekly tracking
+        const weeklyGoalSeconds = 30 * 3600;
+        const dailyGoalSeconds = 6 * 3600;
+        let weekData = {};
+        let currentStreak = 0;
+        
+        // Days of the week
+        const daysOfWeek = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+        
+        // Initialize
+        function init() {
+            loadData();
+            updateDisplay();
+            renderWeekOverview();
+            checkWeekReset();
+            
+            // Event listeners
+            startBtn.addEventListener('click', startTimer);
+            pauseBtn.addEventListener('click', pauseTimer);
+            finishBtn.addEventListener('click', finishDay);
+            focusInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.target.blur();
+                    showNotification('Focus Set', 'Great! Now start your timer.', 'info');
                 }
-                
-                // Reset week data but keep streak
-                weekData = {};
-                todaySavedSeconds = 0;
-                todaySeconds = 0;
-                
-                localStorage.setItem('flowFocusLastReset', todayKey);
-                saveData();
-                updateDisplay();
-                renderWeekOverview();
+            });
+            
+            // Mode switching
+            modeBtns.forEach(btn => {
+                btn.addEventListener('click', () => switchMode(btn.dataset.mode));
+            });
+            
+            backToFocusBtn.addEventListener('click', () => switchMode('focus'));
+            
+            // Initial welcome
+            setTimeout(() => {
+                showNotification('Welcome to FlowFocus', 'Start with 25 minutes. Just begin.', 'info');
+            }, 1000);
+        }
+        
+        // Switch between modes
+        function switchMode(mode) {
+            modeBtns.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.mode === mode) btn.classList.add('active');
+            });
+            
+            modeContents.forEach(content => {
+                content.classList.remove('active');
+                if (content.id === `${mode}-mode`) {
+                    content.classList.add('active');
+                    if (mode === 'review') updateReviewMode();
+                }
+            });
+        }
+        
+        // Check for week reset on Saturday
+        function checkWeekReset() {
+            const lastReset = localStorage.getItem('flowFocusLastReset');
+            const today = new Date();
+            const todayDay = today.getDay();
+            
+            // If today is Saturday (6) and we haven't reset this week
+            if (todayDay === 6) {
+                const todayKey = getTodayKey();
+                if (lastReset !== todayKey) {
+                    // Show week summary before reset
+                    const weekTotalSeconds = getWeekTotalSeconds();
+                    const weekHours = Math.floor(weekTotalSeconds / 3600);
+                    const weekMinutes = Math.floor((weekTotalSeconds % 3600) / 60);
+                    
+                    if (weekTotalSeconds > 0) {
+                        showNotification(
+                            'Week Complete!',
+                            `Last week you worked ${weekHours}h ${weekMinutes}m. Starting fresh week on Saturday!`,
+                            'info'
+                        );
+                    }
+                    
+                    // Reset week data but keep streak
+                    weekData = {};
+                    todaySavedSeconds = 0;
+                    todaySeconds = 0;
+                    
+                    localStorage.setItem('flowFocusLastReset', todayKey);
+                    saveData();
+                    updateDisplay();
+                    renderWeekOverview();
+                }
             }
         }
-    }
-    
-    // Load data
-    function loadData() {
-        const savedWeekData = localStorage.getItem('flowFocusWeekData');
-        const savedTodaySeconds = localStorage.getItem('flowFocusTodaySeconds');
-        const savedStreak = localStorage.getItem('flowFocusStreak');
         
-        if (savedWeekData) weekData = JSON.parse(savedWeekData);
-        if (savedTodaySeconds) todaySavedSeconds = parseInt(savedTodaySeconds);
-        if (savedStreak) currentStreak = parseInt(savedStreak);
-        
-        const today = getTodayKey();
-        if (!weekData[today]) {
-            weekData[today] = todaySavedSeconds;
-        } else {
-            todaySavedSeconds = weekData[today];
-        }
-    }
-    
-    // Save data
-    function saveData() {
-        localStorage.setItem('flowFocusWeekData', JSON.stringify(weekData));
-        localStorage.setItem('flowFocusTodaySeconds', todaySavedSeconds.toString());
-        localStorage.setItem('flowFocusStreak', currentStreak.toString());
-    }
-    
-    // Start timer
-    function startTimer() {
-        if (isRunning) return;
-        
-        isRunning = true;
-        startTime = new Date().getTime() - pausedTime;
-        
-        startBtn.disabled = true;
-        pauseBtn.disabled = false;
-        finishBtn.disabled = false;
-        
-        timerInterval = setInterval(updateTimer, 1000);
-        timerDisplay.classList.add('running');
-        
-        showNotification('Focus Time', 'Timer started. Deep work begins.', 'info');
-        
-        updateTimer();
-    }
-    
-    // Pause timer
-    function pauseTimer() {
-        if (!isRunning) return;
-        
-        isRunning = false;
-        clearInterval(timerInterval);
-        pausedTime = new Date().getTime() - startTime;
-        todaySeconds = Math.floor(pausedTime / 1000);
-        
-        startBtn.disabled = false;
-        pauseBtn.disabled = true;
-        timerDisplay.classList.remove('running');
-        
-        showNotification('Paused', 'Take a breath. Resume when ready.', 'info');
-    }
-    
-    // Finish day
-    function finishDay() {
-        if (isRunning) pauseTimer();
-        
-        const today = getTodayKey();
-        const totalToday = todaySavedSeconds + todaySeconds;
-        weekData[today] = totalToday;
-        
-        // Calculate streak
-        calculateStreak();
-        
-        // Save
-        saveData();
-        
-        // Reset for today
-        todaySeconds = 0;
-        todaySavedSeconds = 0;
-        pausedTime = 0;
-        
-        // Update UI
-        startBtn.disabled = false;
-        pauseBtn.disabled = true;
-        finishBtn.disabled = true;
-        
-        updateDisplay();
-        renderWeekOverview();
-        
-        // Show completion message
-        const hours = Math.floor(totalToday / 3600);
-        const minutes = Math.floor((totalToday % 3600) / 60);
-        
-        showNotification(
-            'Session Complete',
-            `You worked ${hours}h ${minutes}m today. Great job!`,
-            'info'
-        );
-        
-        // Check weekly goal
-        checkWeeklyGoal();
-    }
-    
-    // Update timer display
-    function updateTimer() {
-        if (isRunning) {
-            const currentTime = new Date().getTime();
-            todaySeconds = Math.floor((currentTime - startTime) / 1000);
-        }
-        
-        const hours = Math.floor(todaySeconds / 3600);
-        const minutes = Math.floor((todaySeconds % 3600) / 60);
-        const seconds = todaySeconds % 60;
-        
-        timerDisplay.textContent = 
-            `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-        
-        updateDisplay();
-    }
-    
-    // Update all displays
-    function updateDisplay() {
-        const totalTodaySeconds = todaySavedSeconds + todaySeconds;
-        
-        // Today's total
-        const todayHours = Math.floor(totalTodaySeconds / 3600);
-        const todayMinutes = Math.floor((totalTodaySeconds % 3600) / 60);
-        todayTotal.textContent = `${todayHours}h ${todayMinutes}m`;
-        
-        // Week total
-        const weekTotalSeconds = getWeekTotalSeconds();
-        const weekHours = Math.floor(weekTotalSeconds / 3600);
-        const weekMinutes = Math.floor((weekTotalSeconds % 3600) / 60);
-        weekTotal.textContent = `${weekHours}h ${weekMinutes}m`;
-        
-        // Streak
-        streakCount.textContent = currentStreak;
-        
-        // Remaining hours
-        const remaining = Math.max(0, weeklyGoalSeconds - weekTotalSeconds);
-        const remHours = Math.floor(remaining / 3600);
-        remainingHours.textContent = `${remHours}h`;
-        
-        // Today's progress
-        const todayProgress = Math.min((totalTodaySeconds / dailyGoalSeconds) * 100, 100);
-        todayProgressBar.style.width = `${todayProgress}%`;
-        todayProgressText.textContent = `${Math.round(todayProgress)}%`;
-        
-        // Completion message
-        if (weekTotalSeconds >= weeklyGoalSeconds) {
-            completionMessage.classList.add('show');
-        } else {
-            completionMessage.classList.remove('show');
-        }
-    }
-    
-    // Calculate streak
-    function calculateStreak() {
-        let streak = 0;
-        const today = new Date();
-        
-        for (let i = 0; i < 30; i++) {
-            const date = new Date(today);
-            date.setDate(today.getDate() - i);
-            const dateKey = date.toISOString().split('T')[0];
+        // Load data
+        function loadData() {
+            const savedWeekData = localStorage.getItem('flowFocusWeekData');
+            const savedTodaySeconds = localStorage.getItem('flowFocusTodaySeconds');
+            const savedStreak = localStorage.getItem('flowFocusStreak');
             
-            if (weekData[dateKey] && weekData[dateKey] >= 1800) { // At least 30 minutes
-                streak++;
+            if (savedWeekData) weekData = JSON.parse(savedWeekData);
+            if (savedTodaySeconds) todaySavedSeconds = parseInt(savedTodaySeconds);
+            if (savedStreak) currentStreak = parseInt(savedStreak);
+            
+            const today = getTodayKey();
+            if (!weekData[today]) {
+                weekData[today] = todaySavedSeconds;
             } else {
-                break;
+                todaySavedSeconds = weekData[today];
             }
         }
         
-        currentStreak = streak;
-    }
-    
-    // Get week total
-    function getWeekTotalSeconds() {
-        let total = 0;
-        const today = new Date();
-        
-        // Saturday to Friday week
-        const startOfWeek = new Date(today);
-        const dayOfWeek = today.getDay();
-        const daysToSaturday = (dayOfWeek + 1) % 7;
-        startOfWeek.setDate(today.getDate() - daysToSaturday);
-        
-        for (let i = 0; i < 7; i++) {
-            const date = new Date(startOfWeek);
-            date.setDate(startOfWeek.getDate() + i);
-            const dateKey = date.toISOString().split('T')[0];
-            
-            if (weekData[dateKey]) {
-                total += weekData[dateKey];
-            }
+        // Save data
+        function saveData() {
+            localStorage.setItem('flowFocusWeekData', JSON.stringify(weekData));
+            localStorage.setItem('flowFocusTodaySeconds', todaySavedSeconds.toString());
+            localStorage.setItem('flowFocusStreak', currentStreak.toString());
         }
         
-        return total;
-    }
-    
-    // Render week overview
-    function renderWeekOverview() {
-        weekOverview.innerHTML = '';
-        const today = new Date();
-        
-        const startOfWeek = new Date(today);
-        const dayOfWeek = today.getDay();
-        const daysToSaturday = (dayOfWeek + 1) % 7;
-        startOfWeek.setDate(today.getDate() - daysToSaturday);
-        
-        for (let i = 0; i < 7; i++) {
-            const date = new Date(startOfWeek);
-            date.setDate(startOfWeek.getDate() + i);
-            const dateKey = date.toISOString().split('T')[0];
+        // Start timer
+        function startTimer() {
+            if (isRunning) return;
             
-            const dot = document.createElement('div');
-            dot.className = 'day-dot';
-            dot.textContent = daysOfWeek[date.getDay()];
+            isRunning = true;
+            startTime = new Date().getTime() - pausedTime;
             
-            if (date.toDateString() === today.toDateString()) {
-                dot.classList.add('active');
-            }
+            startBtn.disabled = true;
+            pauseBtn.disabled = false;
+            finishBtn.disabled = false;
             
-            if (weekData[dateKey] && weekData[dateKey] >= 1800) {
-                dot.classList.add('completed');
-            }
+            timerInterval = setInterval(updateTimer, 1000);
+            timerDisplay.classList.add('running');
             
-            weekOverview.appendChild(dot);
-        }
-    }
-    
-    // Update review mode
-    function updateReviewMode() {
-        const weekTotalSeconds = getWeekTotalSeconds();
-        const weekHours = Math.floor(weekTotalSeconds / 3600);
-        const weekMinutes = Math.floor((weekTotalSeconds % 3600) / 60);
-        reviewWeekTotal.textContent = `${weekHours}h ${weekMinutes}m`;
-        
-        // Daily average
-        const today = new Date();
-        const dayOfWeek = (today.getDay() + 6) % 7;
-        const daysIntoWeek = Math.max(1, dayOfWeek + 1);
-        const avgSeconds = weekTotalSeconds / daysIntoWeek;
-        const avgHours = Math.floor(avgSeconds / 3600);
-        const avgMinutes = Math.floor((avgSeconds % 3600) / 60);
-        reviewAvgDaily.textContent = `${avgHours}h ${avgMinutes}m`;
-        
-        // Progress
-        const progress = Math.min(100, (weekTotalSeconds / weeklyGoalSeconds) * 100);
-        reviewProgressBar.style.width = `${progress}%`;
-        reviewProgressText.textContent = `${Math.round(progress)}%`;
-        
-        // Insight
-        weeklyInsight.textContent = generateInsight(weekTotalSeconds, daysIntoWeek, avgSeconds);
-    }
-    
-    // Generate weekly insight
-    function generateInsight(totalSeconds, daysIntoWeek, avgSeconds) {
-        if (totalSeconds === 0) {
-            return "Start with just 25 minutes today. Momentum builds from small beginnings.";
+            showNotification('Focus Time', 'Timer started. Deep work begins.', 'info');
+            
+            updateTimer();
         }
         
-        const avgHours = avgSeconds / 3600;
-        
-        if (avgHours >= 6) {
-            return "You're averaging 6+ hours daily. You're on track to hit your 30-hour goal with ease!";
-        } else if (avgHours >= 4) {
-            return `At ${avgHours.toFixed(1)}h/day, you'll need ${Math.ceil((weeklyGoalSeconds - totalSeconds) / avgSeconds)} more days to reach 30 hours.`;
-        } else if (totalSeconds >= weeklyGoalSeconds * 0.7) {
-            return "You're over 70% to your goal! The final stretch is easier than the start.";
-        } else {
-            return "Consistency beats intensity. A little each day adds up faster than you think.";
+        // Pause timer
+        function pauseTimer() {
+            if (!isRunning) return;
+            
+            isRunning = false;
+            clearInterval(timerInterval);
+            pausedTime = new Date().getTime() - startTime;
+            todaySeconds = Math.floor(pausedTime / 1000);
+            
+            startBtn.disabled = false;
+            pauseBtn.disabled = true;
+            timerDisplay.classList.remove('running');
+            
+            showNotification('Paused', 'Take a breath. Resume when ready.', 'info');
         }
-    }
-    
-    // Check weekly goal
-    function checkWeeklyGoal() {
-        const weekTotalSeconds = getWeekTotalSeconds();
         
-        if (weekTotalSeconds >= weeklyGoalSeconds) {
+        // Finish day
+        function finishDay() {
+            if (isRunning) pauseTimer();
+            
+            const today = getTodayKey();
+            const totalToday = todaySavedSeconds + todaySeconds;
+            weekData[today] = totalToday;
+            
+            // Calculate streak
+            calculateStreak();
+            
+            // Save
+            saveData();
+            
+            // Reset for today
+            todaySeconds = 0;
+            todaySavedSeconds = 0;
+            pausedTime = 0;
+            
+            // Update UI
+            startBtn.disabled = false;
+            pauseBtn.disabled = true;
+            finishBtn.disabled = true;
+            
+            updateDisplay();
+            renderWeekOverview();
+            
+            // Show completion message
+            const hours = Math.floor(totalToday / 3600);
+            const minutes = Math.floor((totalToday % 3600) / 60);
+            
             showNotification(
-                '🎉 Goal Achieved!',
-                'You hit 30 hours this week. Incredible work!',
+                'Session Complete',
+                `You worked ${hours}h ${minutes}m today. Great job!`,
                 'info'
             );
+            
+            // Check weekly goal
+            checkWeeklyGoal();
         }
-    }
-    
-    // Get today's key
-    function getTodayKey() {
-        const today = new Date();
-        return today.toISOString().split('T')[0];
-    }
-    
-    // Show notification
-    function showNotification(title, message, type) {
-        notificationTitle.textContent = title;
-        notificationMessage.textContent = message;
         
-        notification.className = 'notification show';
+        // Update timer display
+        function updateTimer() {
+            if (isRunning) {
+                const currentTime = new Date().getTime();
+                todaySeconds = Math.floor((currentTime - startTime) / 1000);
+            }
+            
+            const hours = Math.floor(todaySeconds / 3600);
+            const minutes = Math.floor((todaySeconds % 3600) / 60);
+            const seconds = todaySeconds % 60;
+            
+            timerDisplay.textContent = 
+                `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            updateDisplay();
+        }
         
-        setTimeout(() => {
-            notification.classList.remove('show');
-        }, 4000);
-    }
-    
-    // Initialize app
-    document.addEventListener('DOMContentLoaded', init);
-</script>
-```
-
+        // Update all displays
+        function updateDisplay() {
+            const totalTodaySeconds = todaySavedSeconds + todaySeconds;
+            
+            // Today's total
+            const todayHours = Math.floor(totalTodaySeconds / 3600);
+            const todayMinutes = Math.floor((totalTodaySeconds % 3600) / 60);
+            todayTotal.textContent = `${todayHours}h ${todayMinutes}m`;
+            
+            // Week total
+            const weekTotalSeconds = getWeekTotalSeconds();
+            const weekHours = Math.floor(weekTotalSeconds / 3600);
+            const weekMinutes = Math.floor((weekTotalSeconds % 3600) / 60);
+            weekTotal.textContent = `${weekHours}h ${weekMinutes}m`;
+            
+            // Streak
+            streakCount.textContent = currentStreak;
+            
+            // Remaining hours
+            const remaining = Math.max(0, weeklyGoalSeconds - weekTotalSeconds);
+            const remHours = Math.floor(remaining / 3600);
+            remainingHours.textContent = `${remHours}h`;
+            
+            // Today's progress
+            const todayProgress = Math.min((totalTodaySeconds / dailyGoalSeconds) * 100, 100);
+            todayProgressBar.style.width = `${todayProgress}%`;
+            todayProgressText.textContent = `${Math.round(todayProgress)}%`;
+            
+            // Completion message
+            if (weekTotalSeconds >= weeklyGoalSeconds) {
+                completionMessage.classList.add('show');
+            } else {
+                completionMessage.classList.remove('show');
+            }
+        }
+        
+        // Calculate streak
+        function calculateStreak() {
+            let streak = 0;
+            const today = new Date();
+            
+            for (let i = 0; i < 30; i++) {
+                const date = new Date(today);
+                date.setDate(today.getDate() - i);
+                const dateKey = date.toISOString().split('T')[0];
+                
+                if (weekData[dateKey] && weekData[dateKey] >= 1800) { // At least 30 minutes
+                    streak++;
+                } else {
+                    break;
+                }
+            }
+            
+            currentStreak = streak;
+        }
+        
+        // Get week total
+        function getWeekTotalSeconds() {
+            let total = 0;
+            const today = new Date();
+            
+            // Saturday to Friday week
+            const startOfWeek = new Date(today);
+            const dayOfWeek = today.getDay();
+            const daysToSaturday = (dayOfWeek + 1) % 7;
+            startOfWeek.setDate(today.getDate() - daysToSaturday);
+            
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(startOfWeek);
+                date.setDate(startOfWeek.getDate() + i);
+                const dateKey = date.toISOString().split('T')[0];
+                
+                if (weekData[dateKey]) {
+                    total += weekData[dateKey];
+                }
+            }
+            
+            return total;
+        }
+        
+        // Render week overview
+        function renderWeekOverview() {
+            weekOverview.innerHTML = '';
+            const today = new Date();
+            
+            const startOfWeek = new Date(today);
+            const dayOfWeek = today.getDay();
+            const daysToSaturday = (dayOfWeek + 1) % 7;
+            startOfWeek.setDate(today.getDate() - daysToSaturday);
+            
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(startOfWeek);
+                date.setDate(startOfWeek.getDate() + i);
+                const dateKey = date.toISOString().split('T')[0];
+                
+                const dot = document.createElement('div');
+                dot.className = 'day-dot';
+                dot.textContent = daysOfWeek[date.getDay()];
+                
+                if (date.toDateString() === today.toDateString()) {
+                    dot.classList.add('active');
+                }
+                
+                if (weekData[dateKey] && weekData[dateKey] >= 1800) {
+                    dot.classList.add('completed');
+                }
+                
+                weekOverview.appendChild(dot);
+            }
+        }
+        
+        // Update review mode
+        function updateReviewMode() {
+            const weekTotalSeconds = getWeekTotalSeconds();
+            const weekHours = Math.floor(weekTotalSeconds / 3600);
+            const weekMinutes = Math.floor((weekTotalSeconds % 3600) / 60);
+            reviewWeekTotal.textContent = `${weekHours}h ${weekMinutes}m`;
+            
+            // Daily average
+            const today = new Date();
+            const dayOfWeek = (today.getDay() + 6) % 7;
+            const daysIntoWeek = Math.max(1, dayOfWeek + 1);
+            const avgSeconds = weekTotalSeconds / daysIntoWeek;
+            const avgHours = Math.floor(avgSeconds / 3600);
+            const avgMinutes = Math.floor((avgSeconds % 3600) / 60);
+            reviewAvgDaily.textContent = `${avgHours}h ${avgMinutes}m`;
+            
+            // Progress
+            const progress = Math.min(100, (weekTotalSeconds / weeklyGoalSeconds) * 100);
+            reviewProgressBar.style.width = `${progress}%`;
+            reviewProgressText.textContent = `${Math.round(progress)}%`;
+            
+            // Insight
+            weeklyInsight.textContent = generateInsight(weekTotalSeconds, daysIntoWeek, avgSeconds);
+        }
+        
+        // Generate weekly insight
+        function generateInsight(totalSeconds, daysIntoWeek, avgSeconds) {
+            if (totalSeconds === 0) {
+                return "Start with just 25 minutes today. Momentum builds from small beginnings.";
+            }
+            
+            const avgHours = avgSeconds / 3600;
+            
+            if (avgHours >= 6) {
+                return "You're averaging 6+ hours daily. You're on track to hit your 30-hour goal with ease!";
+            } else if (avgHours >= 4) {
+                return `At ${avgHours.toFixed(1)}h/day, you'll need ${Math.ceil((weeklyGoalSeconds - totalSeconds) / avgSeconds)} more days to reach 30 hours.`;
+            } else if (totalSeconds >= weeklyGoalSeconds * 0.7) {
+                return "You're over 70% to your goal! The final stretch is easier than the start.";
+            } else {
+                return "Consistency beats intensity. A little each day adds up faster than you think.";
+            }
+        }
+        
+        // Check weekly goal
+        function checkWeeklyGoal() {
+            const weekTotalSeconds = getWeekTotalSeconds();
+            
+            if (weekTotalSeconds >= weeklyGoalSeconds) {
+                showNotification(
+                    '🎉 Goal Achieved!',
+                    'You hit 30 hours this week. Incredible work!',
+                    'info'
+                );
+            }
+        }
+        
+        // Get today's key
+        function getTodayKey() {
+            const today = new Date();
+            return today.toISOString().split('T')[0];
+        }
+        
+        // Show notification
+        function showNotification(title, message, type) {
+            notificationTitle.textContent = title;
+            notificationMessage.textContent = message;
+            
+            notification.className = 'notification show';
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 4000);
+        }
+        
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
 </body>
 </html>
