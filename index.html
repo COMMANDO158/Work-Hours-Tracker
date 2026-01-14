@@ -243,6 +243,12 @@
             transform: translateY(-3px);
         }
         
+        .simple-btn-small {
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            max-width: 100px;
+        }
+        
         .simple-btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
@@ -327,6 +333,13 @@
             transition: all 0.3s ease;
             border: 2px solid var(--border);
             color: var(--gray);
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .day-dot:hover {
+            border-color: var(--primary);
+            transform: scale(1.05);
         }
         
         .day-dot.active {
@@ -341,6 +354,117 @@
             background: linear-gradient(135deg, var(--success) 0%, var(--secondary) 100%);
             border-color: var(--success);
             color: var(--dark);
+        }
+        
+        /* Manual Adjustment Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal {
+            background: linear-gradient(135deg, rgba(26, 26, 26, 0.95) 0%, rgba(18, 18, 18, 0.95) 100%);
+            border-radius: 24px;
+            padding: 30px;
+            max-width: 400px;
+            width: 90%;
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+        
+        .modal-overlay.show .modal {
+            transform: translateY(0);
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 25px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .adjustment-inputs {
+            display: flex;
+            gap: 15px;
+            margin: 25px 0;
+            justify-content: center;
+        }
+        
+        .number-input {
+            width: 100px;
+            background: var(--card-bg);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 15px;
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 700;
+            text-align: center;
+            outline: none;
+        }
+        
+        .number-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+        
+        .input-label {
+            display: block;
+            text-align: center;
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        /* Quick Adjust Buttons */
+        .quick-adjust {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        .quick-btn {
+            padding: 10px 16px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--gray);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .quick-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-2px);
         }
         
         /* Completion Message */
@@ -551,6 +675,15 @@
                 right: 20px;
                 max-width: none;
             }
+            
+            .adjustment-inputs {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .number-input {
+                width: 80%;
+            }
         }
         
         @media (max-width: 400px) {
@@ -596,6 +729,15 @@
                     </button>
                     <button class="simple-btn simple-btn-primary" id="finishBtn" disabled>
                         <i class="fas fa-check"></i> Done
+                    </button>
+                </div>
+                
+                <div class="simple-controls">
+                    <button class="simple-btn simple-btn-secondary simple-btn-small" id="adjustTodayBtn">
+                        <i class="fas fa-edit"></i> Adjust Today
+                    </button>
+                    <button class="simple-btn simple-btn-secondary simple-btn-small" id="adjustWeekBtn">
+                        <i class="fas fa-calendar-edit"></i> Adjust Week
                     </button>
                 </div>
                 
@@ -680,6 +822,12 @@
                 </div>
                 
                 <div style="margin-top: 30px; text-align: center;">
+                    <button class="simple-btn simple-btn-secondary" id="adjustAllDaysBtn">
+                        <i class="fas fa-edit"></i> Adjust All Days
+                    </button>
+                </div>
+                
+                <div style="margin-top: 30px; text-align: center;">
                     <button class="simple-btn simple-btn-secondary" id="backToFocusBtn" style="max-width: 200px;">
                         <i class="fas fa-arrow-left"></i> Back to Focus Mode
                     </button>
@@ -689,8 +837,8 @@
         
         <footer>
             <p>Designed for focus, not perfection • Data saved in your browser</p>
-            <a href="weekly-reflection.html" class="weekly-review-link">
-                <i class="fas fa-chart-simple"></i> Weekly Reflection
+            <a href="focus-time-analytics.html" class="weekly-review-link">
+                <i class="fas fa-chart-line"></i> View Detailed Analytics
             </a>
         </footer>
     </div>
@@ -703,6 +851,28 @@
         <div class="notification-content">
             <h4 id="notificationTitle">Timer Started</h4>
             <p id="notificationMessage">Ready to focus!</p>
+        </div>
+    </div>
+    
+    <!-- Manual Adjustment Modal -->
+    <div class="modal-overlay" id="adjustmentModal">
+        <div class="modal">
+            <h3 class="modal-title" id="modalTitle">
+                <i class="fas fa-clock"></i> Adjust Hours
+            </h3>
+            
+            <div id="modalContent">
+                <!-- Content will be populated dynamically -->
+            </div>
+            
+            <div class="simple-controls" style="margin-top: 30px;">
+                <button class="simple-btn simple-btn-primary" id="saveAdjustmentBtn">
+                    <i class="fas fa-save"></i> Save
+                </button>
+                <button class="simple-btn simple-btn-secondary" id="cancelAdjustmentBtn">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            </div>
         </div>
     </div>
 
@@ -729,10 +899,22 @@
         const reviewProgressText = document.getElementById('reviewProgressText');
         const weeklyInsight = document.getElementById('weeklyInsight');
         const backToFocusBtn = document.getElementById('backToFocusBtn');
+        const adjustAllDaysBtn = document.getElementById('adjustAllDaysBtn');
         
         // Mode elements
         const modeBtns = document.querySelectorAll('.mode-btn');
         const modeContents = document.querySelectorAll('.mode-content');
+        
+        // Adjustment buttons
+        const adjustTodayBtn = document.getElementById('adjustTodayBtn');
+        const adjustWeekBtn = document.getElementById('adjustWeekBtn');
+        
+        // Modal elements
+        const adjustmentModal = document.getElementById('adjustmentModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalContent = document.getElementById('modalContent');
+        const saveAdjustmentBtn = document.getElementById('saveAdjustmentBtn');
+        const cancelAdjustmentBtn = document.getElementById('cancelAdjustmentBtn');
         
         // Notification
         const notification = document.getElementById('notification');
@@ -747,14 +929,16 @@
         let todaySeconds = 0;
         let todaySavedSeconds = 0;
         
-        // Weekly tracking
+        // Weekly tracking - now properly initialized from localStorage
         const weeklyGoalSeconds = 30 * 3600;
         const dailyGoalSeconds = 6 * 3600;
         let weekData = {};
         let currentStreak = 0;
+        let selectedDateForAdjustment = null;
         
         // Days of the week
-        const daysOfWeek = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+        const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        const daysOfWeekShort = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
         
         // Initialize
         function init() {
@@ -780,6 +964,15 @@
             });
             
             backToFocusBtn.addEventListener('click', () => switchMode('focus'));
+            adjustAllDaysBtn.addEventListener('click', () => openAdjustAllDaysModal());
+            
+            // Adjustment buttons
+            adjustTodayBtn.addEventListener('click', () => openAdjustTodayModal());
+            adjustWeekBtn.addEventListener('click', () => openAdjustWeekModal());
+            
+            // Modal buttons
+            saveAdjustmentBtn.addEventListener('click', saveAdjustment);
+            cancelAdjustmentBtn.addEventListener('click', closeModal);
             
             // Initial welcome
             setTimeout(() => {
@@ -803,65 +996,106 @@
             });
         }
         
-        // Check for week reset on Saturday
+        // Check for week reset on Monday (start of week)
         function checkWeekReset() {
-            const lastReset = localStorage.getItem('flowFocusLastReset');
             const today = new Date();
+            const todayKey = getTodayKey();
             const todayDay = today.getDay();
             
-            // If today is Saturday (6) and we haven't reset this week
-            if (todayDay === 6) {
-                const todayKey = getTodayKey();
-                if (lastReset !== todayKey) {
-                    // Show week summary before reset
-                    const weekTotalSeconds = getWeekTotalSeconds();
-                    const weekHours = Math.floor(weekTotalSeconds / 3600);
-                    const weekMinutes = Math.floor((weekTotalSeconds % 3600) / 60);
-                    
-                    if (weekTotalSeconds > 0) {
-                        showNotification(
-                            'Week Complete!',
-                            `Last week you worked ${weekHours}h ${weekMinutes}m. Starting fresh week on Saturday!`,
-                            'info'
-                        );
-                    }
-                    
-                    // Reset week data but keep streak
-                    weekData = {};
-                    todaySavedSeconds = 0;
-                    todaySeconds = 0;
-                    
-                    localStorage.setItem('flowFocusLastReset', todayKey);
-                    saveData();
-                    updateDisplay();
-                    renderWeekOverview();
-                }
+            // Check if we need to reset weekly data (on Monday or if week has changed)
+            const lastResetDate = localStorage.getItem('flowFocusLastResetDate');
+            const lastResetWeek = localStorage.getItem('flowFocusLastResetWeek');
+            
+            if (!lastResetDate || !lastResetWeek) {
+                // First time user, initialize
+                localStorage.setItem('flowFocusLastResetDate', todayKey);
+                localStorage.setItem('flowFocusLastResetWeek', getWeekNumber(today).toString());
+                return;
+            }
+            
+            const currentWeekNumber = getWeekNumber(today);
+            
+            if (parseInt(lastResetWeek) !== currentWeekNumber) {
+                // New week, reset week data
+                showNotification('New Week Started', 'Weekly hours have been reset. Fresh start!', 'info');
+                weekData = {};
+                todaySavedSeconds = 0;
+                todaySeconds = 0;
+                
+                localStorage.setItem('flowFocusLastResetDate', todayKey);
+                localStorage.setItem('flowFocusLastResetWeek', currentWeekNumber.toString());
+                saveData();
+                updateDisplay();
+                renderWeekOverview();
             }
         }
         
-        // Load data
+        // Get week number of the year
+        function getWeekNumber(date) {
+            const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+            const dayNum = d.getUTCDay() || 7;
+            d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+            const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+            return Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
+        }
+        
+        // Load data from localStorage
         function loadData() {
-            const savedWeekData = localStorage.getItem('flowFocusWeekData');
-            const savedTodaySeconds = localStorage.getItem('flowFocusTodaySeconds');
-            const savedStreak = localStorage.getItem('flowFocusStreak');
-            
-            if (savedWeekData) weekData = JSON.parse(savedWeekData);
-            if (savedTodaySeconds) todaySavedSeconds = parseInt(savedTodaySeconds);
-            if (savedStreak) currentStreak = parseInt(savedStreak);
-            
-            const today = getTodayKey();
-            if (!weekData[today]) {
-                weekData[today] = todaySavedSeconds;
-            } else {
-                todaySavedSeconds = weekData[today];
+            try {
+                const savedWeekData = localStorage.getItem('flowFocusWeekData');
+                const savedTodaySeconds = localStorage.getItem('flowFocusTodaySeconds');
+                const savedStreak = localStorage.getItem('flowFocusStreak');
+                
+                if (savedWeekData) {
+                    weekData = JSON.parse(savedWeekData);
+                    console.log('Loaded week data:', weekData);
+                } else {
+                    weekData = {};
+                    console.log('No week data found, initialized empty');
+                }
+                
+                if (savedTodaySeconds) {
+                    todaySavedSeconds = parseInt(savedTodaySeconds);
+                    console.log('Loaded today seconds:', todaySavedSeconds);
+                }
+                
+                if (savedStreak) {
+                    currentStreak = parseInt(savedStreak);
+                    console.log('Loaded streak:', currentStreak);
+                }
+                
+                const today = getTodayKey();
+                if (!weekData[today]) {
+                    weekData[today] = todaySavedSeconds;
+                } else {
+                    todaySavedSeconds = weekData[today];
+                }
+                
+                console.log('Final loaded data:', { weekData, todaySavedSeconds, currentStreak });
+            } catch (error) {
+                console.error('Error loading data:', error);
+                showNotification('Data Error', 'Could not load saved data. Starting fresh.', 'warning');
+                weekData = {};
+                todaySavedSeconds = 0;
+                currentStreak = 0;
             }
         }
         
-        // Save data
+        // Save data to localStorage
         function saveData() {
-            localStorage.setItem('flowFocusWeekData', JSON.stringify(weekData));
-            localStorage.setItem('flowFocusTodaySeconds', todaySavedSeconds.toString());
-            localStorage.setItem('flowFocusStreak', currentStreak.toString());
+            try {
+                const today = getTodayKey();
+                weekData[today] = todaySavedSeconds;
+                
+                localStorage.setItem('flowFocusWeekData', JSON.stringify(weekData));
+                localStorage.setItem('flowFocusTodaySeconds', todaySavedSeconds.toString());
+                localStorage.setItem('flowFocusStreak', currentStreak.toString());
+                
+                console.log('Saved data:', { weekData, todaySavedSeconds, currentStreak });
+            } catch (error) {
+                console.error('Error saving data:', error);
+                showNotification('Save Error', 'Could not save data to browser storage.', 'warning');
+            }
         }
         
         // Start timer
@@ -915,7 +1149,7 @@
             
             // Reset for today
             todaySeconds = 0;
-            todaySavedSeconds = 0;
+            todaySavedSeconds = totalToday;
             pausedTime = 0;
             
             // Update UI
@@ -1011,18 +1245,19 @@
             }
             
             currentStreak = streak;
+            return streak;
         }
         
-        // Get week total
+        // Get week total seconds (from Monday to Sunday)
         function getWeekTotalSeconds() {
             let total = 0;
             const today = new Date();
             
-            // Saturday to Friday week
+            // Get start of week (Monday)
             const startOfWeek = new Date(today);
             const dayOfWeek = today.getDay();
-            const daysToSaturday = (dayOfWeek + 1) % 7;
-            startOfWeek.setDate(today.getDate() - daysToSaturday);
+            const diffToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Monday is day 1
+            startOfWeek.setDate(today.getDate() - diffToMonday);
             
             for (let i = 0; i < 7; i++) {
                 const date = new Date(startOfWeek);
@@ -1037,26 +1272,43 @@
             return total;
         }
         
-        // Render week overview
-        function renderWeekOverview() {
-            weekOverview.innerHTML = '';
+        // Get week dates (Monday to Sunday)
+        function getWeekDates() {
             const today = new Date();
+            const dates = [];
             
+            // Get start of week (Monday)
             const startOfWeek = new Date(today);
             const dayOfWeek = today.getDay();
-            const daysToSaturday = (dayOfWeek + 1) % 7;
-            startOfWeek.setDate(today.getDate() - daysToSaturday);
+            const diffToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+            startOfWeek.setDate(today.getDate() - diffToMonday);
             
             for (let i = 0; i < 7; i++) {
                 const date = new Date(startOfWeek);
                 date.setDate(startOfWeek.getDate() + i);
+                dates.push(date);
+            }
+            
+            return dates;
+        }
+        
+        // Render week overview
+        function renderWeekOverview() {
+            weekOverview.innerHTML = '';
+            const dates = getWeekDates();
+            const todayKey = getTodayKey();
+            
+            dates.forEach((date, index) => {
                 const dateKey = date.toISOString().split('T')[0];
+                const dayName = daysOfWeekShort[date.getDay()];
                 
                 const dot = document.createElement('div');
                 dot.className = 'day-dot';
-                dot.textContent = daysOfWeek[date.getDay()];
+                dot.textContent = dayName;
+                dot.dataset.date = dateKey;
+                dot.dataset.index = index;
                 
-                if (date.toDateString() === today.toDateString()) {
+                if (dateKey === todayKey) {
                     dot.classList.add('active');
                 }
                 
@@ -1064,8 +1316,11 @@
                     dot.classList.add('completed');
                 }
                 
+                // Add click event for manual adjustment
+                dot.addEventListener('click', () => openAdjustDayModal(date, dayName));
+                
                 weekOverview.appendChild(dot);
-            }
+            });
         }
         
         // Update review mode
@@ -1076,10 +1331,10 @@
             reviewWeekTotal.textContent = `${weekHours}h ${weekMinutes}m`;
             
             // Daily average
+            const dates = getWeekDates();
             const today = new Date();
-            const dayOfWeek = (today.getDay() + 6) % 7;
-            const daysIntoWeek = Math.max(1, dayOfWeek + 1);
-            const avgSeconds = weekTotalSeconds / daysIntoWeek;
+            const daysSoFar = dates.filter(d => d <= today).length;
+            const avgSeconds = daysSoFar > 0 ? weekTotalSeconds / daysSoFar : 0;
             const avgHours = Math.floor(avgSeconds / 3600);
             const avgMinutes = Math.floor((avgSeconds % 3600) / 60);
             reviewAvgDaily.textContent = `${avgHours}h ${avgMinutes}m`;
@@ -1090,11 +1345,11 @@
             reviewProgressText.textContent = `${Math.round(progress)}%`;
             
             // Insight
-            weeklyInsight.textContent = generateInsight(weekTotalSeconds, daysIntoWeek, avgSeconds);
+            weeklyInsight.textContent = generateInsight(weekTotalSeconds, daysSoFar, avgSeconds);
         }
         
         // Generate weekly insight
-        function generateInsight(totalSeconds, daysIntoWeek, avgSeconds) {
+        function generateInsight(totalSeconds, daysSoFar, avgSeconds) {
             if (totalSeconds === 0) {
                 return "Start with just 25 minutes today. Momentum builds from small beginnings.";
             }
@@ -1136,11 +1391,333 @@
             notificationTitle.textContent = title;
             notificationMessage.textContent = message;
             
+            // Update icon based on type
+            const icon = notification.querySelector('.notification-icon i');
+            if (type === 'warning') {
+                icon.className = 'fas fa-exclamation-triangle';
+            } else {
+                icon.className = 'fas fa-check';
+            }
+            
             notification.className = 'notification show';
             
             setTimeout(() => {
                 notification.classList.remove('show');
             }, 4000);
+        }
+        
+        // Modal functions
+        function openModal() {
+            adjustmentModal.classList.add('show');
+        }
+        
+        function closeModal() {
+            adjustmentModal.classList.remove('show');
+            selectedDateForAdjustment = null;
+        }
+        
+        // Open adjustment modal for today
+        function openAdjustTodayModal() {
+            const today = new Date();
+            const todayKey = getTodayKey();
+            const dayName = 'Today';
+            const currentSeconds = weekData[todayKey] || 0;
+            
+            modalTitle.innerHTML = `<i class="fas fa-clock"></i> Adjust Today's Hours`;
+            modalContent.innerHTML = `
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <p style="color: var(--gray); margin-bottom: 15px;">Current: ${formatTime(currentSeconds)}</p>
+                    <div class="adjustment-inputs">
+                        <div>
+                            <label class="input-label">Hours</label>
+                            <input type="number" min="0" max="24" value="${Math.floor(currentSeconds / 3600)}" 
+                                   class="number-input" id="adjustHours">
+                        </div>
+                        <div>
+                            <label class="input-label">Minutes</label>
+                            <input type="number" min="0" max="59" value="${Math.floor((currentSeconds % 3600) / 60)}" 
+                                   class="number-input" id="adjustMinutes">
+                        </div>
+                    </div>
+                </div>
+                <div class="quick-adjust">
+                    <button class="quick-btn" data-hours="0" data-minutes="30">+30m</button>
+                    <button class="quick-btn" data-hours="1" data-minutes="0">+1h</button>
+                    <button class="quick-btn" data-hours="2" data-minutes="0">+2h</button>
+                    <button class="quick-btn" data-hours="0" data-minutes="-30">-30m</button>
+                    <button class="quick-btn" data-hours="-1" data-minutes="0">-1h</button>
+                    <button class="quick-btn" data-hours="-2" data-minutes="0">-2h</button>
+                </div>
+            `;
+            
+            selectedDateForAdjustment = todayKey;
+            setupQuickButtons();
+            openModal();
+        }
+        
+        // Open adjustment modal for a specific day
+        function openAdjustDayModal(date, dayName) {
+            const dateKey = date.toISOString().split('T')[0];
+            const currentSeconds = weekData[dateKey] || 0;
+            
+            modalTitle.innerHTML = `<i class="fas fa-calendar-day"></i> Adjust ${dayName}'s Hours`;
+            modalContent.innerHTML = `
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <p style="color: var(--gray); margin-bottom: 15px;">Date: ${date.toLocaleDateString()}</p>
+                    <p style="color: var(--gray); margin-bottom: 15px;">Current: ${formatTime(currentSeconds)}</p>
+                    <div class="adjustment-inputs">
+                        <div>
+                            <label class="input-label">Hours</label>
+                            <input type="number" min="0" max="24" value="${Math.floor(currentSeconds / 3600)}" 
+                                   class="number-input" id="adjustHours">
+                        </div>
+                        <div>
+                            <label class="input-label">Minutes</label>
+                            <input type="number" min="0" max="59" value="${Math.floor((currentSeconds % 3600) / 60)}" 
+                                   class="number-input" id="adjustMinutes">
+                        </div>
+                    </div>
+                </div>
+                <div class="quick-adjust">
+                    <button class="quick-btn" data-hours="0" data-minutes="30">+30m</button>
+                    <button class="quick-btn" data-hours="1" data-minutes="0">+1h</button>
+                    <button class="quick-btn" data-hours="2" data-minutes="0">+2h</button>
+                    <button class="quick-btn" data-hours="0" data-minutes="-30">-30m</button>
+                    <button class="quick-btn" data-hours="-1" data-minutes="0">-1h</button>
+                    <button class="quick-btn" data-hours="-2" data-minutes="0">-2h</button>
+                </div>
+            `;
+            
+            selectedDateForAdjustment = dateKey;
+            setupQuickButtons();
+            openModal();
+        }
+        
+        // Open adjustment modal for the whole week
+        function openAdjustWeekModal() {
+            const dates = getWeekDates();
+            
+            let content = `
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <p style="color: var(--gray); margin-bottom: 20px;">Adjust hours for the entire week</p>
+                    <div style="display: flex; flex-direction: column; gap: 15px;">
+            `;
+            
+            dates.forEach(date => {
+                const dateKey = date.toISOString().split('T')[0];
+                const dayName = daysOfWeek[date.getDay()];
+                const isToday = dateKey === getTodayKey();
+                const currentSeconds = weekData[dateKey] || 0;
+                const currentHours = Math.floor(currentSeconds / 3600);
+                const currentMinutes = Math.floor((currentSeconds % 3600) / 60);
+                
+                content += `
+                    <div style="display: flex; align-items: center; gap: 15px; padding: 10px; background: var(--card-bg); border-radius: 10px;">
+                        <div style="width: 60px; font-weight: bold; color: ${isToday ? 'var(--primary)' : 'var(--gray)'}">
+                            ${dayName}${isToday ? ' (Today)' : ''}
+                        </div>
+                        <div style="flex: 1; display: flex; gap: 10px; align-items: center;">
+                            <input type="number" min="0" max="24" value="${currentHours}" 
+                                   class="number-input" style="width: 80px;" data-date="${dateKey}" data-type="hours">
+                            <span>h</span>
+                            <input type="number" min="0" max="59" value="${currentMinutes}" 
+                                   class="number-input" style="width: 80px;" data-date="${dateKey}" data-type="minutes">
+                            <span>m</span>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            content += `
+                    </div>
+                </div>
+            `;
+            
+            modalTitle.innerHTML = `<i class="fas fa-calendar-week"></i> Adjust Whole Week`;
+            modalContent.innerHTML = content;
+            selectedDateForAdjustment = 'week';
+            openModal();
+        }
+        
+        // Open adjustment modal for all days
+        function openAdjustAllDaysModal() {
+            // Get all dates from the past 30 days
+            const today = new Date();
+            let content = `
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <p style="color: var(--gray); margin-bottom: 20px;">Adjust hours for any day (past 30 days)</p>
+                    <div style="max-height: 300px; overflow-y: auto; padding-right: 10px;">
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+            `;
+            
+            for (let i = 0; i < 30; i++) {
+                const date = new Date(today);
+                date.setDate(today.getDate() - i);
+                const dateKey = date.toISOString().split('T')[0];
+                const dayName = daysOfWeek[date.getDay()];
+                const isToday = i === 0;
+                const currentSeconds = weekData[dateKey] || 0;
+                const currentHours = Math.floor(currentSeconds / 3600);
+                const currentMinutes = Math.floor((currentSeconds % 3600) / 60);
+                
+                content += `
+                    <div style="display: flex; align-items: center; gap: 15px; padding: 10px; background: var(--card-bg); border-radius: 10px;">
+                        <div style="width: 100px; font-weight: bold; color: ${isToday ? 'var(--primary)' : 'var(--gray)'}">
+                            ${date.toLocaleDateString()} (${dayName})
+                        </div>
+                        <div style="flex: 1; display: flex; gap: 10px; align-items: center;">
+                            <input type="number" min="0" max="24" value="${currentHours}" 
+                                   class="number-input" style="width: 70px;" data-date="${dateKey}" data-type="hours">
+                            <span>h</span>
+                            <input type="number" min="0" max="59" value="${currentMinutes}" 
+                                   class="number-input" style="width: 70px;" data-date="${dateKey}" data-type="minutes">
+                            <span>m</span>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            content += `
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            modalTitle.innerHTML = `<i class="fas fa-history"></i> Adjust Past Days`;
+            modalContent.innerHTML = content;
+            selectedDateForAdjustment = 'all';
+            openModal();
+        }
+        
+        // Setup quick adjustment buttons
+        function setupQuickButtons() {
+            const quickButtons = modalContent.querySelectorAll('.quick-btn');
+            quickButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const hours = parseInt(this.dataset.hours) || 0;
+                    const minutes = parseInt(this.dataset.minutes) || 0;
+                    
+                    const hoursInput = document.getElementById('adjustHours');
+                    const minutesInput = document.getElementById('adjustMinutes');
+                    
+                    let currentHours = parseInt(hoursInput.value) || 0;
+                    let currentMinutes = parseInt(minutesInput.value) || 0;
+                    
+                    // Calculate new total minutes
+                    let totalMinutes = currentHours * 60 + currentMinutes;
+                    totalMinutes += hours * 60 + minutes;
+                    
+                    // Ensure values are within bounds
+                    totalMinutes = Math.max(0, totalMinutes);
+                    
+                    // Convert back to hours and minutes
+                    const newHours = Math.floor(totalMinutes / 60);
+                    const newMinutes = totalMinutes % 60;
+                    
+                    hoursInput.value = newHours;
+                    minutesInput.value = newMinutes;
+                });
+            });
+        }
+        
+        // Save adjustment
+        function saveAdjustment() {
+            if (selectedDateForAdjustment === 'week') {
+                // Save all week days
+                const inputs = modalContent.querySelectorAll('.number-input');
+                const updates = {};
+                
+                inputs.forEach(input => {
+                    const dateKey = input.dataset.date;
+                    const type = input.dataset.type;
+                    const value = parseInt(input.value) || 0;
+                    
+                    if (!updates[dateKey]) {
+                        updates[dateKey] = { hours: 0, minutes: 0 };
+                    }
+                    
+                    if (type === 'hours') {
+                        updates[dateKey].hours = value;
+                    } else if (type === 'minutes') {
+                        updates[dateKey].minutes = value;
+                    }
+                });
+                
+                // Apply updates
+                Object.keys(updates).forEach(dateKey => {
+                    const totalSeconds = updates[dateKey].hours * 3600 + updates[dateKey].minutes * 60;
+                    weekData[dateKey] = totalSeconds;
+                });
+                
+                showNotification('Week Updated', 'Weekly hours have been updated.', 'info');
+                
+            } else if (selectedDateForAdjustment === 'all') {
+                // Save all days (past 30 days)
+                const inputs = modalContent.querySelectorAll('.number-input');
+                const updates = {};
+                
+                inputs.forEach(input => {
+                    const dateKey = input.dataset.date;
+                    const type = input.dataset.type;
+                    const value = parseInt(input.value) || 0;
+                    
+                    if (!updates[dateKey]) {
+                        updates[dateKey] = { hours: 0, minutes: 0 };
+                    }
+                    
+                    if (type === 'hours') {
+                        updates[dateKey].hours = value;
+                    } else if (type === 'minutes') {
+                        updates[dateKey].minutes = value;
+                    }
+                });
+                
+                // Apply updates
+                Object.keys(updates).forEach(dateKey => {
+                    const totalSeconds = updates[dateKey].hours * 3600 + updates[dateKey].minutes * 60;
+                    weekData[dateKey] = totalSeconds;
+                });
+                
+                showNotification('All Days Updated', 'All days have been updated.', 'info');
+                
+            } else {
+                // Save single day
+                const hoursInput = document.getElementById('adjustHours');
+                const minutesInput = document.getElementById('adjustMinutes');
+                
+                const hours = parseInt(hoursInput.value) || 0;
+                const minutes = parseInt(minutesInput.value) || 0;
+                const totalSeconds = hours * 3600 + minutes * 60;
+                
+                weekData[selectedDateForAdjustment] = totalSeconds;
+                
+                // If adjusting today, update todaySavedSeconds
+                if (selectedDateForAdjustment === getTodayKey()) {
+                    todaySavedSeconds = totalSeconds;
+                }
+                
+                showNotification('Hours Updated', `Updated ${selectedDateForAdjustment === getTodayKey() ? "today's" : "day's"} hours to ${hours}h ${minutes}m.`, 'info');
+            }
+            
+            // Recalculate streak and save
+            calculateStreak();
+            saveData();
+            updateDisplay();
+            renderWeekOverview();
+            
+            // Update review mode if active
+            if (document.getElementById('review-mode').classList.contains('active')) {
+                updateReviewMode();
+            }
+            
+            closeModal();
+        }
+        
+        // Format time from seconds
+        function formatTime(seconds) {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            return `${hours}h ${minutes}m`;
         }
         
         // Initialize app
