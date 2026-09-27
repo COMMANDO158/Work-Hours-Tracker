@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FlowFocus - ADHD Work Tracker</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0a0a0a">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="FlowFocus">
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
@@ -1293,6 +1302,8 @@
         let isRunning = false;
         let todaySeconds = 0;
         let todaySavedSeconds = 0;
+        let currentTimerDayKey = null;
+        let pausedOnDayKey = null;
         
         // Weekly tracking
         const weeklyGoalSeconds = 30 * 3600;
@@ -1301,8 +1312,15 @@
         let currentStreak = 0;
         let selectedDateForAdjustment = null;
         
-        // Days of the week for Saturday-to-Friday weeks
+        // Days of the week for Saturday-to-Friday weeks (index = position within
+        // that week, NOT Date.getDay() — only use this with arrays already
+        // built by getWeekDates()/renderWeekOverview's own loop index).
         const daysOfWeekShort = ['Sa', 'Su', 'M', 'T', 'W', 'Th', 'F'];
+        // Same short labels, but indexed by the standard Date.getDay() value
+        // (0 = Sunday ... 6 = Saturday). Use this whenever labeling a date
+        // that didn't come from getWeekDates(), e.g. an arbitrary rolling
+        // date range.
+        const daysOfWeekByJsIndex = ['Su', 'M', 'T', 'W', 'Th', 'F', 'Sa'];
         
         // Cloud storage instance
         const cloudStorage = new GitHubGistStorage();
@@ -1495,6 +1513,8 @@
 
         // ==================== DATA MANAGEMENT ====================
         async function loadData() {
+            let loadedFromCloud = false;
+
             try {
                 // First try to load from cloud
                 if (cloudStorage.isConfigured) {
@@ -1502,46 +1522,49 @@
                     if (cloudData.weekData) {
                         weekData = cloudData.weekData;
                         currentStreak = cloudData.streak || 0;
-                        
+
                         // Save locally as backup
                         localStorage.setItem('flowFocusWeekData', JSON.stringify(weekData));
                         localStorage.setItem('flowFocusStreak', currentStreak.toString());
-                        
+
                         console.log('Loaded from cloud:', cloudData);
-                        return;
+                        loadedFromCloud = true;
                     }
                 }
-                
-                // Fallback to localStorage
-                const savedWeekData = localStorage.getItem('flowFocusWeekData');
-                const savedTodaySeconds = localStorage.getItem('flowFocusTodaySeconds');
-                const savedStreak = localStorage.getItem('flowFocusStreak');
-                
-                if (savedWeekData) weekData = JSON.parse(savedWeekData);
-                if (savedTodaySeconds) todaySavedSeconds = parseInt(savedTodaySeconds);
-                if (savedStreak) currentStreak = parseInt(savedStreak);
-                
-                const today = getTodayKey();
-                if (!weekData[today]) {
-                    weekData[today] = todaySavedSeconds;
-                } else {
-                    todaySavedSeconds = weekData[today];
+
+                if (!loadedFromCloud) {
+                    // Fallback to localStorage
+                    const savedWeekData = localStorage.getItem('flowFocusWeekData');
+                    const savedStreak = localStorage.getItem('flowFocusStreak');
+
+                    if (savedWeekData) weekData = JSON.parse(savedWeekData);
+                    if (savedStreak) currentStreak = parseInt(savedStreak);
                 }
-                
+
             } catch (error) {
                 console.error('Error loading data:', error);
                 showNotification('Data Error', 'Could not load saved data', 'warning');
             }
+
+            // Always derive today's saved total from weekData itself — this runs
+            // regardless of which branch above ran, so cloud-loaded data isn't
+            // left out, and a brand-new day never inherits a stale leftover value.
+            const today = getTodayKey();
+            todaySavedSeconds = weekData[today] || 0;
+            weekData[today] = todaySavedSeconds;
         }
 
         async function saveData() {
             try {
                 const today = getTodayKey();
-                weekData[today] = todaySavedSeconds;
-                
+                // Persist the live total (already-saved seconds + the current
+                // running/paused session), not just the last finished session —
+                // otherwise autosave and pause silently fail to record whatever
+                // is currently on the clock, and it's lost on refresh/crash.
+                weekData[today] = todaySavedSeconds + todaySeconds;
+
                 // Save to localStorage
                 localStorage.setItem('flowFocusWeekData', JSON.stringify(weekData));
-                localStorage.setItem('flowFocusTodaySeconds', todaySavedSeconds.toString());
                 localStorage.setItem('flowFocusStreak', currentStreak.toString());
                 
                 // Save to cloud if configured
@@ -1569,8 +1592,25 @@
         function startTimer() {
             if (isRunning) return;
             
+            const todayKey = getTodayKey();
+            
+            // If the timer was paused before midnight and is only being
+            // resumed after it, the paused time belongs to that earlier day —
+            // bank it there instead of folding it into today's fresh session.
+            if (pausedTime > 0 && pausedOnDayKey && pausedOnDayKey !== todayKey) {
+                weekData[pausedOnDayKey] = todaySavedSeconds + todaySeconds;
+                todaySavedSeconds = 0;
+                todaySeconds = 0;
+                pausedTime = 0;
+                calculateStreak();
+                saveData();
+                renderWeekOverview();
+            }
+            pausedOnDayKey = null;
+            
             isRunning = true;
             startTime = new Date().getTime() - pausedTime;
+            currentTimerDayKey = todayKey;
             
             startBtn.disabled = true;
             pauseBtn.disabled = false;
@@ -1591,6 +1631,7 @@
             clearInterval(timerInterval);
             pausedTime = new Date().getTime() - startTime;
             todaySeconds = Math.floor(pausedTime / 1000);
+            pausedOnDayKey = currentTimerDayKey;
             
             startBtn.disabled = false;
             pauseBtn.disabled = true;
@@ -1642,6 +1683,12 @@
 
         function updateTimer() {
             if (isRunning) {
+                const nowKey = getTodayKey();
+                if (currentTimerDayKey && nowKey !== currentTimerDayKey) {
+                    handleMidnightRollover(nowKey);
+                    return;
+                }
+                
                 const currentTime = new Date().getTime();
                 todaySeconds = Math.floor((currentTime - startTime) / 1000);
             }
@@ -1654,6 +1701,26 @@
                 `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
             
             updateDisplay();
+        }
+
+        // Closes out the previous day's total and starts a fresh session for
+        // the new day, without interrupting the running timer.
+        function handleMidnightRollover(newDayKey) {
+            weekData[currentTimerDayKey] = todaySavedSeconds + todaySeconds;
+            
+            currentTimerDayKey = newDayKey;
+            todaySavedSeconds = 0;
+            todaySeconds = 0;
+            startTime = new Date().getTime();
+            pausedTime = 0;
+            weekData[newDayKey] = 0;
+            
+            calculateStreak();
+            saveData();
+            updateDisplay();
+            renderWeekOverview();
+            
+            showNotification('New Day', "Passed midnight — today's timer has reset for the new day.", 'info');
         }
 
         // ==================== DISPLAY FUNCTIONS ====================
@@ -1680,7 +1747,7 @@
             remainingHours.textContent = `${remHours}h`;
             
             // Today's progress
-            const todayProgress = Math.min((totalTodaySeconds / dailyGoalSeconds) * 100, 100);
+            const todayProgress = Math.max(0, Math.min((totalTodaySeconds / dailyGoalSeconds) * 100, 100));
             todayProgressBar.style.width = `${todayProgress}%`;
             todayProgressText.textContent = `${Math.round(todayProgress)}%`;
             
@@ -1700,7 +1767,7 @@
             for (let i = 0; i < 30; i++) {
                 const date = new Date(today);
                 date.setDate(today.getDate() - i);
-                const dateKey = date.toISOString().split('T')[0];
+                const dateKey = getDateKey(date);
                 
                 if (weekData[dateKey] && weekData[dateKey] >= 1800) { // At least 30 minutes
                     streak++;
@@ -1747,7 +1814,7 @@
             const dates = getWeekDates();
             
             dates.forEach(date => {
-                const dateKey = date.toISOString().split('T')[0];
+                const dateKey = getDateKey(date);
                 if (weekData[dateKey]) {
                     total += weekData[dateKey];
                 }
@@ -1762,7 +1829,7 @@
             const todayKey = getTodayKey();
             
             dates.forEach((date, index) => {
-                const dateKey = date.toISOString().split('T')[0];
+                const dateKey = getDateKey(date);
                 const dayName = daysOfWeekShort[index];
                 
                 const dot = document.createElement('div');
@@ -1942,7 +2009,7 @@
         }
 
         function openAdjustDayModal(date, dayName) {
-            const dateKey = date.toISOString().split('T')[0];
+            const dateKey = getDateKey(date);
             const currentSeconds = weekData[dateKey] || 0;
             
             modalTitle.innerHTML = `<i class="fas fa-calendar-day"></i> Adjust ${dayName}'s Hours`;
@@ -1987,9 +2054,9 @@
                     <div style="display: flex; flex-direction: column; gap: 15px;">
             `;
             
-            dates.forEach(date => {
-                const dateKey = date.toISOString().split('T')[0];
-                const dayName = daysOfWeekShort[date.getDay()];
+            dates.forEach((date, index) => {
+                const dateKey = getDateKey(date);
+                const dayName = daysOfWeekShort[index];
                 const isToday = dateKey === getTodayKey();
                 const currentSeconds = weekData[dateKey] || 0;
                 const currentHours = Math.floor(currentSeconds / 3600);
@@ -2036,8 +2103,8 @@
             for (let i = 0; i < 30; i++) {
                 const date = new Date(today);
                 date.setDate(today.getDate() - i);
-                const dateKey = date.toISOString().split('T')[0];
-                const dayName = daysOfWeekShort[date.getDay()];
+                const dateKey = getDateKey(date);
+                const dayName = daysOfWeekByJsIndex[date.getDay()];
                 const isToday = i === 0;
                 const currentSeconds = weekData[dateKey] || 0;
                 const currentHours = Math.floor(currentSeconds / 3600);
@@ -2089,8 +2156,9 @@
                     let totalMinutes = currentHours * 60 + currentMinutes;
                     totalMinutes += hours * 60 + minutes;
                     
-                    // Ensure values are within bounds
-                    totalMinutes = Math.max(0, totalMinutes);
+                    // Ensure values are within bounds (a day can't be negative
+                    // or exceed 24 hours)
+                    totalMinutes = Math.max(0, Math.min(24 * 60, totalMinutes));
                     
                     // Convert back to hours and minutes
                     const newHours = Math.floor(totalMinutes / 60);
@@ -2100,6 +2168,14 @@
                     minutesInput.value = newMinutes;
                 });
             });
+        }
+
+        // The number inputs' min/max attributes are advisory only — a user can
+        // still type -5 or 99 directly, which would otherwise corrupt totals,
+        // streaks, and progress bars. Clamp to a sane single-day range.
+        function hoursMinutesToClampedSeconds(hours, minutes) {
+            const totalSeconds = (hours || 0) * 3600 + (minutes || 0) * 60;
+            return Math.max(0, Math.min(24 * 3600, totalSeconds));
         }
 
         async function saveAdjustment() {
@@ -2126,7 +2202,7 @@
                 
                 // Apply updates
                 Object.keys(updates).forEach(dateKey => {
-                    const totalSeconds = updates[dateKey].hours * 3600 + updates[dateKey].minutes * 60;
+                    const totalSeconds = hoursMinutesToClampedSeconds(updates[dateKey].hours, updates[dateKey].minutes);
                     weekData[dateKey] = totalSeconds;
                 });
                 
@@ -2155,7 +2231,7 @@
                 
                 // Apply updates
                 Object.keys(updates).forEach(dateKey => {
-                    const totalSeconds = updates[dateKey].hours * 3600 + updates[dateKey].minutes * 60;
+                    const totalSeconds = hoursMinutesToClampedSeconds(updates[dateKey].hours, updates[dateKey].minutes);
                     weekData[dateKey] = totalSeconds;
                 });
                 
@@ -2168,7 +2244,7 @@
                 
                 const hours = parseInt(hoursInput.value) || 0;
                 const minutes = parseInt(minutesInput.value) || 0;
-                const totalSeconds = hours * 3600 + minutes * 60;
+                const totalSeconds = hoursMinutesToClampedSeconds(hours, minutes);
                 
                 weekData[selectedDateForAdjustment] = totalSeconds;
                 
@@ -2195,9 +2271,19 @@
         }
 
         // ==================== UTILITY FUNCTIONS ====================
+        // Builds a YYYY-MM-DD key from the date's LOCAL calendar day.
+        // (toISOString() converts to UTC first, which shifts the date for
+        // any user not in UTC — e.g. work logged at 12:30am local time can
+        // land on the wrong day. Always use this instead of toISOString().)
+        function getDateKey(date) {
+            const year = date.getFullYear();
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const day = date.getDate().toString().padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
         function getTodayKey() {
-            const today = new Date();
-            return today.toISOString().split('T')[0];
+            return getDateKey(new Date());
         }
 
         function formatTime(seconds) {
@@ -2232,6 +2318,14 @@
 
         // Initialize app
         document.addEventListener('DOMContentLoaded', init);
+
+        // ==================== PWA SERVICE WORKER ====================
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .catch(err => console.warn('Service worker registration failed:', err));
+            });
+        }
     </script>
 </body>
 </html>

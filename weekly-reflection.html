@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FlowFocus - Analytics Dashboard</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0a0a0a">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="FlowFocus">
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -579,6 +588,16 @@
             }
         }
 
+        // Builds a YYYY-MM-DD key from the date's LOCAL calendar day — must
+        // match index.html's getDateKey() exactly, or this page will look up
+        // the wrong entries in weekData for anyone not in UTC.
+        function getDateKey(date) {
+            const year = date.getFullYear();
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const day = date.getDate().toString().padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
         function getWeekDates() {
             const today = new Date();
             const dates = [];
@@ -611,7 +630,7 @@
         function getWeekTotal() {
             let total = 0;
             getWeekDates().forEach(date => {
-                const key = date.toISOString().split('T')[0];
+                const key = getDateKey(date);
                 if (weekData[key]) total += weekData[key];
             });
             return total;
@@ -650,7 +669,7 @@
             let bestDate = null;
             
             getWeekDates().forEach((date, index) => {
-                const key = date.toISOString().split('T')[0];
+                const key = getDateKey(date);
                 if (weekData[key] && weekData[key] > maxSeconds) {
                     maxSeconds = weekData[key];
                     bestDay = daysOfWeek[index];
@@ -718,7 +737,7 @@
             const dates = getWeekDates();
             const labels = dates.map((d, i) => daysOfWeek[i]);
             const data = dates.map(date => {
-                const key = date.toISOString().split('T')[0];
+                const key = getDateKey(date);
                 return weekData[key] ? weekData[key] / 3600 : 0;
             });
             
@@ -783,7 +802,7 @@
             const dates = getWeekDates();
             const labels = dates.map((d, i) => daysOfWeek[i]);
             const data = dates.map(date => {
-                const key = date.toISOString().split('T')[0];
+                const key = getDateKey(date);
                 return weekData[key] ? weekData[key] / 3600 : 0;
             });
             
@@ -842,7 +861,7 @@
             for (let i = 29; i >= 0; i--) {
                 const date = new Date(today);
                 date.setDate(today.getDate() - i);
-                const dateKey = date.toISOString().split('T')[0];
+                const dateKey = getDateKey(date);
                 const dayLabel = `${date.getDate()}/${date.getMonth() + 1}`;
                 
                 labels.push(dayLabel);
@@ -929,7 +948,7 @@
             // Recommendation based on consistency
             const workDays = dates.filter((date, i) => {
                 if (i >= daysSoFar) return false;
-                const key = date.toISOString().split('T')[0];
+                const key = getDateKey(date);
                 return weekData[key] && weekData[key] >= dailyGoalSeconds;
             }).length;
             
@@ -1017,6 +1036,14 @@
         });
 
         document.addEventListener('DOMContentLoaded', init);
+
+        // ==================== PWA SERVICE WORKER ====================
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .catch(err => console.warn('Service worker registration failed:', err));
+            });
+        }
     </script>
 </body>
 </html>
