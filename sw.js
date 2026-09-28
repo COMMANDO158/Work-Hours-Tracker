@@ -1,8 +1,15 @@
 // FlowFocus service worker
 // Bump CACHE_VERSION whenever index.html / weekly-reflection.html change
 // so returning users automatically pick up the new version.
-const CACHE_VERSION = 'v1';
+const CACHE_VERSION = 'v2';
 const CACHE_NAME = `flowfocus-${CACHE_VERSION}`;
+
+const STATIC_CDN_HOSTS = [
+  'cdnjs.cloudflare.com',
+  'fonts.googleapis.com',
+  'fonts.gstatic.com',
+  'cdn.jsdelivr.net'
+];
 
 const APP_SHELL = [
   './',
@@ -73,8 +80,13 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Cross-origin assets (fonts, Font Awesome CDN): try the network, fall
-  // back to cache if we've seen it before, otherwise let it fail quietly —
+  // Only ever cache known static-asset CDNs. Everything else cross-origin —
+  // above all api.github.com (cloud sync) — must go straight to the network:
+  // caching it would store private data and could serve stale sync responses.
+  if (!STATIC_CDN_HOSTS.includes(url.hostname)) return;
+
+  // Cross-origin static assets (fonts, Font Awesome, Chart.js): try the network,
+  // fall back to cache if we've seen it before, otherwise let it fail quietly —
   // the app's core functionality never depends on these loading.
   event.respondWith(
     fetch(request)

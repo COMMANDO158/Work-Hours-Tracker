@@ -944,6 +944,7 @@
                         <li>Give it a name like "FlowFocus Sync"</li>
                         <li>Select <strong>"gist" scope only</strong></li>
                         <li>Click "Generate token" and copy it</li>
+                        <li><strong>On your other devices:</strong> paste the <em>same</em> token. They will find and merge with your existing data automatically</li>
                     </ol>
                     <p style="color: var(--warning); margin-top: 10px; font-size: 0.9rem;">
                         <i class="fas fa-exclamation-triangle"></i> Keep this token secret! It gives access to your gists.
@@ -994,7 +995,7 @@
                 
                 <div class="simple-controls">
                     <button id="forceSyncBtn" class="simple-btn simple-btn-primary">
-                        <i class="fas fa-sync"></i> Force Sync Now
+                        <i class="fas fa-sync"></i> Sync Now
                     </button>
                     <button id="disconnectCloudBtn" class="simple-btn simple-btn-secondary">
                         <i class="fas fa-unlink"></i> Disconnect
@@ -1023,6 +1024,21 @@
                 this.githubToken = localStorage.getItem('flowFocus_githubToken');
                 this.lastSync = localStorage.getItem('flowFocus_lastSync');
                 this.isConfigured = !!(this.githubToken);
+            }
+
+            // All GitHub calls go through here:
+            //  - cache: 'no-store' — GitHub's API sends max-age=60 on authenticated
+            //    requests, so without this a second device can be served a stale
+            //    copy of the gist for up to a minute after the first device saved.
+            //  - a timeout, so a hung connection can't block syncing forever.
+            async _fetch(url, options = {}, timeoutMs = 15000) {
+                const controller = new AbortController();
+                const timer = setTimeout(() => controller.abort(), timeoutMs);
+                try {
+                    return await fetch(url, { cache: 'no-store', ...options, signal: controller.signal });
+                } finally {
+                    clearTimeout(timer);
+                }
             }
 
             async configure(token) {
@@ -1061,7 +1077,7 @@
 
             async testToken() {
                 try {
-                    const response = await fetch('https://api.github.com/user', {
+                    const response = await this._fetch('https://api.github.com/user', {
                         headers: {
                             'Authorization': `token ${this.githubToken}`
                         }
@@ -1074,7 +1090,7 @@
 
             async findExistingGist() {
                 try {
-                    const response = await fetch('https://api.github.com/gists', {
+                    const response = await this._fetch('https://api.github.com/gists?per_page=100', {
                         headers: {
                             'Authorization': `token ${this.githubToken}`
                         }
@@ -1083,11 +1099,8 @@
                     if (!response.ok) return null;
                     
                     const gists = await response.json();
-                    // Look for our gist by filename or description
-                    return gists.find(g => 
-                        g.description && g.description.includes('FlowFocus') ||
-                        g.files && g.files['flowfocus.json']
-                    );
+                    // Look for our gist by its data file (most recently updated first)
+                    return gists.find(g => g.files && g.files['flowfocus.json']);
                 } catch (error) {
                     return null;
                 }
@@ -1101,7 +1114,7 @@
                     version: '1.0'
                 };
 
-                const response = await fetch('https://api.github.com/gists', {
+                const response = await this._fetch('https://api.github.com/gists', {
                     method: 'POST',
                     headers: {
                         'Authorization': `token ${this.githubToken}`,
@@ -1128,7 +1141,7 @@
                 return gist;
             }
 
-            async save(data) {
+            async save(data, options = {}) {
                 if (!this.isConfigured) {
                     return { success: false, message: 'Not configured' };
                 }
@@ -1136,14 +1149,16 @@
                 try {
                     const cloudData = {
                         weekData: data.weekData || {},
+                        meta: data.meta || {},   // per-day last-modified times, used to merge devices
                         streak: data.streak || 0,
                         lastSync: new Date().toISOString(),
-                        version: '1.0',
+                        version: '2.0',
                         device: navigator.userAgent.substring(0, 100)
                     };
 
-                    const response = await fetch(`https://api.github.com/gists/${this.gistId}`, {
+                    const response = await this._fetch(`https://api.github.com/gists/${this.gistId}`, {
                         method: 'PATCH',
+                        keepalive: !!options.keepalive,
                         headers: {
                             'Authorization': `token ${this.githubToken}`,
                             'Content-Type': 'application/json'
@@ -1170,13 +1185,16 @@
                 }
             }
 
+            // Returns the stored data object, or null if it could not be read.
+            // (null must never be treated as "empty" — that is how a dropped
+            // connection used to wipe local data.)
             async load() {
                 if (!this.isConfigured || !this.gistId) {
-                    return { weekData: {}, streak: 0 };
+                    return null;
                 }
 
                 try {
-                    const response = await fetch(`https://api.github.com/gists/${this.gistId}`, {
+                    const response = await this._fetch(`https://api.github.com/gists/${this.gistId}`, {
                         headers: {
                             'Authorization': `token ${this.githubToken}`
                         }
@@ -1187,14 +1205,19 @@
                     }
 
                     const gist = await response.json();
-                    const content = gist.files['flowfocus.json'].content;
-                    const data = JSON.parse(content);
+                    const file = gist.files && gist.files['flowfocus.json'];
+                    if (!file || file.truncated || typeof file.content !== 'string') {
+                        throw new Error('Cloud data file missing or unreadable');
+                    }
+                    const data = JSON.parse(file.content);
+                    if (!data || typeof data.weekData !== 'object' || data.weekData === null) {
+                        throw new Error('Cloud data has an unexpected format');
+                    }
                     
-                    this.updateLastSync();
                     return data;
                 } catch (error) {
                     console.error('Cloud load failed:', error);
-                    return { weekData: {}, streak: 0 };
+                    return null;
                 }
             }
 
@@ -1375,6 +1398,22 @@
                 }
             }, 30000);
             
+            // Multi-device sync: pull/merge on startup, when returning to the app,
+            // when the connection comes back, and every couple of minutes while open.
+            scheduleCloudSync({ force: true });
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    // leaving the app: push our latest state
+                    scheduleCloudSync({ force: true, keepalive: true });
+                } else {
+                    scheduleCloudSync({ minInterval: 15000 });
+                }
+            });
+            window.addEventListener('online', () => scheduleCloudSync({ force: true }));
+            setInterval(() => {
+                if (!document.hidden) scheduleCloudSync({ minInterval: 120000 });
+            }, 60000);
+            
             // Initial welcome
             setTimeout(() => {
                 showNotification('Welcome to FlowFocus', 'Start with 25 minutes. Just begin.', 'info');
@@ -1385,7 +1424,23 @@
         function updateCloudStatus() {
             const status = cloudStorage.getStatus();
             
-            if (status.isConfigured) {
+            if (status.isConfigured && cloudSyncState === 'error') {
+                cloudStatus.classList.remove('synced');
+                cloudStatus.classList.add('error');
+                cloudStatusText.textContent = 'Sync Issue';
+                storageStatus.textContent = 'Saved on this device. Will retry sync';
+                lastSyncTime.textContent = cloudStorage.getLastSyncText();
+                gistIdDisplay.textContent = status.gistId ? status.gistId.substring(0, 8) + '...' : 'Not configured';
+                
+                cloudStatusInfo.innerHTML = `
+                    <div style="color: var(--warning); margin-bottom: 15px;">
+                        <i class="fas fa-exclamation-triangle"></i> Last sync failed
+                    </div>
+                    <p style="color: var(--gray); font-size: 0.9rem;">
+                        Your data is safe on this device. It will sync automatically when GitHub is reachable again.
+                    </p>
+                `;
+            } else if (status.isConfigured) {
                 cloudStatus.classList.add('synced');
                 cloudStatus.classList.remove('error');
                 cloudStatusText.textContent = 'Cloud Synced';
@@ -1448,14 +1503,13 @@
                 updateCloudStatus();
                 showNotification('Success', 'GitHub sync configured!', 'info');
                 
-                // Save current data to cloud
-                const cloudData = {
-                    weekData: weekData,
-                    streak: currentStreak
-                };
-                const result = await cloudStorage.save(cloudData);
+                // Merge with whatever is already in the cloud (never overwrite it)
+                const result = await syncCloud();
                 if (result.success) {
-                    showNotification('Synced', 'Data uploaded to cloud', 'info');
+                    const pulled = result.pulledDays > 0 ? ` (${result.pulledDays} day${result.pulledDays === 1 ? '' : 's'} pulled from cloud)` : '';
+                    showNotification('Synced', `Merged with cloud data${pulled}`, 'info');
+                } else {
+                    showNotification('Sync Failed', result.message, 'warning');
                 }
             } catch (error) {
                 showError('Invalid token or setup failed. Please check your token.');
@@ -1481,107 +1535,252 @@
         }
 
         async function forceSync() {
-            const cloudData = {
-                weekData: weekData,
-                streak: currentStreak
-            };
-            
             forceSyncBtn.disabled = true;
             forceSyncBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Syncing...';
             
-            const result = await cloudStorage.save(cloudData);
+            const result = await syncCloud();
             
             forceSyncBtn.disabled = false;
-            forceSyncBtn.innerHTML = '<i class="fas fa-sync"></i> Force Sync Now';
+            forceSyncBtn.innerHTML = '<i class="fas fa-sync"></i> Sync Now';
             
             if (result.success) {
-                showNotification('Synced', 'Data uploaded to cloud', 'info');
-                updateCloudStatus();
+                const pulled = result.pulledDays > 0 ? ` (${result.pulledDays} day${result.pulledDays === 1 ? '' : 's'} updated from cloud)` : '';
+                showNotification('Synced', `Up to date${pulled}`, 'info');
             } else {
                 showNotification('Sync Failed', result.message, 'warning');
             }
+            updateCloudStatus();
         }
 
         function disconnectCloud() {
             if (confirm('Disconnect from cloud? Your local data will be kept, but cloud sync will stop.')) {
                 cloudStorage.disconnect();
+                cloudSyncState = 'idle';
                 updateCloudStatus();
                 closeCloudManageModal();
                 showNotification('Disconnected', 'Cloud sync disabled', 'info');
             }
         }
 
-        // ==================== DATA MANAGEMENT ====================
-        async function loadData() {
-            let loadedFromCloud = false;
+        // ==================== DATA MANAGEMENT & MULTI-DEVICE SYNC ====================
+        // How sync works:
+        //  * This device always keeps a full copy in localStorage and works offline.
+        //  * Every day's total has a "last modified" time (weekMeta). To sync, we
+        //    PULL the cloud copy, MERGE it day-by-day (newest edit wins), then PUSH
+        //    only if the merge changed something. Nothing is ever blindly overwritten.
+        //  * A failed/offline fetch is an error, never "the cloud is empty".
+        let weekMeta = {};              // dateKey -> last-modified time (ms since epoch)
+        let lastPersisted = {};         // snapshot used to detect which days changed
+        let cloudSyncPromise = null;
+        let cloudSyncQueued = false;
+        let lastCloudSyncAt = 0;
+        let cloudSyncState = 'idle';    // 'idle' | 'ok' | 'error'
 
+        // A session is "in progress" if the timer is running or paused with
+        // unsaved time on the clock. During one, remote data must not overwrite today.
+        function isSessionInProgress() {
+            return isRunning || todaySeconds > 0;
+        }
+
+        // Stamp every day whose value changed since the last snapshot.
+        function stampChanges() {
+            const now = Date.now();
+            for (const key of Object.keys(weekData)) {
+                const value = weekData[key];
+                if (value === lastPersisted[key]) continue;
+                // A brand-new empty day isn't a real edit. Never let it outrank real hours elsewhere.
+                if (value === 0 && lastPersisted[key] === undefined) continue;
+                weekMeta[key] = now;
+            }
+            lastPersisted = { ...weekData };
+        }
+
+        function persistLocal() {
+            localStorage.setItem('flowFocusWeekData', JSON.stringify(weekData));
+            localStorage.setItem('flowFocusMeta', JSON.stringify(weekMeta));
+            localStorage.setItem('flowFocusStreak', currentStreak.toString());
+        }
+
+        // Merge a cloud copy into local data, one day at a time.
+        // Returns how many days were changed by the merge.
+        function mergeRemoteData(remote, protectedKey) {
+            const remoteWeek = remote.weekData || {};
+            const remoteMeta = remote.meta || {};
+            let changed = 0;
+
+            for (const key of Object.keys(remoteWeek)) {
+                const rv = remoteWeek[key];
+                if (typeof rv !== 'number' || !isFinite(rv) || rv < 0) continue;   // ignore junk
+                const rt = Number(remoteMeta[key]) || 0;
+                const lv = weekData[key];
+                const lt = Number(weekMeta[key]) || 0;
+
+                // This device is mid-session on that day: keep our live value.
+                if (key === protectedKey && lv !== undefined) continue;
+
+                if (lv === undefined) {
+                    weekData[key] = rv;
+                    if (rt) weekMeta[key] = rt;
+                    changed++;
+                    continue;
+                }
+                if (lv === rv) {
+                    if (rt > lt) weekMeta[key] = rt;
+                    continue;
+                }
+
+                // Values differ: newest edit wins. If timestamps are unknown or tied,
+                // keep the larger value so hours are never silently lost.
+                let takeRemote;
+                if (lt && rt && lt !== rt) takeRemote = rt > lt;
+                else if (rt && !lt) takeRemote = true;     // remote was deliberately edited; ours is untouched/legacy
+                else if (lt && !rt) takeRemote = false;
+                else takeRemote = rv > lv;
+
+                if (takeRemote) {
+                    weekData[key] = rv;
+                    if (rt) weekMeta[key] = rt; else delete weekMeta[key];
+                    changed++;
+                }
+            }
+
+            lastPersisted = { ...weekData };   // merge results are not local edits
+            return changed;
+        }
+
+        // Would pushing our merged data tell the cloud anything new?
+        function cloudNeedsUpdate(remote) {
+            const remoteWeek = remote.weekData || {};
+            const remoteMeta = remote.meta || {};
+            for (const key of Object.keys(weekData)) {
+                if (remoteWeek[key] === undefined && weekData[key] === 0) continue;   // empty placeholder day
+                if (remoteWeek[key] !== weekData[key]) return true;
+            }
+            for (const key of Object.keys(weekMeta)) {
+                if ((Number(remoteMeta[key]) || 0) !== weekMeta[key]) return true;
+            }
+            return false;
+        }
+
+        async function runCloudSync(keepalive) {
             try {
-                // First try to load from cloud
-                if (cloudStorage.isConfigured) {
-                    const cloudData = await cloudStorage.load();
-                    if (cloudData.weekData) {
-                        weekData = cloudData.weekData;
-                        currentStreak = cloudData.streak || 0;
+                if (isSessionInProgress()) {
+                    weekData[getTodayKey()] = todaySavedSeconds + todaySeconds;
+                }
+                stampChanges();
 
-                        // Save locally as backup
-                        localStorage.setItem('flowFocusWeekData', JSON.stringify(weekData));
-                        localStorage.setItem('flowFocusStreak', currentStreak.toString());
+                const remote = await cloudStorage.load();
+                if (!remote) {
+                    cloudSyncState = 'error';
+                    updateCloudStatus();
+                    return { success: false, message: "Couldn't reach GitHub. Your data is safe on this device and will sync when you're back online." };
+                }
 
-                        console.log('Loaded from cloud:', cloudData);
-                        loadedFromCloud = true;
+                const inProgress = isSessionInProgress();
+                const today = getTodayKey();
+                const changed = mergeRemoteData(remote, inProgress ? today : null);
+
+                // Adopt whatever the merge decided about today (unless mid-session here).
+                if (!inProgress) {
+                    todaySavedSeconds = weekData[today] || 0;
+                    weekData[today] = todaySavedSeconds;
+                    lastPersisted = { ...weekData };
+                }
+
+                calculateStreak();
+                persistLocal();
+
+                const needsPush = cloudNeedsUpdate(remote);
+                if (needsPush) {
+                    const saved = await cloudStorage.save(
+                        { weekData: weekData, meta: weekMeta, streak: currentStreak },
+                        { keepalive }
+                    );
+                    if (!saved.success) {
+                        cloudSyncState = 'error';
+                        updateCloudStatus();
+                        return { success: false, message: saved.message || 'Upload failed' };
                     }
+                } else {
+                    cloudStorage.updateLastSync();
                 }
 
-                if (!loadedFromCloud) {
-                    // Fallback to localStorage
-                    const savedWeekData = localStorage.getItem('flowFocusWeekData');
-                    const savedStreak = localStorage.getItem('flowFocusStreak');
+                lastCloudSyncAt = Date.now();
+                cloudSyncState = 'ok';
+                updateDisplay();
+                renderWeekOverview();
+                updateCloudStatus();
+                return { success: true, pushed: needsPush, pulledDays: changed, message: 'Synced' };
+            } catch (error) {
+                console.error('Cloud sync error:', error);
+                cloudSyncState = 'error';
+                updateCloudStatus();
+                return { success: false, message: error.message };
+            }
+        }
 
-                    if (savedWeekData) weekData = JSON.parse(savedWeekData);
-                    if (savedStreak) currentStreak = parseInt(savedStreak);
-                }
+        // Pull + merge + push. Runs one at a time; a request that arrives mid-sync
+        // triggers exactly one follow-up run so nothing is missed.
+        function syncCloud({ keepalive = false } = {}) {
+            if (!cloudStorage.isConfigured) {
+                return Promise.resolve({ success: false, message: 'Not configured' });
+            }
+            if (cloudSyncPromise) {
+                cloudSyncQueued = true;
+                return cloudSyncPromise;
+            }
+            cloudSyncPromise = (async () => {
+                let result;
+                do {
+                    cloudSyncQueued = false;
+                    result = await runCloudSync(keepalive);
+                } while (cloudSyncQueued && result.success);
+                return result;
+            })().finally(() => { cloudSyncPromise = null; });
+            return cloudSyncPromise;
+        }
 
+        // Fire-and-forget sync, throttled so autosave doesn't hammer the GitHub API.
+        function scheduleCloudSync({ force = false, minInterval = 60000, keepalive = false } = {}) {
+            if (!cloudStorage.isConfigured) return;
+            if (!force && Date.now() - lastCloudSyncAt < minInterval) return;
+            syncCloud({ keepalive });
+        }
+
+        // Local data only — the cloud merge happens separately (and never blocks startup).
+        async function loadData() {
+            try {
+                const savedWeekData = localStorage.getItem('flowFocusWeekData');
+                const savedMeta = localStorage.getItem('flowFocusMeta');
+                const savedStreak = localStorage.getItem('flowFocusStreak');
+
+                if (savedWeekData) weekData = JSON.parse(savedWeekData);
+                if (savedMeta) weekMeta = JSON.parse(savedMeta);
+                if (savedStreak) currentStreak = parseInt(savedStreak) || 0;
             } catch (error) {
                 console.error('Error loading data:', error);
                 showNotification('Data Error', 'Could not load saved data', 'warning');
             }
 
-            // Always derive today's saved total from weekData itself — this runs
-            // regardless of which branch above ran, so cloud-loaded data isn't
-            // left out, and a brand-new day never inherits a stale leftover value.
+            lastPersisted = { ...weekData };
+
+            // Today's saved total always comes from weekData itself, so a brand-new
+            // day starts at 0 and never inherits a stale value.
             const today = getTodayKey();
             todaySavedSeconds = weekData[today] || 0;
             weekData[today] = todaySavedSeconds;
+            lastPersisted[today] = todaySavedSeconds;
         }
 
-        async function saveData() {
+        async function saveData({ forceCloud = false } = {}) {
             try {
                 const today = getTodayKey();
-                // Persist the live total (already-saved seconds + the current
-                // running/paused session), not just the last finished session —
-                // otherwise autosave and pause silently fail to record whatever
-                // is currently on the clock, and it's lost on refresh/crash.
+                // Persist the live total (finished sessions + whatever is on the clock now).
                 weekData[today] = todaySavedSeconds + todaySeconds;
 
-                // Save to localStorage
-                localStorage.setItem('flowFocusWeekData', JSON.stringify(weekData));
-                localStorage.setItem('flowFocusStreak', currentStreak.toString());
-                
-                // Save to cloud if configured
-                if (cloudStorage.isConfigured) {
-                    const cloudData = {
-                        weekData: weekData,
-                        streak: currentStreak
-                    };
-                    
-                    // Don't await - save in background
-                    cloudStorage.save(cloudData).then(result => {
-                        if (!result.success) {
-                            console.warn('Cloud save failed:', result.message);
-                        }
-                    });
-                }
-                
+                stampChanges();
+                persistLocal();
+                scheduleCloudSync({ force: forceCloud });
             } catch (error) {
                 console.error('Error saving data:', error);
                 showNotification('Save Error', 'Could not save data', 'warning');
@@ -1637,7 +1836,7 @@
             pauseBtn.disabled = true;
             timerDisplay.classList.remove('running');
             
-            saveData(); // Auto-save when paused
+            saveData({ forceCloud: true }); // Save + sync when paused
             showNotification('Paused', 'Take a breath. Resume when ready.', 'info');
         }
 
@@ -1652,7 +1851,7 @@
             calculateStreak();
             
             // Save locally and to cloud
-            await saveData();
+            await saveData({ forceCloud: true });
             
             // Reset for today
             todaySeconds = 0;
@@ -1716,7 +1915,7 @@
             weekData[newDayKey] = 0;
             
             calculateStreak();
-            saveData();
+            saveData({ forceCloud: true });
             updateDisplay();
             renderWeekOverview();
             
@@ -2258,7 +2457,7 @@
             
             // Recalculate streak and save
             calculateStreak();
-            await saveData();
+            await saveData({ forceCloud: true });
             updateDisplay();
             renderWeekOverview();
             

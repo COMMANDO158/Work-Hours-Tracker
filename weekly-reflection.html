@@ -494,30 +494,46 @@
                 this.isConfigured = !!(this.githubToken);
             }
 
+            // Returns the stored data object, or null if it could not be read
+            // (null must never be treated as "empty").
             async load() {
                 if (!this.isConfigured || !this.gistId) {
-                    return { weekData: {}, streak: 0 };
+                    return null;
                 }
 
                 try {
-                    const response = await fetch(`https://api.github.com/gists/${this.gistId}`, {
-                        headers: {
-                            'Authorization': `token ${this.githubToken}`
-                        }
-                    });
+                    const controller = new AbortController();
+                    const timer = setTimeout(() => controller.abort(), 15000);
+                    let response;
+                    try {
+                        response = await fetch(`https://api.github.com/gists/${this.gistId}`, {
+                            cache: 'no-store',
+                            signal: controller.signal,
+                            headers: {
+                                'Authorization': `token ${this.githubToken}`
+                            }
+                        });
+                    } finally {
+                        clearTimeout(timer);
+                    }
 
                     if (!response.ok) {
                         throw new Error('Failed to load from cloud');
                     }
 
                     const gist = await response.json();
-                    const content = gist.files['flowfocus.json'].content;
-                    const data = JSON.parse(content);
-                    
+                    const file = gist.files && gist.files['flowfocus.json'];
+                    if (!file || file.truncated || typeof file.content !== 'string') {
+                        throw new Error('Cloud data file missing or unreadable');
+                    }
+                    const data = JSON.parse(file.content);
+                    if (!data || typeof data.weekData !== 'object' || data.weekData === null) {
+                        throw new Error('Cloud data has an unexpected format');
+                    }
                     return data;
                 } catch (error) {
                     console.error('Cloud load failed:', error);
-                    return { weekData: {}, streak: 0 };
+                    return null;
                 }
             }
 
@@ -547,28 +563,43 @@
         const cloudStatusTextAnalytics = document.getElementById('cloudStatusTextAnalytics');
         const storageStatusAnalytics = document.getElementById('storageStatusAnalytics');
 
+        // Read-only page: start from this device's copy, then fold in the cloud copy
+        // (same per-day "newest edit wins" rule as the tracker page). If the cloud
+        // can't be reached we simply show local data instead of an empty dashboard.
         async function loadData() {
+            let weekMeta = {};
             try {
-                // First try to load from cloud
-                if (cloudStorage.isConfigured) {
-                    const cloudData = await cloudStorage.load();
-                    if (cloudData.weekData) {
-                        weekData = cloudData.weekData;
-                        currentStreak = cloudData.streak || 0;
-                        console.log('Analytics loaded from cloud:', cloudData);
-                        return;
-                    }
-                }
-                
-                // Fallback to localStorage
                 const savedWeekData = localStorage.getItem('flowFocusWeekData');
+                const savedMeta = localStorage.getItem('flowFocusMeta');
                 const savedStreak = localStorage.getItem('flowFocusStreak');
-                
+
                 if (savedWeekData) weekData = JSON.parse(savedWeekData);
-                if (savedStreak) currentStreak = parseInt(savedStreak);
-                
+                if (savedMeta) weekMeta = JSON.parse(savedMeta);
+                if (savedStreak) currentStreak = parseInt(savedStreak) || 0;
             } catch (error) {
                 console.error('Error loading analytics data:', error);
+            }
+
+            if (!cloudStorage.isConfigured) return;
+
+            const remote = await cloudStorage.load();
+            if (!remote) return;
+
+            const remoteMeta = remote.meta || {};
+            for (const key of Object.keys(remote.weekData)) {
+                const rv = remote.weekData[key];
+                if (typeof rv !== 'number' || !isFinite(rv) || rv < 0) continue;
+                const lv = weekData[key];
+                const rt = Number(remoteMeta[key]) || 0;
+                const lt = Number(weekMeta[key]) || 0;
+                if (lv === undefined) { weekData[key] = rv; continue; }
+                if (lv === rv) continue;
+                let takeRemote;
+                if (lt && rt && lt !== rt) takeRemote = rt > lt;
+                else if (rt && !lt) takeRemote = true;
+                else if (lt && !rt) takeRemote = false;
+                else takeRemote = rv > lv;
+                if (takeRemote) weekData[key] = rv;
             }
         }
 
