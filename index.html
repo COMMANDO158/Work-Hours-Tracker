@@ -994,6 +994,9 @@
                 </div>
                 
                 <div class="simple-controls">
+                    <button id="connectGithubBtn" class="simple-btn simple-btn-primary" style="display: none;">
+                        <i class="fab fa-github"></i> Connect to GitHub
+                    </button>
                     <button id="forceSyncBtn" class="simple-btn simple-btn-primary">
                         <i class="fas fa-sync"></i> Sync Now
                     </button>
@@ -1306,6 +1309,7 @@
         
         // Cloud management modal
         const cloudManageModal = document.getElementById('cloudManageModal');
+        const connectGithubBtn = document.getElementById('connectGithubBtn');
         const forceSyncBtn = document.getElementById('forceSyncBtn');
         const disconnectCloudBtn = document.getElementById('disconnectCloudBtn');
         const closeCloudManageBtn = document.getElementById('closeCloudManageBtn');
@@ -1387,6 +1391,10 @@
             cloudStatus.addEventListener('click', showCloudManageModal);
             saveGithubTokenBtn.addEventListener('click', saveGithubToken);
             cancelGithubSetupBtn.addEventListener('click', closeGithubSetup);
+            connectGithubBtn.addEventListener('click', () => {
+                closeCloudManageModal();
+                showGithubSetup();
+            });
             forceSyncBtn.addEventListener('click', forceSync);
             disconnectCloudBtn.addEventListener('click', disconnectCloud);
             closeCloudManageBtn.addEventListener('click', closeCloudManageModal);
@@ -1423,6 +1431,10 @@
         // ==================== CLOUD FUNCTIONS ====================
         function updateCloudStatus() {
             const status = cloudStorage.getStatus();
+            
+            connectGithubBtn.style.display = status.isConfigured ? 'none' : '';
+            forceSyncBtn.style.display = status.isConfigured ? '' : 'none';
+            disconnectCloudBtn.style.display = status.isConfigured ? '' : 'none';
             
             if (status.isConfigured && cloudSyncState === 'error') {
                 cloudStatus.classList.remove('synced');
