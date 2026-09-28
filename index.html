@@ -1568,6 +1568,8 @@
             if (confirm('Disconnect from cloud? Your local data will be kept, but cloud sync will stop.')) {
                 cloudStorage.disconnect();
                 cloudSyncState = 'idle';
+                syncBase = { key: null, value: 0 };
+                localStorage.removeItem('flowFocusSyncBase');
                 updateCloudStatus();
                 closeCloudManageModal();
                 showNotification('Disconnected', 'Cloud sync disabled', 'info');
@@ -1587,6 +1589,14 @@
         let cloudSyncQueued = false;
         let lastCloudSyncAt = 0;
         let cloudSyncState = 'idle';    // 'idle' | 'ok' | 'error'
+        // Today's total as it was the last time this device and the cloud agreed.
+        // Lets us tell "time I added here" apart from "time added on another device".
+        let syncBase = { key: null, value: 0 };
+
+        function setSyncBase(key, value) {
+            syncBase = { key, value };
+            localStorage.setItem('flowFocusSyncBase', JSON.stringify(syncBase));
+        }
 
         // A session is "in progress" if the timer is running or paused with
         // unsaved time on the clock. During one, remote data must not overwrite today.
@@ -1615,7 +1625,7 @@
 
         // Merge a cloud copy into local data, one day at a time.
         // Returns how many days were changed by the merge.
-        function mergeRemoteData(remote, protectedKey) {
+        function mergeRemoteData(remote, skipKey) {
             const remoteWeek = remote.weekData || {};
             const remoteMeta = remote.meta || {};
             let changed = 0;
@@ -1627,8 +1637,8 @@
                 const lv = weekData[key];
                 const lt = Number(weekMeta[key]) || 0;
 
-                // This device is mid-session on that day: keep our live value.
-                if (key === protectedKey && lv !== undefined) continue;
+                // Today is merged additively (see mergeToday), not by timestamp.
+                if (key === skipKey) continue;
 
                 if (lv === undefined) {
                     weekData[key] = rv;
@@ -1660,6 +1670,24 @@
             return changed;
         }
 
+        // Today is a running counter that several devices may add time to, so it is
+        // merged by ADDING each side's new time to the last agreed value:
+        //   merged = lastAgreed + (time added here) + (time added elsewhere)
+        // Nothing is lost when timers overlap; time from both devices counts.
+        // Returns how many seconds arrived from other devices (can be negative).
+        function mergeToday(remoteToday, today) {
+            if (typeof remoteToday !== 'number' || !isFinite(remoteToday) || remoteToday < 0) return 0;
+            const localLive = todaySavedSeconds + todaySeconds;
+            const baseKnown = syncBase.key === today;
+            // No history and identical totals: same data (e.g. uploaded earlier by an older
+            // version of the app), not two separate hours that happen to match.
+            if (!baseKnown && remoteToday === localLive) return 0;
+            const theirDelta = remoteToday - (baseKnown ? syncBase.value : 0);
+            if (theirDelta === 0) return 0;
+            todaySavedSeconds = Math.max(0, todaySavedSeconds + theirDelta);
+            return theirDelta;
+        }
+
         // Would pushing our merged data tell the cloud anything new?
         function cloudNeedsUpdate(remote) {
             const remoteWeek = remote.weekData || {};
@@ -1676,9 +1704,7 @@
 
         async function runCloudSync(keepalive) {
             try {
-                if (isSessionInProgress()) {
-                    weekData[getTodayKey()] = todaySavedSeconds + todaySeconds;
-                }
+                weekData[getTodayKey()] = todaySavedSeconds + todaySeconds;
                 stampChanges();
 
                 const remote = await cloudStorage.load();
@@ -1688,21 +1714,30 @@
                     return { success: false, message: "Couldn't reach GitHub. Your data is safe on this device and will sync when you're back online." };
                 }
 
-                const inProgress = isSessionInProgress();
                 const today = getTodayKey();
-                const changed = mergeRemoteData(remote, inProgress ? today : null);
+                let changed = mergeRemoteData(remote, today);
 
-                // Adopt whatever the merge decided about today (unless mid-session here).
-                if (!inProgress) {
-                    todaySavedSeconds = weekData[today] || 0;
-                    weekData[today] = todaySavedSeconds;
-                    lastPersisted = { ...weekData };
+                // Today: add in whatever other devices logged since we last synced.
+                const arrived = mergeToday(remote.weekData[today], today);
+                const mergedToday = todaySavedSeconds + todaySeconds;
+                if (mergedToday !== weekData[today]) {
+                    weekData[today] = mergedToday;
+                    weekMeta[today] = Date.now();
+                }
+                lastPersisted = { ...weekData };
+                if (arrived !== 0) {
+                    changed++;
+                    if (isSessionInProgress() && arrived > 0) {
+                        const mins = Math.max(1, Math.round(arrived / 60));
+                        showNotification('Synced', `Added ${mins} min logged on your other device`, 'info');
+                    }
                 }
 
                 calculateStreak();
                 persistLocal();
 
                 const needsPush = cloudNeedsUpdate(remote);
+                const agreedToday = weekData[today];   // exactly what the cloud will hold for today
                 if (needsPush) {
                     const saved = await cloudStorage.save(
                         { weekData: weekData, meta: weekMeta, streak: currentStreak },
@@ -1717,6 +1752,7 @@
                     cloudStorage.updateLastSync();
                 }
 
+                setSyncBase(today, agreedToday);
                 lastCloudSyncAt = Date.now();
                 cloudSyncState = 'ok';
                 updateDisplay();
@@ -1769,6 +1805,8 @@
                 if (savedWeekData) weekData = JSON.parse(savedWeekData);
                 if (savedMeta) weekMeta = JSON.parse(savedMeta);
                 if (savedStreak) currentStreak = parseInt(savedStreak) || 0;
+                const savedBase = localStorage.getItem('flowFocusSyncBase');
+                if (savedBase) syncBase = JSON.parse(savedBase);
             } catch (error) {
                 console.error('Error loading data:', error);
                 showNotification('Data Error', 'Could not load saved data', 'warning');
