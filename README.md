@@ -1,13 +1,13 @@
 # FlowFocus
 
-FlowFocus is a simple work hours tracker built for people who want a clear view of their time without a complicated timesheet. Start a timer, take a paid break, and see how your day and week are going.
+FlowFocus is a simple work hours tracker built for people who want a clear view of their time without a complicated timesheet. Start a timer, take a break, and see how your day and week are going.
 
 **Open the app:** https://commando158.github.io/Work-Hours-Tracker/
 
 ## What it does
 
 - Tracks work time against a 6-hour daily goal and a 30-hour weekly goal. Weeks run from Saturday through Friday.
-- Includes a paid break timer. Up to 30 minutes of break time count toward today's total. The work timer pauses during the break, and extra break time is not counted. You can end the break early and use the remaining allowance later that day.
+- Includes a break timer. Up to 30 minutes of break time count toward today's total. The work timer pauses during the break, and extra break time is not counted. You can end the break early and use the remaining allowance later that day.
 - Lets you pause, resume, finish a session, and manually adjust hours for today or past days.
 - Shows a weekly review and a separate analytics dashboard with daily comparisons, a 30-day trend, streaks, and suggestions.
 - Changes its gem-inspired color theme automatically using your device's local day of the week:
