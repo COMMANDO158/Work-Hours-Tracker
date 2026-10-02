@@ -856,7 +856,7 @@
                     <div class="stat-label">Day Streak</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-value" id="remainingHours">30h</div>
+                    <div class="stat-value" id="remainingHours">30h 0m</div>
                     <div class="stat-label">To Goal</div>
                 </div>
             </div>
@@ -2172,8 +2172,10 @@
             
             // Remaining hours
             const remaining = Math.max(0, weeklyGoalSeconds - weekTotalSeconds);
-            const remHours = Math.floor(remaining / 3600);
-            remainingHours.textContent = `${remHours}h`;
+            const remainingMinutes = Math.ceil(remaining / 60);
+            const remHours = Math.floor(remainingMinutes / 60);
+            const remMinutes = remainingMinutes % 60;
+            remainingHours.textContent = `${remHours}h ${remMinutes}m`;
             
             // Today's progress
             const todayProgress = Math.max(0, Math.min((totalTodaySeconds / dailyGoalSeconds) * 100, 100));
