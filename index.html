@@ -2600,6 +2600,15 @@
             return Math.max(0, Math.min(24 * 3600, totalSeconds));
         }
 
+        function setTodayAdjustedTotal(totalSeconds) {
+            todaySavedSeconds = totalSeconds;
+            todaySeconds = 0;
+            pausedTime = 0;
+            pausedOnDayKey = null;
+            if (isRunning) startTime = Date.now();
+            updateTimer();
+        }
+
         async function saveAdjustment() {
             if (selectedDateForAdjustment === 'week') {
                 // Save all week days
@@ -2627,6 +2636,9 @@
                     const totalSeconds = hoursMinutesToClampedSeconds(updates[dateKey].hours, updates[dateKey].minutes);
                     weekData[dateKey] = totalSeconds;
                 });
+                if (Object.prototype.hasOwnProperty.call(updates, getTodayKey())) {
+                    setTodayAdjustedTotal(weekData[getTodayKey()]);
+                }
                 
                 showNotification('Week Updated', 'Weekly hours have been updated.', 'info');
                 
@@ -2656,6 +2668,9 @@
                     const totalSeconds = hoursMinutesToClampedSeconds(updates[dateKey].hours, updates[dateKey].minutes);
                     weekData[dateKey] = totalSeconds;
                 });
+                if (Object.prototype.hasOwnProperty.call(updates, getTodayKey())) {
+                    setTodayAdjustedTotal(weekData[getTodayKey()]);
+                }
                 
                 showNotification('All Days Updated', 'All days have been updated.', 'info');
                 
@@ -2672,7 +2687,7 @@
                 
                 // If adjusting today, update todaySavedSeconds
                 if (selectedDateForAdjustment === getTodayKey()) {
-                    todaySavedSeconds = totalSeconds;
+                    setTodayAdjustedTotal(totalSeconds);
                 }
                 
                 showNotification('Hours Updated', `Updated ${selectedDateForAdjustment === getTodayKey() ? "today's" : "day's"} hours to ${hours}h ${minutes}m.`, 'info');
