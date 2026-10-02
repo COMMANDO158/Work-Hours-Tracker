@@ -1,12 +1,12 @@
 // One local-calendar-day palette shared by the tracker and analytics page.
 const dayThemes = [
-  { name: 'Emerald', primary: '#54cf9a', light: '#91ebc2', dark: '#176d4a', secondary: '#79dcb0' }, // Sunday: balance
-  { name: 'Sapphire', primary: '#72a9f8', light: '#a7cbff', dark: '#2853a0', secondary: '#93bbef' }, // Monday: focus
-  { name: 'Amethyst', primary: '#b794f4', light: '#d2b7ff', dark: '#654099', secondary: '#c5a6ed' }, // Tuesday off: calm
-  { name: 'Diamond', primary: '#aedbe8', light: '#d8f4f7', dark: '#38647a', secondary: '#c0e9ed' }, // Wednesday: clarity
-  { name: 'Ruby', primary: '#ed6577', light: '#ffa0ab', dark: '#8b253a', secondary: '#f38e9c' }, // Thursday: energy
-  { name: 'Tourmaline', primary: '#ed8fb8', light: '#ffc0d9', dark: '#873965', secondary: '#dca6d3' }, // Friday off: gentle
-  { name: 'Topaz', primary: '#edbd64', light: '#ffdda0', dark: '#87591b', secondary: '#f4ce87' } // Saturday: warmth
+  { name: 'Emerald', primary: '#10b981', light: '#a7f3d0', dark: '#065f46', secondary: '#6ee7b7' }, // Sunday: balance
+  { name: 'Sapphire', primary: '#2563eb', light: '#93c5fd', dark: '#1e40af', secondary: '#60a5fa' }, // Monday: focus
+  { name: 'Amethyst', primary: '#9333ea', light: '#d8b4fe', dark: '#6b21a8', secondary: '#c084fc' }, // Tuesday off: calm
+  { name: 'Diamond', primary: '#e0f2fe', light: '#f0f9ff', dark: '#075985', secondary: '#7dd3fc' }, // Wednesday: clarity
+  { name: 'Ruby', primary: '#dc143c', light: '#ff98a6', dark: '#881337', secondary: '#ff5c78' }, // Thursday: energy
+  { name: 'Tourmaline', primary: '#ec4899', light: '#fbcfe8', dark: '#9d174d', secondary: '#f472b6' }, // Friday off: gentle
+  { name: 'Topaz', primary: '#f59e0b', light: '#fde68a', dark: '#78350f', secondary: '#fbbf24' } // Saturday: warmth
 ];
 
 function applyDayTheme() {
@@ -18,6 +18,7 @@ function applyDayTheme() {
   root.setProperty('--primary-dark', theme.dark);
   root.setProperty('--secondary', theme.secondary);
   root.setProperty('--success', theme.light);
+  root.setProperty('--success-glow', `color-mix(in srgb, ${theme.light} 40%, transparent)`);
   root.setProperty('--info', theme.primary);
   root.setProperty('--primary-glow', `color-mix(in srgb, ${theme.primary} 45%, transparent)`);
   root.setProperty('--theme-soft', `color-mix(in srgb, ${theme.primary} 10%, transparent)`);
