@@ -13,6 +13,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
     <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
     <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+    <script src="theme.js" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
@@ -32,6 +33,10 @@
             --card-elevated: #242424;
             --border: #333;
             --border-hover: #444;
+            --theme-soft: rgba(220, 20, 60, 0.1);
+            --theme-border: rgba(220, 20, 60, 0.2);
+            --theme-shadow: rgba(220, 20, 60, 0.18);
+            --theme-tint: #1a0a0f;
         }
         
         * {
@@ -42,7 +47,7 @@
         
         body {
             font-family: 'Inter', sans-serif;
-            background: radial-gradient(ellipse at top, #1a0a0f 0%, #0a0a0a 50%, #000000 100%);
+            background: radial-gradient(ellipse at top, var(--theme-tint) 0%, #0a0a0a 50%, #000000 100%);
             color: var(--light);
             min-height: 100vh;
             padding: 20px;
@@ -57,8 +62,8 @@
             right: 0;
             bottom: 0;
             background: 
-                radial-gradient(circle at 20% 30%, rgba(220, 20, 60, 0.08) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(220, 20, 60, 0.06) 0%, transparent 50%);
+                radial-gradient(circle at 20% 30%, var(--theme-soft) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, var(--theme-soft) 0%, transparent 50%);
             pointer-events: none;
             z-index: 0;
         }
@@ -74,10 +79,10 @@
             text-align: center;
             margin-bottom: 35px;
             padding: 25px;
-            background: linear-gradient(135deg, rgba(220, 20, 60, 0.1) 0%, rgba(26, 26, 26, 0.6) 100%);
+            background: linear-gradient(135deg, var(--theme-soft) 0%, rgba(26, 26, 26, 0.6) 100%);
             border-radius: 20px;
             border: 1px solid var(--border);
-            box-shadow: 0 8px 32px rgba(220, 20, 60, 0.15);
+            box-shadow: 0 8px 32px var(--theme-shadow);
         }
         
         h1 {
@@ -127,7 +132,7 @@
         }
         
         .mode-btn.active {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            background: linear-gradient(135deg, var(--primary-dark), color-mix(in srgb, var(--primary-dark) 75%, #000));
             color: white;
             box-shadow: 0 4px 15px var(--primary-glow);
         }
@@ -178,7 +183,7 @@
         
         .focus-card:hover {
             transform: translateY(-3px);
-            box-shadow: 0 12px 40px rgba(220, 20, 60, 0.2);
+            box-shadow: 0 12px 40px var(--theme-shadow);
             border-color: var(--border-hover);
         }
         
@@ -230,7 +235,7 @@
         }
         
         .simple-btn-primary {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            background: linear-gradient(135deg, var(--primary-dark), color-mix(in srgb, var(--primary-dark) 75%, #000));
             color: white;
             box-shadow: 0 6px 20px var(--primary-glow);
         }
@@ -267,10 +272,10 @@
         .today-focus {
             margin: 25px 0;
             padding: 20px;
-            background: rgba(220, 20, 60, 0.08);
+            background: var(--theme-soft);
             border-radius: 15px;
             border-left: 4px solid var(--primary);
-            border: 1px solid rgba(220, 20, 60, 0.2);
+            border: 1px solid var(--theme-border);
         }
         
         .focus-input {
@@ -321,6 +326,24 @@
             transition: width 0.8s ease;
             box-shadow: 0 0 15px var(--primary-glow);
         }
+
+        .break-active #todayProgressBar,
+        #breakProgress {
+            background: linear-gradient(90deg, #eac879, #fff1ae);
+            box-shadow: 0 0 15px rgba(234, 200, 121, 0.5);
+        }
+
+        .break-panel {
+            margin-bottom: 20px;
+            padding: 16px;
+            border: 1px solid var(--theme-border);
+            border-radius: 14px;
+            background: var(--theme-soft);
+        }
+
+        .break-panel p { color: var(--gray); font-size: 0.9rem; margin-bottom: 12px; }
+        .break-panel .simple-btn { max-width: none; }
+        .break-panel .progress-bar { margin-top: 12px; }
         
         /* Weekly Overview - Simplified */
         .week-overview {
@@ -352,7 +375,7 @@
         }
         
         .day-dot.active {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            background: linear-gradient(135deg, var(--primary-dark), color-mix(in srgb, var(--primary-dark) 75%, #000));
             border-color: var(--primary);
             transform: scale(1.15);
             box-shadow: 0 0 20px var(--primary-glow);
@@ -746,6 +769,7 @@
         <header>
             <h1><i class="fas fa-brain"></i> FlowFocus</h1>
             <p class="subtitle">A calm space to track your 30 weekly hours. No clutter, just progress.</p>
+            <p class="subtitle" data-day-theme></p>
             
             <!-- Cloud Status -->
             <div class="cloud-status" id="cloudStatus" title="Click to manage cloud sync">
@@ -775,6 +799,14 @@
                     <button class="simple-btn simple-btn-primary" id="finishBtn" disabled>
                         <i class="fas fa-check"></i> Done
                     </button>
+                </div>
+
+                <div class="break-panel" id="breakPanel">
+                    <p id="breakStatus" role="status">Paid break: 30 minutes available today. Break time counts toward today's hours.</p>
+                    <div class="simple-controls" style="margin-bottom: 0;">
+                        <button class="simple-btn simple-btn-secondary" id="breakBtn" type="button"><i class="fas fa-mug-hot"></i> Start Break</button>
+                    </div>
+                    <div class="progress-bar" aria-label="Paid break used"><div class="progress-fill" id="breakProgress"></div></div>
                 </div>
                 
                 <div class="simple-controls">
@@ -1260,6 +1292,10 @@
         const startBtn = document.getElementById('startBtn');
         const pauseBtn = document.getElementById('pauseBtn');
         const finishBtn = document.getElementById('finishBtn');
+        const breakBtn = document.getElementById('breakBtn');
+        const breakPanel = document.getElementById('breakPanel');
+        const breakStatus = document.getElementById('breakStatus');
+        const breakProgress = document.getElementById('breakProgress');
         const focusInput = document.getElementById('focusInput');
         const todayProgressBar = document.getElementById('todayProgressBar');
         const todayProgressText = document.getElementById('todayProgressText');
@@ -1331,6 +1367,8 @@
         let todaySavedSeconds = 0;
         let currentTimerDayKey = null;
         let pausedOnDayKey = null;
+        const breakLimitSeconds = 30 * 60;
+        let breakState = { dayKey: null, usedSeconds: 0, activeStartAt: null, baseSeconds: 0 };
         
         // Weekly tracking
         const weeklyGoalSeconds = 30 * 3600;
@@ -1355,6 +1393,8 @@
         // ==================== INITIALIZATION ====================
         async function init() {
             await loadData();
+            loadBreakState();
+            updateBreakTimer();
             updateDisplay();
             renderWeekOverview();
             checkWeekReset();
@@ -1364,6 +1404,7 @@
             startBtn.addEventListener('click', startTimer);
             pauseBtn.addEventListener('click', pauseTimer);
             finishBtn.addEventListener('click', finishDay);
+            breakBtn.addEventListener('click', () => breakState.activeStartAt ? endBreak(true) : startBreak());
             focusInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     e.target.blur();
@@ -1401,10 +1442,15 @@
             
             // Auto-save every 30 seconds if timer is running
             setInterval(() => {
-                if (isRunning) {
+                if (isRunning || breakState.activeStartAt) {
+                    updateBreakTimer();
                     saveData();
                 }
             }, 30000);
+            setInterval(() => {
+                applyDayTheme();
+                if (breakState.activeStartAt) updateBreakTimer();
+            }, 1000);
             
             // Multi-device sync: pull/merge on startup, when returning to the app,
             // when the connection comes back, and every couple of minutes while open.
@@ -1837,8 +1883,132 @@
             }
         }
 
+        // ==================== PAID BREAK ====================
+        function saveBreakState() {
+            localStorage.setItem('flowFocusBreakState', JSON.stringify(breakState));
+        }
+
+        function loadBreakState() {
+            try {
+                const saved = JSON.parse(localStorage.getItem('flowFocusBreakState') || 'null');
+                if (saved && /^\d{4}-\d{2}-\d{2}$/.test(saved.dayKey) &&
+                    Number.isFinite(saved.usedSeconds) && saved.usedSeconds >= 0 && saved.usedSeconds <= breakLimitSeconds) {
+                    breakState = {
+                        dayKey: saved.dayKey,
+                        usedSeconds: saved.usedSeconds,
+                        activeStartAt: Number.isFinite(saved.activeStartAt) ? saved.activeStartAt : null,
+                        baseSeconds: Number.isFinite(saved.baseSeconds) ? saved.baseSeconds : saved.usedSeconds
+                    };
+                }
+            } catch (error) {
+                console.warn('Could not load break state:', error);
+            }
+        }
+
+        function updateBreakDisplay() {
+            const remaining = breakLimitSeconds - breakState.usedSeconds;
+            const active = !!breakState.activeStartAt;
+            startBtn.disabled = active || isRunning;
+            if (active) finishBtn.disabled = false;
+            breakPanel.classList.toggle('break-active', active);
+            document.getElementById('focus-mode').classList.toggle('break-active', active);
+            breakProgress.style.width = `${breakState.usedSeconds / breakLimitSeconds * 100}%`;
+            breakBtn.disabled = !active && (remaining === 0 || (!isRunning && todaySavedSeconds + todaySeconds === 0));
+            breakBtn.innerHTML = active
+                ? '<i class="fas fa-play"></i> End Break & Resume'
+                : '<i class="fas fa-mug-hot"></i> Start Break';
+            const minutes = Math.floor(remaining / 60);
+            const seconds = remaining % 60;
+            breakStatus.textContent = active
+                ? `Paid break: ${minutes}:${seconds.toString().padStart(2, '0')} remaining. Work is paused.`
+                : remaining === 0
+                    ? 'Paid break used (30 minutes). Resume work when ready.'
+                    : `Paid break: ${minutes}:${seconds.toString().padStart(2, '0')} available today. Counts toward today's hours.`;
+        }
+
+        function updateBreakTimer() {
+            if (!breakState.activeStartAt) {
+                if (breakState.dayKey !== getTodayKey()) {
+                    breakState = { dayKey: getTodayKey(), usedSeconds: 0, activeStartAt: null, baseSeconds: 0 };
+                    saveBreakState();
+                }
+                updateBreakDisplay();
+                return;
+            }
+
+            const started = new Date(breakState.activeStartAt);
+            const nextMidnight = new Date(started.getFullYear(), started.getMonth(), started.getDate() + 1).getTime();
+            const now = Date.now();
+            const elapsed = Math.max(0, Math.floor((Math.min(now, nextMidnight) - breakState.activeStartAt) / 1000));
+            const earned = Math.min(breakLimitSeconds, breakState.baseSeconds + elapsed);
+            const delta = Math.max(0, earned - breakState.usedSeconds);
+            if (delta) {
+                breakState.usedSeconds = earned;
+                if (breakState.dayKey === getTodayKey()) {
+                    todaySavedSeconds += delta;
+                    weekData[breakState.dayKey] = todaySavedSeconds + todaySeconds;
+                } else {
+                    weekData[breakState.dayKey] = (weekData[breakState.dayKey] || 0) + delta;
+                }
+                stampChanges();
+                saveBreakState();
+                persistLocal();
+                scheduleCloudSync();
+                updateDisplay();
+            }
+            if (earned >= breakLimitSeconds || now >= nextMidnight) {
+                breakState.activeStartAt = null;
+                breakState.baseSeconds = breakState.usedSeconds;
+                saveBreakState();
+                if (now >= nextMidnight) {
+                    breakState = { dayKey: getTodayKey(), usedSeconds: 0, activeStartAt: null, baseSeconds: 0 };
+                    saveBreakState();
+                    todaySavedSeconds = weekData[getTodayKey()] || 0;
+                    updateDisplay();
+                } else {
+                    showNotification('Break Complete', '30 paid minutes added. Resume work when ready.', 'info');
+                }
+                scheduleCloudSync({ force: true });
+            }
+            updateBreakDisplay();
+        }
+
+        function startBreak() {
+            if (breakState.activeStartAt) return;
+            updateBreakTimer();
+            if (breakState.usedSeconds >= breakLimitSeconds || (!isRunning && todaySavedSeconds + todaySeconds === 0)) return;
+            if (isRunning) pauseTimer();
+            // Bank the current work session before break credit is added.
+            todaySavedSeconds += todaySeconds;
+            todaySeconds = 0;
+            pausedTime = 0;
+            pausedOnDayKey = null;
+            updateTimer();
+            breakState.dayKey = getTodayKey();
+            breakState.baseSeconds = breakState.usedSeconds;
+            breakState.activeStartAt = Date.now();
+            saveBreakState();
+            saveData({ forceCloud: true });
+            startBtn.disabled = true;
+            finishBtn.disabled = false;
+            updateBreakDisplay();
+            showNotification('Paid Break', 'Up to 30 minutes count toward today. Work is paused.', 'info');
+        }
+
+        function endBreak(resumeWork = false) {
+            updateBreakTimer();
+            breakState.activeStartAt = null;
+            breakState.baseSeconds = breakState.usedSeconds;
+            saveBreakState();
+            updateBreakDisplay();
+            saveData({ forceCloud: true });
+            startBtn.disabled = false;
+            if (resumeWork) startTimer();
+        }
+
         // ==================== TIMER FUNCTIONS ====================
         function startTimer() {
+            if (breakState.activeStartAt) endBreak();
             if (isRunning) return;
             
             const todayKey = getTodayKey();
@@ -1891,6 +2061,7 @@
         }
 
         async function finishDay() {
+            if (breakState.activeStartAt) endBreak();
             if (isRunning) pauseTimer();
             
             const today = getTodayKey();
@@ -1912,6 +2083,7 @@
             startBtn.disabled = false;
             pauseBtn.disabled = true;
             finishBtn.disabled = true;
+            updateBreakDisplay();
             
             updateDisplay();
             renderWeekOverview();
@@ -1968,6 +2140,7 @@
             saveData({ forceCloud: true });
             updateDisplay();
             renderWeekOverview();
+            updateBreakTimer();
             
             showNotification('New Day', "Passed midnight — today's timer has reset for the new day.", 'info');
         }

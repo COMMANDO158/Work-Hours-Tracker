@@ -13,6 +13,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
     <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
     <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+    <script src="theme.js" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -36,6 +37,9 @@
             --light-gray: #2a2a2a;
             --border: #333;
             --border-hover: #444;
+            --theme-soft: rgba(220, 20, 60, 0.1);
+            --theme-shadow: rgba(220, 20, 60, 0.18);
+            --theme-tint: #1a0a0f;
         }
         
         * {
@@ -46,7 +50,7 @@
         
         body {
             font-family: 'Inter', sans-serif;
-            background: radial-gradient(ellipse at top, #1a0a0f 0%, #0a0a0a 50%, #000000 100%);
+            background: radial-gradient(ellipse at top, var(--theme-tint) 0%, #0a0a0a 50%, #000000 100%);
             color: var(--light);
             line-height: 1.6;
             min-height: 100vh;
@@ -61,8 +65,8 @@
             right: 0;
             bottom: 0;
             background: 
-                radial-gradient(circle at 20% 30%, rgba(220, 20, 60, 0.08) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(220, 20, 60, 0.06) 0%, transparent 50%);
+                radial-gradient(circle at 20% 30%, var(--theme-soft) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, var(--theme-soft) 0%, transparent 50%);
             pointer-events: none;
             z-index: 0;
         }
@@ -78,10 +82,10 @@
             text-align: center;
             margin-bottom: 40px;
             padding: 30px 20px;
-            background: linear-gradient(135deg, rgba(220, 20, 60, 0.1) 0%, rgba(26, 26, 26, 0.6) 100%);
+            background: linear-gradient(135deg, var(--theme-soft) 0%, rgba(26, 26, 26, 0.6) 100%);
             border-radius: 20px;
             border: 1px solid var(--border);
-            box-shadow: 0 8px 32px rgba(220, 20, 60, 0.15);
+            box-shadow: 0 8px 32px var(--theme-shadow);
         }
         
         h1 {
@@ -157,7 +161,7 @@
         }
         
         .card:hover {
-            box-shadow: 0 12px 40px rgba(220, 20, 60, 0.2), 0 0 0 1px var(--border-hover);
+            box-shadow: 0 12px 40px var(--theme-shadow), 0 0 0 1px var(--border-hover);
         }
         
         .card-title {
@@ -321,7 +325,7 @@
         }
         
         .best-day-card {
-            background: linear-gradient(135deg, rgba(220, 20, 60, 0.15) 0%, rgba(157, 11, 40, 0.15) 100%);
+            background: linear-gradient(135deg, var(--theme-soft) 0%, var(--theme-shadow) 100%);
             border: 2px solid var(--primary);
             border-radius: 15px;
             padding: 25px;
@@ -403,6 +407,7 @@
         <header>
             <h1><i class="fas fa-chart-line"></i> Analytics Dashboard</h1>
             <p class="subtitle">Deep insights into your work patterns, productivity trends, and performance metrics</p>
+            <p class="subtitle" data-day-theme></p>
         </header>
         
         <!-- Key Metrics -->
@@ -765,6 +770,7 @@
         }
 
         function createWeeklyTrendChart() {
+            const themeColors = getComputedStyle(document.documentElement);
             const dates = getWeekDates();
             const labels = dates.map((d, i) => daysOfWeek[i]);
             const data = dates.map(date => {
@@ -786,12 +792,12 @@
                     datasets: [{
                         label: 'Hours Worked',
                         data: data,
-                        borderColor: '#dc143c',
-                        backgroundColor: 'rgba(220, 20, 60, 0.1)',
+                        borderColor: themeColors.getPropertyValue('--primary').trim(),
+                        backgroundColor: themeColors.getPropertyValue('--theme-soft').trim(),
                         borderWidth: 3,
                         fill: true,
                         tension: 0.4,
-                        pointBackgroundColor: '#dc143c',
+                        pointBackgroundColor: themeColors.getPropertyValue('--primary').trim(),
                         pointBorderColor: '#fff',
                         pointBorderWidth: 2,
                         pointRadius: 6,
@@ -799,7 +805,7 @@
                     }, {
                         label: 'Daily Goal (6h)',
                         data: Array(7).fill(6),
-                        borderColor: '#ff94a8',
+                        borderColor: themeColors.getPropertyValue('--secondary').trim(),
                         borderWidth: 2,
                         borderDash: [10, 5],
                         fill: false,
@@ -830,6 +836,7 @@
         }
 
         function createDailyComparisonChart() {
+            const themeColors = getComputedStyle(document.documentElement);
             const dates = getWeekDates();
             const labels = dates.map((d, i) => daysOfWeek[i]);
             const data = dates.map(date => {
@@ -852,7 +859,9 @@
                         label: 'Hours Worked',
                         data: data,
                         backgroundColor: data.map(hours => 
-                            hours >= 6 ? '#ff94a8' : hours >= 4 ? '#ff6b9d' : '#dc143c'
+                            hours >= 6 ? themeColors.getPropertyValue('--primary-light').trim()
+                                : hours >= 4 ? themeColors.getPropertyValue('--secondary').trim()
+                                : themeColors.getPropertyValue('--primary').trim()
                         ),
                         borderColor: '#1a1a1a',
                         borderWidth: 2,
@@ -884,6 +893,7 @@
         }
 
         function createProductivityChart() {
+            const themeColors = getComputedStyle(document.documentElement);
             // Get data for the past 30 days
             const today = new Date();
             const labels = [];
@@ -913,8 +923,8 @@
                     datasets: [{
                         label: 'Daily Hours (30 days)',
                         data: data,
-                        borderColor: '#dc143c',
-                        backgroundColor: 'rgba(220, 20, 60, 0.1)',
+                        borderColor: themeColors.getPropertyValue('--primary').trim(),
+                        backgroundColor: themeColors.getPropertyValue('--theme-soft').trim(),
                         borderWidth: 2,
                         fill: true,
                         tension: 0.3
@@ -1040,6 +1050,7 @@
         }
 
         async function init() {
+            applyDayTheme();
             await loadData();
             updateCloudStatus();
             updateKeyMetrics();
@@ -1054,6 +1065,7 @@
         // Update data when page gains focus (in case user returns from tracker)
         document.addEventListener('visibilitychange', async function() {
             if (!document.hidden) {
+                applyDayTheme();
                 await loadData();
                 updateCloudStatus();
                 updateKeyMetrics();
@@ -1067,6 +1079,15 @@
         });
 
         document.addEventListener('DOMContentLoaded', init);
+        setInterval(() => {
+            const previous = document.querySelector('[data-day-theme]').textContent;
+            applyDayTheme();
+            if (previous !== document.querySelector('[data-day-theme]').textContent) {
+                createWeeklyTrendChart();
+                createDailyComparisonChart();
+                createProductivityChart();
+            }
+        }, 60000);
 
         // ==================== PWA SERVICE WORKER ====================
         if ('serviceWorker' in navigator) {

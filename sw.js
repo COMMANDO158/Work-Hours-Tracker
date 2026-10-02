@@ -1,7 +1,7 @@
 // FlowFocus service worker
 // Bump CACHE_VERSION whenever index.html / weekly-reflection.html change
 // so returning users automatically pick up the new version.
-const CACHE_VERSION = 'v2';
+const CACHE_VERSION = 'v3';
 const CACHE_NAME = `flowfocus-${CACHE_VERSION}`;
 
 const STATIC_CDN_HOSTS = [
@@ -15,6 +15,7 @@ const APP_SHELL = [
   './',
   './index.html',
   './weekly-reflection.html',
+  './theme.js',
   './manifest.json',
   './icons/icon-192.png',
   './icons/icon-512.png',
