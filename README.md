@@ -43,7 +43,7 @@ The 30-minute break allowance is tracked in local storage **per device**. Work t
 
 - `index.html` — tracker, break timer, local storage, and optional Gist sync.
 - `weekly-reflection.html` — analytics dashboard.
-- `theme.js` — weekday color palettes shared by both pages.
+- `theme.js` and `themes.css` — weekday theme selection and the seven shared color palettes.
 - `sw.js` and `manifest.json` — offline caching and installable app settings.
 
 This is a static website: no build step or server setup is required to run it locally. Serve the repository directory with a local HTTP server (for example, `python3 -m http.server 8000`) and open `http://localhost:8000/`.

@@ -13,6 +13,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
     <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
     <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+    <link rel="stylesheet" href="themes.css">
     <script src="theme.js" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -20,14 +21,20 @@
     <style>
         :root {
             --primary: #dc143c;
-            --primary-light: #ff98a6;
-            --primary-dark: #881337;
+            --primary-light: #ff2e4d;
+            --primary-dark: #9d0b28;
             --primary-glow: rgba(220, 20, 60, 0.5);
-            --secondary: #ff5c78;
-            --success: #ff98a6;
-            --success-glow: rgba(255, 152, 166, 0.4);
+            --secondary: #ff6b9d;
+            --success: #ff94a8;
+            --success-glow: color-mix(in srgb, var(--success) 40%, transparent);
+            --bg-radial: radial-gradient(ellipse at top, #20060a 0%, #120406 50%, #000000 100%);
+            --header-bg: linear-gradient(135deg, rgba(220, 20, 60, 0.1) 0%, rgba(26, 26, 26, 0.6) 100%);
+            --header-shadow: rgba(220, 20, 60, 0.15);
+            --bg-glow-1: rgba(220, 20, 60, 0.08);
+            --bg-glow-2: rgba(220, 20, 60, 0.06);
+            --focus-glow: rgba(220, 20, 60, 0.2);
             --warning: #ff4757;
-            --info: #dc143c;
+            --info: var(--primary);
             --danger: #b00020;
             --light: #f8f9fa;
             --dark: #0a0a0a;
@@ -37,9 +44,8 @@
             --light-gray: #2a2a2a;
             --border: #333;
             --border-hover: #444;
-            --theme-soft: rgba(220, 20, 60, 0.1);
-            --theme-shadow: rgba(220, 20, 60, 0.18);
-            --theme-tint: #1a0a0f;
+            --theme-soft: var(--bg-glow-1);
+            --theme-shadow: var(--focus-glow);
         }
         
         * {
@@ -50,7 +56,7 @@
         
         body {
             font-family: 'Inter', sans-serif;
-            background: radial-gradient(ellipse at top, var(--theme-tint) 0%, #0a0a0a 50%, #000000 100%);
+            background: var(--bg-radial);
             color: var(--light);
             line-height: 1.6;
             min-height: 100vh;
@@ -65,8 +71,8 @@
             right: 0;
             bottom: 0;
             background: 
-                radial-gradient(circle at 20% 30%, var(--theme-soft) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, var(--theme-soft) 0%, transparent 50%);
+                radial-gradient(circle at 20% 30%, var(--bg-glow-1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, var(--bg-glow-2) 0%, transparent 50%);
             pointer-events: none;
             z-index: 0;
         }
@@ -82,10 +88,10 @@
             text-align: center;
             margin-bottom: 40px;
             padding: 30px 20px;
-            background: linear-gradient(135deg, var(--theme-soft) 0%, rgba(26, 26, 26, 0.6) 100%);
+            background: var(--header-bg);
             border-radius: 20px;
             border: 1px solid var(--border);
-            box-shadow: 0 8px 32px var(--theme-shadow);
+            box-shadow: 0 8px 32px var(--header-shadow);
         }
         
         h1 {
