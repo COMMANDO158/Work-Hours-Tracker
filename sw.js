@@ -1,23 +1,43 @@
-// FlowFocus service worker
-// Bump CACHE_VERSION whenever index.html / weekly-reflection.html change
-// so returning users automatically pick up the new version.
-const CACHE_VERSION = 'v8';
+// FlowFocus service worker.
+// Bump CACHE_VERSION on every deploy. The whole app shell is served from one
+// versioned cache, so a new page never runs against old modules.
+const CACHE_VERSION = 'v10';
 const CACHE_NAME = `flowfocus-${CACHE_VERSION}`;
-
-const STATIC_CDN_HOSTS = [
-  'cdnjs.cloudflare.com',
-  'fonts.googleapis.com',
-  'fonts.gstatic.com',
-  'cdn.jsdelivr.net'
-];
 
 const APP_SHELL = [
   './',
   './index.html',
   './weekly-reflection.html',
-  './theme.js',
-  './themes.css',
   './manifest.json',
+  './css/tokens.css',
+  './css/base.css',
+  './css/components.css',
+  './css/views.css',
+  './js/app.js',
+  './js/backup.js',
+  './js/breaks.js',
+  './js/config.js',
+  './js/dates.js',
+  './js/format.js',
+  './js/gems.js',
+  './js/gist.js',
+  './js/insights.js',
+  './js/lock.js',
+  './js/merge.js',
+  './js/state.js',
+  './js/storage.js',
+  './js/store.js',
+  './js/sync.js',
+  './js/timer.js',
+  './js/today-state.js',
+  './js/ui/dial.js',
+  './js/ui/dom.js',
+  './js/ui/insights-view.js',
+  './js/ui/log.js',
+  './js/ui/settings.js',
+  './js/ui/shell.js',
+  './js/ui/today.js',
+  './assets/fonts/inter-latin.woff2',
   './icons/icon-192.png',
   './icons/icon-512.png',
   './icons/icon-maskable-512.png',
@@ -28,7 +48,8 @@ const APP_SHELL = [
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then((cache) => cache.addAll(APP_SHELL))
+      // cache: 'reload' skips the HTTP cache, so a fresh deploy is never precached stale.
+      .then((cache) => cache.addAll(APP_SHELL.map((url) => new Request(url, { cache: 'reload' }))))
       .then(() => self.skipWaiting())
   );
 });
@@ -48,55 +69,34 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   if (request.method !== 'GET') return;
-
   const url = new URL(request.url);
-  const isSameOrigin = url.origin === self.location.origin;
 
-  // HTML navigations: network-first so users get the latest build when
-  // online, with an offline fallback to the cached shell.
+  // Everything cross-origin, above all api.github.com (sync), goes straight to
+  // the network: caching it would store private data and serve stale syncs.
+  if (url.origin !== self.location.origin) return;
+
   if (request.mode === 'navigate') {
     event.respondWith(
-      fetch(request)
-        .then((response) => {
-          const copy = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
-          return response;
-        })
-        .catch(() => caches.match(request).then((cached) => cached || caches.match('./index.html')))
-    );
-    return;
-  }
-
-  // Same-origin static assets (icons, manifest): cache-first.
-  if (isSameOrigin) {
-    event.respondWith(
-      caches.match(request).then((cached) => {
+      caches.open(CACHE_NAME).then(async (cache) => {
+        const cached = await cache.match(request, { ignoreSearch: true });
         if (cached) return cached;
-        return fetch(request).then((response) => {
-          const copy = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
-          return response;
-        });
+        try {
+          return await fetch(request);
+        } catch {
+          return (await cache.match('./index.html')) || Response.error();
+        }
       })
     );
     return;
   }
 
-  // Only ever cache known static-asset CDNs. Everything else cross-origin —
-  // above all api.github.com (cloud sync) — must go straight to the network:
-  // caching it would store private data and could serve stale sync responses.
-  if (!STATIC_CDN_HOSTS.includes(url.hostname)) return;
-
-  // Cross-origin static assets (fonts, Font Awesome, Chart.js): try the network,
-  // fall back to cache if we've seen it before, otherwise let it fail quietly —
-  // the app's core functionality never depends on these loading.
   event.respondWith(
-    fetch(request)
-      .then((response) => {
-        const copy = response.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
-        return response;
-      })
-      .catch(() => caches.match(request))
+    caches.open(CACHE_NAME).then(async (cache) => {
+      const cached = await cache.match(request, { ignoreSearch: true });
+      if (cached) return cached;
+      const response = await fetch(request);
+      if (response.ok && response.type === 'basic') cache.put(request, response.clone());
+      return response;
+    })
   );
 });

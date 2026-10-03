@@ -1,0 +1,5 @@
+# Impeccable working files: review screenshots, decision-page logs and caches
+.impeccable/review/
+.impeccable/questions/
+.impeccable/hook.cache.json
+.impeccable/config.local.json

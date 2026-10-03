@@ -1,0 +1,1248 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-03T03:18:19.804Z",
+  "title": "Design System: FlowFocus",
+  "extensions": {
+    "colorMeta": {
+      "ground": {
+        "role": "neutral",
+        "displayName": "Ground",
+        "canonical": "#F4F5F7",
+        "dark": "#0E0F11",
+        "tonalRamp": [
+          "#0B0B0C",
+          "#232425",
+          "#414244",
+          "#626365",
+          "#858688",
+          "#AAABAD",
+          "#CDCED0",
+          "#EDEEF0"
+        ]
+      },
+      "card": {
+        "role": "neutral",
+        "displayName": "Card White",
+        "canonical": "#FFFFFF",
+        "dark": "#17191C",
+        "tonalRamp": [
+          "#0B0B0B",
+          "#242424",
+          "#424242",
+          "#636363",
+          "#868686",
+          "#ABABAB",
+          "#CECECE",
+          "#EEEEEE"
+        ]
+      },
+      "card-edge": {
+        "role": "neutral",
+        "displayName": "Card Edge",
+        "canonical": "#E5E7EB",
+        "dark": "#26292E",
+        "tonalRamp": [
+          "#0A0B0E",
+          "#232427",
+          "#414246",
+          "#616367",
+          "#84868A",
+          "#A9ABAF",
+          "#CCCED2",
+          "#ECEEF2"
+        ]
+      },
+      "panel": {
+        "role": "neutral",
+        "displayName": "Panel",
+        "canonical": "#F6F7F9",
+        "dark": "#1C1E22",
+        "tonalRamp": [
+          "#0B0B0C",
+          "#232425",
+          "#424244",
+          "#626365",
+          "#858688",
+          "#AAABAD",
+          "#CDCED0",
+          "#EDEEF0"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#111317",
+        "dark": "#F1F2F4",
+        "tonalRamp": [
+          "#090B0F",
+          "#222428",
+          "#404247",
+          "#616368",
+          "#83868C",
+          "#A8ABB0",
+          "#CBCED4",
+          "#EBEEF5"
+        ]
+      },
+      "ink-2": {
+        "role": "neutral",
+        "displayName": "Ink Secondary",
+        "canonical": "#4B525C",
+        "dark": "#BAC0C8",
+        "tonalRamp": [
+          "#060B13",
+          "#1E242D",
+          "#3C434D",
+          "#5D646E",
+          "#7F8792",
+          "#A3ABB7",
+          "#C6CEDA",
+          "#E7EFFB"
+        ]
+      },
+      "ink-3": {
+        "role": "neutral",
+        "displayName": "Ink Tertiary",
+        "canonical": "#666D77",
+        "dark": "#9BA2AB",
+        "tonalRamp": [
+          "#070B13",
+          "#1F242D",
+          "#3C434C",
+          "#5D646E",
+          "#7F8791",
+          "#A4ABB6",
+          "#C7CEDA",
+          "#E7EFFB"
+        ]
+      },
+      "rule": {
+        "role": "neutral",
+        "displayName": "Rule",
+        "canonical": "#ECEEF1",
+        "dark": "#23262B",
+        "tonalRamp": [
+          "#0A0B0D",
+          "#232426",
+          "#414245",
+          "#626366",
+          "#848689",
+          "#A9ABAE",
+          "#CCCED1",
+          "#EDEFF2"
+        ]
+      },
+      "rule-strong": {
+        "role": "neutral",
+        "displayName": "Rule Strong",
+        "canonical": "#D7DBE0",
+        "dark": "#343840",
+        "tonalRamp": [
+          "#090B0F",
+          "#212428",
+          "#3F4347",
+          "#606468",
+          "#83868B",
+          "#A7ABB0",
+          "#CACED3",
+          "#EBEFF4"
+        ]
+      },
+      "face": {
+        "role": "neutral",
+        "displayName": "Dial Face",
+        "canonical": "#FFFFFF",
+        "dark": "#1E2125",
+        "tonalRamp": [
+          "#0B0B0B",
+          "#242424",
+          "#424242",
+          "#636363",
+          "#868686",
+          "#ABABAB",
+          "#CECECE",
+          "#EEEEEE"
+        ]
+      },
+      "face-edge": {
+        "role": "neutral",
+        "displayName": "Dial Rim",
+        "canonical": "#E2E5E9",
+        "dark": "#30343A",
+        "tonalRamp": [
+          "#090B0E",
+          "#222427",
+          "#404346",
+          "#616367",
+          "#84868A",
+          "#A8ABAF",
+          "#CBCED2",
+          "#ECEFF3"
+        ]
+      },
+      "tick": {
+        "role": "neutral",
+        "displayName": "Major Tick",
+        "canonical": "#1C1F24",
+        "dark": "#E6E8EB",
+        "tonalRamp": [
+          "#090B10",
+          "#212429",
+          "#3F4348",
+          "#606369",
+          "#82868D",
+          "#A7ABB2",
+          "#CACED5",
+          "#EAEFF6"
+        ]
+      },
+      "tick-soft": {
+        "role": "neutral",
+        "displayName": "Tick Soft",
+        "canonical": "#A3AAB3",
+        "dark": "#6C737D",
+        "tonalRamp": [
+          "#070B12",
+          "#1F242B",
+          "#3D434B",
+          "#5D646C",
+          "#80878F",
+          "#A4ABB5",
+          "#C7CED8",
+          "#E8EFF9"
+        ]
+      },
+      "hub": {
+        "role": "primary",
+        "displayName": "Hub Black",
+        "canonical": "#111317",
+        "dark": "#F1F2F4",
+        "tonalRamp": [
+          "#090B0F",
+          "#222428",
+          "#404247",
+          "#616368",
+          "#83868C",
+          "#A8ABB0",
+          "#CBCED4",
+          "#EBEEF5"
+        ]
+      },
+      "primary": {
+        "role": "primary",
+        "displayName": "Timer Black",
+        "canonical": "#16181C",
+        "dark": "#F1F2F4",
+        "tonalRamp": [
+          "#090B0F",
+          "#222428",
+          "#404247",
+          "#616368",
+          "#83868B",
+          "#A8ABB0",
+          "#CBCED3",
+          "#ECEEF4"
+        ]
+      },
+      "primary-ink": {
+        "role": "primary",
+        "displayName": "Timer Black Ink",
+        "canonical": "#FFFFFF",
+        "dark": "#111317",
+        "tonalRamp": [
+          "#0B0B0B",
+          "#242424",
+          "#424242",
+          "#636363",
+          "#868686",
+          "#ABABAB",
+          "#CECECE",
+          "#EEEEEE"
+        ]
+      },
+      "primary-hover": {
+        "role": "primary",
+        "displayName": "Timer Black Hover",
+        "canonical": "#2A2D33",
+        "dark": "#D9DCE1",
+        "tonalRamp": [
+          "#090B10",
+          "#21242A",
+          "#3F4249",
+          "#60636A",
+          "#83868D",
+          "#A7ABB2",
+          "#CACED6",
+          "#EAEFF7"
+        ]
+      },
+      "soft": {
+        "role": "neutral",
+        "displayName": "Soft",
+        "canonical": "#F1F2F4",
+        "dark": "#23262B",
+        "tonalRamp": [
+          "#0A0B0C",
+          "#232425",
+          "#414244",
+          "#626365",
+          "#858688",
+          "#AAABAD",
+          "#CDCED0",
+          "#EDEEF0"
+        ]
+      },
+      "soft-hover": {
+        "role": "neutral",
+        "displayName": "Soft Hover",
+        "canonical": "#E7E9EC",
+        "dark": "#2C3036",
+        "tonalRamp": [
+          "#0A0B0D",
+          "#232426",
+          "#414245",
+          "#626366",
+          "#848689",
+          "#A9ABAE",
+          "#CCCED1",
+          "#EDEFF2"
+        ]
+      },
+      "break": {
+        "role": "tertiary",
+        "displayName": "Break Teal",
+        "canonical": "#12A39A",
+        "dark": "#2BBFB4",
+        "tonalRamp": [
+          "#010E0D",
+          "#022B28",
+          "#0D4D48",
+          "#07736C",
+          "#209991",
+          "#43C1B7",
+          "#6DE5DB",
+          "#B6FFF7"
+        ],
+        "purpose": "The break face sector; the break line tint (14% into card) while on a break and at the stop."
+      },
+      "break-ink": {
+        "role": "tertiary",
+        "displayName": "Break Ink",
+        "canonical": "#0B6E68",
+        "dark": "#7BE0D7",
+        "tonalRamp": [
+          "#000F0D",
+          "#042A28",
+          "#064D49",
+          "#14726C",
+          "#42968F",
+          "#69BCB4",
+          "#8DE0D8",
+          "#B9FEF7"
+        ],
+        "purpose": "Break sector edge, the cup icon, and the Take a break text."
+      },
+      "break-on": {
+        "role": "tertiary",
+        "displayName": "Break On",
+        "canonical": "#FFFFFF",
+        "dark": "#0E0F11",
+        "tonalRamp": [
+          "#0B0B0B",
+          "#242424",
+          "#424242",
+          "#636363",
+          "#868686",
+          "#ABABAB",
+          "#CECECE",
+          "#EEEEEE"
+        ],
+        "purpose": "Declared for marks over the teal fill; the rim band means none are drawn."
+      },
+      "ok": {
+        "role": "tertiary",
+        "displayName": "Status OK",
+        "canonical": "#16A34A",
+        "dark": "#34C772",
+        "tonalRamp": [
+          "#001003",
+          "#042D10",
+          "#065121",
+          "#137736",
+          "#10A148",
+          "#4BC76C",
+          "#72EC8F",
+          "#CAFED2"
+        ]
+      },
+      "warn": {
+        "role": "tertiary",
+        "displayName": "Status Warn",
+        "canonical": "#C77A06",
+        "dark": "#F0B54A",
+        "tonalRamp": [
+          "#140800",
+          "#361E01",
+          "#5E3908",
+          "#8D5400",
+          "#BA7416",
+          "#E69738",
+          "#FFBF7D",
+          "#FFEBD7"
+        ]
+      },
+      "danger": {
+        "role": "tertiary",
+        "displayName": "Danger",
+        "canonical": "#C2263A",
+        "dark": "#FF8A97",
+        "tonalRamp": [
+          "#1E0002",
+          "#48050E",
+          "#7F071E",
+          "#B71631",
+          "#E14753",
+          "#FA8183",
+          "#FCBBB9",
+          "#FEE9E8"
+        ]
+      },
+      "danger-soft": {
+        "role": "tertiary",
+        "displayName": "Danger Soft",
+        "canonical": "#FBE9EB",
+        "dark": "#3A1E23",
+        "tonalRamp": [
+          "#120809",
+          "#2D2022",
+          "#4C3E40",
+          "#6E5F61",
+          "#928283",
+          "#B7A6A8",
+          "#DAC9CB",
+          "#FBE9EB"
+        ]
+      },
+      "focus": {
+        "role": "neutral",
+        "displayName": "Focus Ring",
+        "canonical": "#111317",
+        "dark": "#F1F2F4",
+        "tonalRamp": [
+          "#090B0F",
+          "#222428",
+          "#404247",
+          "#616368",
+          "#83868C",
+          "#A8ABB0",
+          "#CBCED4",
+          "#EBEEF5"
+        ]
+      },
+      "selection": {
+        "role": "neutral",
+        "displayName": "Selection",
+        "canonical": "#D6E2FB",
+        "dark": "#2F3D5C",
+        "tonalRamp": [
+          "#050A1A",
+          "#1B2436",
+          "#394256",
+          "#596379",
+          "#7B869D",
+          "#A0ABC3",
+          "#C2CEE7",
+          "#E7EFFE"
+        ]
+      },
+      "topaz": {
+        "role": "secondary",
+        "displayName": "Topaz",
+        "canonical": "#F29A0E",
+        "dark": "#F2AA34",
+        "purpose": "Saturday. Sector, stone girdle, weekday bar fill (--g).",
+        "tonalRamp": [
+          "#130800",
+          "#351E01",
+          "#5D3A09",
+          "#8A5604",
+          "#B7761A",
+          "#E79727",
+          "#FCC17F",
+          "#FEEBD7"
+        ]
+      },
+      "topaz-ink": {
+        "role": "secondary",
+        "displayName": "Topaz Ink",
+        "canonical": "#8F5A00",
+        "dark": "#FFC766",
+        "purpose": "Saturday. Sector edge, stone outline, gem-coloured text (--gi).",
+        "tonalRamp": [
+          "#130800",
+          "#341F03",
+          "#5D3A04",
+          "#88570F",
+          "#B07931",
+          "#D79E58",
+          "#FCC17A",
+          "#FEEBD6"
+        ]
+      },
+      "topaz-on": {
+        "role": "secondary",
+        "displayName": "Topaz On",
+        "canonical": "#111317",
+        "dark": "#111317",
+        "purpose": "Saturday. Marks over the fill (--go). No app dial prints over its fill since the rim band; used by the app icon.",
+        "tonalRamp": [
+          "#090B0F",
+          "#222428",
+          "#404247",
+          "#616368",
+          "#83868C",
+          "#A8ABB0",
+          "#CBCED4",
+          "#EBEEF5"
+        ]
+      },
+      "emerald": {
+        "role": "secondary",
+        "displayName": "Emerald",
+        "canonical": "#17925C",
+        "dark": "#2DB077",
+        "purpose": "Sunday. Sector, stone girdle, weekday bar fill (--g).",
+        "tonalRamp": [
+          "#000F06",
+          "#042C19",
+          "#065030",
+          "#13764A",
+          "#2A9D66",
+          "#57C38A",
+          "#7DE8AC",
+          "#C6FEDC"
+        ]
+      },
+      "emerald-ink": {
+        "role": "secondary",
+        "displayName": "Emerald Ink",
+        "canonical": "#0C6440",
+        "dark": "#6FD9A4",
+        "purpose": "Sunday. Sector edge, stone outline, gem-coloured text (--gi).",
+        "tonalRamp": [
+          "#000F06",
+          "#002C19",
+          "#094F32",
+          "#24744F",
+          "#4C9871",
+          "#71BE95",
+          "#94E2B7",
+          "#C3FFDC"
+        ]
+      },
+      "emerald-on": {
+        "role": "secondary",
+        "displayName": "Emerald On",
+        "canonical": "#FFFFFF",
+        "dark": "#0E0F11",
+        "purpose": "Sunday. Marks over the fill (--go). No app dial prints over its fill since the rim band; used by the app icon.",
+        "tonalRamp": [
+          "#0B0B0B",
+          "#242424",
+          "#424242",
+          "#636363",
+          "#868686",
+          "#ABABAB",
+          "#CECECE",
+          "#EEEEEE"
+        ]
+      },
+      "sapphire": {
+        "role": "secondary",
+        "displayName": "Sapphire",
+        "canonical": "#2453CC",
+        "dark": "#5584F0",
+        "purpose": "Monday. Sector, stone girdle, weekday bar fill (--g).",
+        "tonalRamp": [
+          "#000134",
+          "#000178",
+          "#082FA7",
+          "#2757D0",
+          "#487DF9",
+          "#82A9FC",
+          "#B6CEFE",
+          "#E7EFFE"
+        ]
+      },
+      "sapphire-ink": {
+        "role": "secondary",
+        "displayName": "Sapphire Ink",
+        "canonical": "#1A3E9E",
+        "dark": "#A3BCFF",
+        "purpose": "Monday. Sector edge, stone outline, gem-coloured text (--gi).",
+        "tonalRamp": [
+          "#000133",
+          "#010D70",
+          "#143796",
+          "#335BBE",
+          "#5481E6",
+          "#83A9FA",
+          "#B7CEFD",
+          "#E7EFFF"
+        ]
+      },
+      "sapphire-on": {
+        "role": "secondary",
+        "displayName": "Sapphire On",
+        "canonical": "#FFFFFF",
+        "dark": "#0E0F11",
+        "purpose": "Monday. Marks over the fill (--go). No app dial prints over its fill since the rim band; used by the app icon.",
+        "tonalRamp": [
+          "#0B0B0B",
+          "#242424",
+          "#424242",
+          "#636363",
+          "#868686",
+          "#ABABAB",
+          "#CECECE",
+          "#EEEEEE"
+        ]
+      },
+      "amethyst": {
+        "role": "secondary",
+        "displayName": "Amethyst",
+        "canonical": "#8444C6",
+        "dark": "#A36EE6",
+        "purpose": "Tuesday. Sector, stone girdle, weekday bar fill (--g).",
+        "tonalRamp": [
+          "#120025",
+          "#320555",
+          "#590794",
+          "#7B3ABC",
+          "#9F61E4",
+          "#BE91F9",
+          "#D9C1FC",
+          "#F2EAFF"
+        ]
+      },
+      "amethyst-ink": {
+        "role": "secondary",
+        "displayName": "Amethyst Ink",
+        "canonical": "#612F97",
+        "dark": "#CFAEFF",
+        "purpose": "Tuesday. Sector edge, stone outline, gem-coloured text (--gi).",
+        "tonalRamp": [
+          "#120125",
+          "#320059",
+          "#541F88",
+          "#7645AF",
+          "#996AD6",
+          "#BD92F9",
+          "#D7C1FC",
+          "#F2EAFF"
+        ]
+      },
+      "amethyst-on": {
+        "role": "secondary",
+        "displayName": "Amethyst On",
+        "canonical": "#FFFFFF",
+        "dark": "#0E0F11",
+        "purpose": "Tuesday. Marks over the fill (--go). No app dial prints over its fill since the rim band; used by the app icon.",
+        "tonalRamp": [
+          "#0B0B0B",
+          "#242424",
+          "#424242",
+          "#636363",
+          "#868686",
+          "#ABABAB",
+          "#CECECE",
+          "#EEEEEE"
+        ]
+      },
+      "diamond": {
+        "role": "secondary",
+        "displayName": "Diamond",
+        "canonical": "#A9D2E4",
+        "dark": "#8EBDD2",
+        "purpose": "Wednesday. Sector, stone girdle, weekday bar fill (--g).",
+        "tonalRamp": [
+          "#000D14",
+          "#002936",
+          "#224857",
+          "#436979",
+          "#668D9E",
+          "#8AB2C3",
+          "#ACD5E7",
+          "#DAF3FE"
+        ]
+      },
+      "diamond-ink": {
+        "role": "secondary",
+        "displayName": "Diamond Ink",
+        "canonical": "#2F6684",
+        "dark": "#BFE3F2",
+        "purpose": "Wednesday. Sector edge, stone outline, gem-coloured text (--gi).",
+        "tonalRamp": [
+          "#010D16",
+          "#01283A",
+          "#0B4865",
+          "#336A88",
+          "#578EAD",
+          "#7BB3D4",
+          "#9ED6F8",
+          "#DEF2FF"
+        ]
+      },
+      "diamond-on": {
+        "role": "secondary",
+        "displayName": "Diamond On",
+        "canonical": "#111317",
+        "dark": "#0E0F11",
+        "purpose": "Wednesday. Marks over the fill (--go). No app dial prints over its fill since the rim band; used by the app icon.",
+        "tonalRamp": [
+          "#090B0F",
+          "#222428",
+          "#404247",
+          "#616368",
+          "#83868C",
+          "#A8ABB0",
+          "#CBCED4",
+          "#EBEEF5"
+        ]
+      },
+      "ruby": {
+        "role": "secondary",
+        "displayName": "Ruby",
+        "canonical": "#D42A4C",
+        "dark": "#E8506E",
+        "purpose": "Thursday. Sector, stone girdle, weekday bar fill (--g).",
+        "tonalRamp": [
+          "#1E0004",
+          "#4A0011",
+          "#7D0926",
+          "#B5183C",
+          "#E63E5A",
+          "#FE7C88",
+          "#FEB9BB",
+          "#FEE9E9"
+        ]
+      },
+      "ruby-ink": {
+        "role": "secondary",
+        "displayName": "Ruby Ink",
+        "canonical": "#9A1533",
+        "dark": "#FF9AAE",
+        "purpose": "Thursday. Sector edge, stone outline, gem-coloured text (--gi).",
+        "tonalRamp": [
+          "#1E0004",
+          "#490312",
+          "#7F0125",
+          "#AD2B42",
+          "#D75363",
+          "#FB7F8A",
+          "#FDBABC",
+          "#FFE8E9"
+        ]
+      },
+      "ruby-on": {
+        "role": "secondary",
+        "displayName": "Ruby On",
+        "canonical": "#FFFFFF",
+        "dark": "#0E0F11",
+        "purpose": "Thursday. Marks over the fill (--go). No app dial prints over its fill since the rim band; used by the app icon.",
+        "tonalRamp": [
+          "#0B0B0B",
+          "#242424",
+          "#424242",
+          "#636363",
+          "#868686",
+          "#ABABAB",
+          "#CECECE",
+          "#EEEEEE"
+        ]
+      },
+      "tourmaline": {
+        "role": "secondary",
+        "displayName": "Tourmaline",
+        "canonical": "#D6428A",
+        "dark": "#EC69A9",
+        "purpose": "Friday. Sector, stone girdle, weekday bar fill (--g).",
+        "tonalRamp": [
+          "#1C000D",
+          "#450427",
+          "#790647",
+          "#AF1469",
+          "#D9458D",
+          "#FE74B1",
+          "#FFB5D1",
+          "#FEE8EF"
+        ]
+      },
+      "tourmaline-ink": {
+        "role": "secondary",
+        "displayName": "Tourmaline Ink",
+        "canonical": "#A12863",
+        "dark": "#FFA3CF",
+        "purpose": "Friday. Sector edge, stone outline, gem-coloured text (--gi).",
+        "tonalRamp": [
+          "#1D000C",
+          "#450426",
+          "#7A0546",
+          "#A62D67",
+          "#CF548A",
+          "#F97AAF",
+          "#FFB5D0",
+          "#FEE8EF"
+        ]
+      },
+      "tourmaline-on": {
+        "role": "secondary",
+        "displayName": "Tourmaline On",
+        "canonical": "#FFFFFF",
+        "dark": "#0E0F11",
+        "purpose": "Friday. Marks over the fill (--go). No app dial prints over its fill since the rim band; used by the app icon.",
+        "tonalRamp": [
+          "#0B0B0B",
+          "#242424",
+          "#424242",
+          "#636363",
+          "#868686",
+          "#ABABAB",
+          "#CECECE",
+          "#EEEEEE"
+        ]
+      },
+      "clear": {
+        "role": "secondary",
+        "displayName": "Clear",
+        "canonical": "#CDD2D9",
+        "dark": "#5A616B",
+        "purpose": "Totals and past weeks; never a day. Sector, stone girdle, weekday bar fill (--g).",
+        "tonalRamp": [
+          "#080B10",
+          "#212429",
+          "#3F4348",
+          "#5F646A",
+          "#82878D",
+          "#A6ABB2",
+          "#C9CED5",
+          "#EAEFF6"
+        ]
+      },
+      "clear-ink": {
+        "role": "secondary",
+        "displayName": "Clear Ink",
+        "canonical": "#5D646E",
+        "dark": "#AEB5BE",
+        "purpose": "Totals and past weeks; never a day. Sector edge, stone outline, gem-coloured text (--gi).",
+        "tonalRamp": [
+          "#070B13",
+          "#1E242D",
+          "#3C434C",
+          "#5D646E",
+          "#7F8791",
+          "#A4ABB6",
+          "#C6CEDA",
+          "#E7EFFB"
+        ]
+      },
+      "clear-on": {
+        "role": "secondary",
+        "displayName": "Clear On",
+        "canonical": "#111317",
+        "dark": "#F1F2F4",
+        "purpose": "Totals and past weeks; never a day. Marks over the fill (--go). No app dial prints over its fill since the rim band; used by the app icon.",
+        "tonalRamp": [
+          "#090B0F",
+          "#222428",
+          "#404247",
+          "#616368",
+          "#83868C",
+          "#A8ABB0",
+          "#CBCED4",
+          "#EBEEF5"
+        ]
+      }
+    },
+    "themes": {
+      "light": "Default, declared on :root.",
+      "dark": "prefers-color-scheme: dark on :root:not([data-mode=\"light\"]), and the identical :root[data-mode=\"dark\"] block. Every token is re-declared; values are in colorMeta.<token>.dark.",
+      "gemScope": "[data-gem=\"<gem>\"] sets --g (fill), --gi (ink), --go (on). Gems: topaz, emerald, sapphire, amethyst, diamond, ruby, tourmaline, clear. <html data-gem> is set to today's gem before first paint."
+    },
+    "gemMapping": {
+      "saturday": "topaz",
+      "sunday": "emerald",
+      "monday": "sapphire",
+      "tuesday": "amethyst",
+      "wednesday": "diamond",
+      "thursday": "ruby",
+      "friday": "tourmaline",
+      "totals": "clear"
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Figure",
+        "purpose": "Today's worked figure on the work card. 2.75rem in the wide layout; 2.5rem for the Insights week figure."
+      },
+      "headline": {
+        "displayName": "Wordmark / View title",
+        "purpose": "FlowFocus wordmark, and the Log, Insights and Settings h1 (-0.025em)."
+      },
+      "title": {
+        "displayName": "Small figure",
+        "purpose": "Tile figures (1.375rem wide), Log week title and total."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Status line, notes, records; prose capped at 60-65ch."
+      },
+      "body-sm": {
+        "displayName": "Body small",
+        "purpose": "The break line (nowrap, ellipsis, lead phrase 600 ink), the Take a break button, the note field, help text, Log meta, legends, small buttons."
+      },
+      "micro": {
+        "displayName": "Micro",
+        "purpose": "Week strip hours on phones (--t-2xs); 0.75rem from 480px."
+      },
+      "label": {
+        "displayName": "Card heading",
+        "purpose": "Uppercase, ink-3. The shared .label style: the h2/h3 of each card and of the Insights and Settings sections, and the day line under the wordmark. Never an eyebrow."
+      },
+      "label-tight": {
+        "displayName": "Tile heading",
+        "purpose": "The label with tracking halved to 0.08em (--tracking-label-tight) for the Today, Week and To goal tiles."
+      },
+      "button": {
+        "displayName": "Button",
+        "purpose": "All buttons; the block button uses 1.125rem."
+      },
+      "numeral": {
+        "displayName": "Dial numeral",
+        "purpose": "Big dial numerals on the rim band (work 0-5, break 0-25 by 5) inside the 300-unit viewBox; anchored by side; no halo."
+      }
+    },
+    "shadows": [
+      {
+        "name": "card",
+        "value": "0 1px 2px rgba(17, 19, 23, 0.04), 0 6px 20px rgba(17, 19, 23, 0.04)",
+        "dark": "0 1px 2px rgba(0, 0, 0, 0.35), 0 6px 20px rgba(0, 0, 0, 0.25)",
+        "purpose": "Cards, tiles, the selected segment, the active wide tab."
+      },
+      {
+        "name": "dial",
+        "value": "0 1px 2px rgba(17, 19, 23, 0.06), 0 12px 28px rgba(17, 19, 23, 0.08)",
+        "dark": "0 1px 2px rgba(0, 0, 0, 0.4), 0 12px 28px rgba(0, 0, 0, 0.4)",
+        "purpose": "The big dial's flip card only (either face)."
+      },
+      {
+        "name": "float",
+        "value": "0 2px 6px rgba(17, 19, 23, 0.08), 0 16px 36px rgba(17, 19, 23, 0.14)",
+        "dark": "0 2px 6px rgba(0, 0, 0, 0.45), 0 16px 36px rgba(0, 0, 0, 0.5)",
+        "purpose": "Notices."
+      }
+    ],
+    "focus": {
+      "value": "outline: 3px solid var(--focus); outline-offset: 3px",
+      "purpose": "All :focus-visible. Fields add a 1px ink ring on :focus."
+    },
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "All transitions, the notice entrance, and the flip's turn back."
+      },
+      {
+        "name": "d-fast",
+        "value": "140ms",
+        "purpose": "Hover, press, colour and border changes."
+      },
+      {
+        "name": "d-base",
+        "value": "220ms",
+        "purpose": "Notice entrance; the break line tint when a break starts or ends."
+      },
+      {
+        "name": "flip-out",
+        "value": "240ms cubic-bezier(0.55, 0, 1, 0.45)",
+        "purpose": "The big dial turns edge-on (rotateY 0 to 90deg) before its face swaps."
+      },
+      {
+        "name": "flip-in",
+        "value": "320ms cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "The big dial turns back from rotateY -90deg to 0 on the new face. Perspective 1100px. Instant on first render, under reduced motion, and when hidden."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "1ms",
+        "purpose": "prefers-reduced-motion collapses every animation and transition; the flip is an instant face swap."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "week-hours",
+        "value": "480px",
+        "purpose": "Week strip hours step up to 0.75rem."
+      },
+      {
+        "name": "wide",
+        "value": "1024px",
+        "purpose": "Two columns: sticky Today column (440-500px) on the left, the view on the right; tabs become an inline segmented strip; Today is compacted to fit a 900px-tall window (dial 232px, break line 44px, block button 52px)."
+      },
+      {
+        "name": "xl",
+        "value": "1400px",
+        "purpose": "Today column fixed at 540px."
+      }
+    ],
+    "dials": {
+      "big": "BIG geometry, a 300-unit viewBox shared by both faces: face r147; sector r103 inside the rim band; ticks r108 to r120 (majors from r106; majors 3px tick, minors 1.5px tick-soft); numerals 19px at r126 on the sides and r134 at the poles, anchored start on the right, end on the left, middle at the poles; hub r12; no hand; no marks on the fill. One .flip with two faces, only one displayed (.flip[data-face]); the flip card carries the Dial shadow.",
+      "work": "Today against 6h in the day's gem; 1.5px gem-ink edge at full opacity; lap sector past 6h in gem ink at 50%; 24 ticks (every 4th major); numerals 0-5.",
+      "break": "Break used against 30 minutes in teal with a 1.5px break-ink edge; 30 ticks (every 5th major); numerals 0, 5, 10, 15, 20, 25. Shown while on a break and, full, at the 30-minute stop until Back to work.",
+      "day": "40-unit mini dial; face r19.4; gem sector r14.6 inside 4 ticks (r16.2-18.6, 1.2px tick-soft); hub r3.2; rest day = Soft face, rule-strong rim, Tick Soft hub; future = 55% opacity.",
+      "pastWeek": "40-unit mini dial; one Clear sector r14.6 against 30h; 5 ticks.",
+      "rosette": "120-unit; face r58; days end to end in their gems against 30h, sector r45; 1.2px face-coloured separators; 5 heavy ticks (2.2px, r49-56); hub r5.",
+      "stone": "24-unit octagonal brilliant: girdle and mid facets = gem; lit facets color-mix(gem 55%, white); deep facets color-mix(gem 78%, black); table color-mix(gem 35%, white); 0.6px gem-ink outline at 60%."
+    },
+    "syncDot": {
+      "ok": "ok",
+      "idle": "ink-2",
+      "syncing": "ink-2",
+      "offline": "warn",
+      "retry": "warn",
+      "auth": "danger",
+      "missing": "danger",
+      "data": "danger",
+      "fallback": "tick-soft",
+      "purpose": "Sync pill status dot (9px). Never a gem."
+    },
+    "appIcon": {
+      "canvas": "512-unit viewBox",
+      "tile": "Timer Black (#16181C). Standard icon: rounded tile rx112 inset 8; maskable and Apple: full-bleed square; favicon source: rx120.",
+      "dial": "White face with a face-edge (#E2E5E9) hairline of about 1.2 units; r196 standard, r214 Apple and favicon, r160 maskable (safe zone).",
+      "sector": "One flat Topaz sector (#F29A0E) from 12 o'clock to 3h 45m with a topaz-ink (#8F5A00) edge, inset to 103/147 of the face radius like the big face, leaving the white rim band.",
+      "ticks": "24 ticks on the white rim band (106–124/147 of the radius), every 4th major: majors Major Tick (#1C1F24), minors Tick Soft (#A3AAB3). Nothing is drawn over the fill. The favicon source keeps the 6 majors only.",
+      "hub": "Black hub (#111317); no hand, no numerals.",
+      "sources": [
+        "icons/src/icon.svg",
+        "icons/src/icon-maskable.svg",
+        "icons/src/icon-small.svg",
+        "icons/src/icon-apple.svg"
+      ],
+      "rendered": "Every PNG in icons/ (icon-192, icon-512, icon-maskable-512, apple-touch-icon, favicon-32) is rendered from these sources.",
+      "note": "Predates the rim band: the sector runs to near the rim, under the ticks, which switch to topaz-on over the fill."
+    }
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Timer Black solid button.",
+      "html": "<button class=\"ds-btn-primary\">Save</button>",
+      "css": ".ds-btn-primary { display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:48px; padding:0 20px; border:1px solid transparent; border-radius:14px; background: var(--primary, #16181C); color: var(--primary-ink, #FFFFFF); font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; font-size:1rem; font-weight:600; line-height:1.2; cursor:pointer; transition: background-color 140ms cubic-bezier(0.16,1,0.3,1), transform 140ms cubic-bezier(0.16,1,0.3,1); } .ds-btn-primary:hover { background: var(--primary-hover, #2A2D33); } .ds-btn-primary:active { transform: scale(0.985); } .ds-btn-primary:focus-visible { outline:3px solid var(--focus, #111317); outline-offset:3px; }"
+    },
+    {
+      "name": "Start/Pause Block Button",
+      "kind": "button",
+      "refersTo": "button-block",
+      "description": "Full-width black primary on the work card, with the play/pause glyph and the stretch stopwatch.",
+      "html": "<button class=\"ds-btn-block\"><svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><rect fill=\"currentColor\" x=\"6\" y=\"5\" width=\"4.2\" height=\"14\" rx=\"1.2\"/><rect fill=\"currentColor\" x=\"13.8\" y=\"5\" width=\"4.2\" height=\"14\" rx=\"1.2\"/></svg><span>Pause</span><span class=\"ds-meta\">0:12:40</span></button>",
+      "css": ".ds-btn-block { display:flex; align-items:center; justify-content:center; gap:8px; width:100%; min-height:58px; border:0; border-radius:16px; background: var(--primary, #16181C); color: var(--primary-ink, #FFFFFF); font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; font-size:1.125rem; font-weight:600; font-variant-numeric: tabular-nums; cursor:pointer; transition: background-color 140ms cubic-bezier(0.16,1,0.3,1), transform 140ms cubic-bezier(0.16,1,0.3,1); } .ds-btn-block:hover { background: var(--primary-hover, #2A2D33); } .ds-btn-block:active { transform: scale(0.985); } .ds-btn-block:focus-visible { outline:3px solid var(--focus, #111317); outline-offset:3px; } .ds-meta { margin-left:8px; font-size:0.875rem; font-weight:500; opacity:0.7; }"
+    },
+    {
+      "name": "Soft Button",
+      "kind": "button",
+      "refersTo": "button-soft",
+      "description": "Secondary action, such as Keep counting on the gap banner.",
+      "html": "<button class=\"ds-btn-soft\">Keep counting</button>",
+      "css": ".ds-btn-soft { min-height:48px; padding:0 20px; border:0; border-radius:14px; background: var(--soft, #F1F2F4); color: var(--ink, #111317); font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; font-size:1rem; font-weight:600; cursor:pointer; transition: background-color 140ms cubic-bezier(0.16,1,0.3,1); } .ds-btn-soft:hover { background: var(--soft-hover, #E7E9EC); } .ds-btn-soft:focus-visible { outline:3px solid var(--focus, #111317); outline-offset:3px; }"
+    },
+    {
+      "name": "Quiet Button",
+      "kind": "button",
+      "refersTo": "button-quiet",
+      "description": "Card-coloured outlined button for tertiary actions.",
+      "html": "<button class=\"ds-btn-quiet\">Show earlier weeks</button>",
+      "css": ".ds-btn-quiet { min-height:48px; padding:0 20px; border:1px solid var(--rule-strong, #D7DBE0); border-radius:14px; background: var(--card, #FFFFFF); color: var(--ink, #111317); font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; font-size:1rem; font-weight:600; cursor:pointer; transition: background-color 140ms cubic-bezier(0.16,1,0.3,1), border-color 140ms cubic-bezier(0.16,1,0.3,1); } .ds-btn-quiet:hover { background: var(--panel, #F6F7F9); border-color: var(--ink-3, #666D77); } .ds-btn-quiet:focus-visible { outline:3px solid var(--focus, #111317); outline-offset:3px; }"
+    },
+    {
+      "name": "Text Button",
+      "kind": "button",
+      "refersTo": "button-text",
+      "description": "Inline action in a card head (Finish day).",
+      "html": "<button class=\"ds-btn-text\">Finish day</button>",
+      "css": ".ds-btn-text { min-height:32px; padding:0 8px; border:0; border-radius:10px; background:transparent; color: var(--ink-2, #4B525C); font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; font-size:0.875rem; font-weight:600; cursor:pointer; transition: background-color 140ms cubic-bezier(0.16,1,0.3,1), color 140ms cubic-bezier(0.16,1,0.3,1); } .ds-btn-text:hover { background: var(--soft, #F1F2F4); color: var(--ink, #111317); } .ds-btn-text:focus-visible { outline:3px solid var(--focus, #111317); outline-offset:3px; }"
+    },
+    {
+      "name": "Card with Label Heading",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "White card; the tracked uppercase label is its h2.",
+      "html": "<section class=\"ds-card\"><header class=\"ds-card-head\"><h2 class=\"ds-label\">Sync</h2></header><p class=\"ds-body\">Break time is tracked on each device separately and doesn’t sync.</p></section>",
+      "css": ".ds-card { background: var(--card, #FFFFFF); border:1px solid var(--card-edge, #E5E7EB); border-radius:22px; box-shadow: 0 1px 2px rgba(17,19,23,0.04), 0 6px 20px rgba(17,19,23,0.04); padding:18px; font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; color: var(--ink, #111317); } .ds-card-head { display:flex; align-items:center; justify-content:space-between; min-height:28px; } .ds-label { margin:0; color: var(--ink-3, #666D77); font-size:0.75rem; font-weight:600; letter-spacing:0.16em; line-height:1.3; text-transform:uppercase; } .ds-body { margin:8px 0 0; color: var(--ink-2, #4B525C); font-size:0.875rem; }"
+    },
+    {
+      "name": "Tile with Clear Stone",
+      "kind": "card",
+      "refersTo": "tile",
+      "description": "The Week tile; totals carry the Clear stone. Its label uses the tight 0.08em tracking.",
+      "html": "<div class=\"ds-tile\"><h3 class=\"ds-tile-label\">Week</h3><p class=\"ds-tile-fig\">21h 26m</p><p class=\"ds-tile-sub\">of 30h</p><svg class=\"ds-stone\" viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" aria-hidden=\"true\"><polygon points=\"16.21,1.84 22.16,7.79 22.16,16.21 16.21,22.16 7.79,22.16 1.84,16.21 1.84,7.79 7.79,1.84\" fill=\"#CDD2D9\"/><polygon points=\"16.21,1.84 22.16,7.79 16.99,9.93 14.07,7.01\" fill=\"#CDD2D9\"/><polygon points=\"22.16,7.79 22.16,16.21 16.99,14.07 16.99,9.93\" fill=\"color-mix(in srgb, #CDD2D9 78%, #000000)\"/><polygon points=\"22.16,16.21 16.21,22.16 14.07,16.99 16.99,14.07\" fill=\"color-mix(in srgb, #CDD2D9 78%, #000000)\"/><polygon points=\"16.21,22.16 7.79,22.16 9.93,16.99 14.07,16.99\" fill=\"color-mix(in srgb, #CDD2D9 78%, #000000)\"/><polygon points=\"7.79,22.16 1.84,16.21 7.01,14.07 9.93,16.99\" fill=\"#CDD2D9\"/><polygon points=\"1.84,16.21 1.84,7.79 7.01,9.93 7.01,14.07\" fill=\"color-mix(in srgb, #CDD2D9 55%, #FFFFFF)\"/><polygon points=\"1.84,7.79 7.79,1.84 9.93,7.01 7.01,9.93\" fill=\"color-mix(in srgb, #CDD2D9 55%, #FFFFFF)\"/><polygon points=\"7.79,1.84 16.21,1.84 14.07,7.01 9.93,7.01\" fill=\"color-mix(in srgb, #CDD2D9 55%, #FFFFFF)\"/><polygon points=\"14.07,7.01 16.99,9.93 16.99,14.07 14.07,16.99 9.93,16.99 7.01,14.07 7.01,9.93 9.93,7.01\" fill=\"color-mix(in srgb, #CDD2D9 35%, #FFFFFF)\"/><polygon points=\"16.21,1.84 22.16,7.79 22.16,16.21 16.21,22.16 7.79,22.16 1.84,16.21 1.84,7.79 7.79,1.84\" fill=\"none\" stroke=\"#5D646E\" stroke-width=\"0.6\" stroke-linejoin=\"round\" stroke-opacity=\"0.6\"/></svg></div>",
+      "css": ".ds-tile { position:relative; width:150px; padding:14px 12px 14px 14px; background: var(--card, #FFFFFF); border:1px solid var(--card-edge, #E5E7EB); border-radius:18px; box-shadow: 0 1px 2px rgba(17,19,23,0.04), 0 6px 20px rgba(17,19,23,0.04); font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; color: var(--ink, #111317); font-variant-numeric: tabular-nums; } .ds-tile-label { margin:0; padding-right:22px; color: var(--ink-3, #666D77); font-size:0.75rem; font-weight:600; letter-spacing:0.08em; line-height:1.3; text-transform:uppercase; } .ds-tile-fig { margin:8px 0 0; font-size:1.125rem; font-weight:700; letter-spacing:-0.02em; white-space:nowrap; } .ds-tile-sub { margin:2px 0 0; color: var(--ink-3, #666D77); font-size:0.75rem; } .ds-stone { position:absolute; top:10px; right:10px; }"
+    },
+    {
+      "name": "Day Line with Topaz Stone",
+      "kind": "custom",
+      "refersTo": "stone",
+      "description": "Header day line: the day stone, the date, and the gem name in label type.",
+      "html": "<p class=\"ds-dayline\"><svg class=\"ds-stone\" viewBox=\"0 0 24 24\" width=\"24\" height=\"24\" aria-hidden=\"true\"><polygon points=\"16.21,1.84 22.16,7.79 22.16,16.21 16.21,22.16 7.79,22.16 1.84,16.21 1.84,7.79 7.79,1.84\" fill=\"#F29A0E\"/><polygon points=\"16.21,1.84 22.16,7.79 16.99,9.93 14.07,7.01\" fill=\"#F29A0E\"/><polygon points=\"22.16,7.79 22.16,16.21 16.99,14.07 16.99,9.93\" fill=\"color-mix(in srgb, #F29A0E 78%, #000000)\"/><polygon points=\"22.16,16.21 16.21,22.16 14.07,16.99 16.99,14.07\" fill=\"color-mix(in srgb, #F29A0E 78%, #000000)\"/><polygon points=\"16.21,22.16 7.79,22.16 9.93,16.99 14.07,16.99\" fill=\"color-mix(in srgb, #F29A0E 78%, #000000)\"/><polygon points=\"7.79,22.16 1.84,16.21 7.01,14.07 9.93,16.99\" fill=\"#F29A0E\"/><polygon points=\"1.84,16.21 1.84,7.79 7.01,9.93 7.01,14.07\" fill=\"color-mix(in srgb, #F29A0E 55%, #FFFFFF)\"/><polygon points=\"1.84,7.79 7.79,1.84 9.93,7.01 7.01,9.93\" fill=\"color-mix(in srgb, #F29A0E 55%, #FFFFFF)\"/><polygon points=\"7.79,1.84 16.21,1.84 14.07,7.01 9.93,7.01\" fill=\"color-mix(in srgb, #F29A0E 55%, #FFFFFF)\"/><polygon points=\"14.07,7.01 16.99,9.93 16.99,14.07 14.07,16.99 9.93,16.99 7.01,14.07 7.01,9.93 9.93,7.01\" fill=\"color-mix(in srgb, #F29A0E 35%, #FFFFFF)\"/><polygon points=\"16.21,1.84 22.16,7.79 22.16,16.21 16.21,22.16 7.79,22.16 1.84,16.21 1.84,7.79 7.79,1.84\" fill=\"none\" stroke=\"#8F5A00\" stroke-width=\"0.6\" stroke-linejoin=\"round\" stroke-opacity=\"0.6\"/></svg><span>Saturday</span><span class=\"ds-sep\">·</span><span>Topaz</span></p>",
+      "css": ".ds-dayline { display:flex; align-items:center; gap:2px 8px; margin:0; color: var(--ink-3, #666D77); font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; font-size:0.75rem; font-weight:600; letter-spacing:0.16em; text-transform:uppercase; } .ds-sep { letter-spacing:0; } .ds-stone { flex:none; }"
+    },
+    {
+      "name": "Big Dial: Work Face",
+      "kind": "custom",
+      "refersTo": "big-dial",
+      "description": "Signature: white face, a Topaz sector inside the rim band with a full-opacity ink edge, 24 ticks and numerals 0-5 on the band, black hub, no hand. Shown at 3h 45m.",
+      "html": "<svg class=\"ds-dial\" viewBox=\"0 0 300 300\" width=\"220\" height=\"220\" aria-hidden=\"true\"><circle cx=\"150\" cy=\"150\" r=\"147\" fill=\"var(--face, #FFFFFF)\" stroke=\"var(--face-edge, #E2E5E9)\"/><path d=\"M 150 150 L 150 47 A 103 103 0 1 1 77.17 222.83 Z\" fill=\"var(--topaz, #F29A0E)\" stroke=\"var(--topaz-ink, #8F5A00)\" stroke-width=\"1.5\" stroke-linejoin=\"round\"/><line x1=\"150\" y1=\"44\" x2=\"150\" y2=\"30\" stroke=\"var(--tick, #1C1F24)\" stroke-width=\"3\" stroke-linecap=\"round\"/><line x1=\"177.95\" y1=\"45.68\" x2=\"181.06\" y2=\"34.09\" stroke=\"var(--tick-soft, #A3AAB3)\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><line x1=\"204\" y1=\"56.47\" x2=\"210\" y2=\"46.08\" stroke=\"var(--tick-soft, #A3AAB3)\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><line x1=\"226.37\" y1=\"73.63\" x2=\"234.85\" y2=\"65.15\" stroke=\"var(--tick-soft, #A3AAB3)\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><line x1=\"241.8\" y1=\"97\" x2=\"253.92\" y2=\"90\" stroke=\"var(--tick, #1C1F24)\" stroke-width=\"3\" stroke-linecap=\"round\"/><line x1=\"254.32\" y1=\"122.05\" x2=\"265.91\" y2=\"118.94\" stroke=\"var(--tick-soft, #A3AAB3)\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><line x1=\"258\" y1=\"150\" x2=\"270\" y2=\"150\" stroke=\"var(--tick-soft, #A3AAB3)\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><line x1=\"254.32\" y1=\"177.95\" x2=\"265.91\" y2=\"181.06\" stroke=\"var(--tick-soft, #A3AAB3)\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><line x1=\"241.8\" y1=\"203\" x2=\"253.92\" y2=\"210\" stroke=\"var(--tick, #1C1F24)\" stroke-width=\"3\" stroke-linecap=\"round\"/><line x1=\"226.37\" y1=\"226.37\" x2=\"234.85\" y2=\"234.85\" stroke=\"var(--tick-soft, #A3AAB3)\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><line x1=\"204\" y1=\"243.53\" x2=\"210\" y2=\"253.92\" stroke=\"var(--tick-soft, #A3AAB3)\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><line x1=\"177.95\" y1=\"254.32\" x2=\"181.06\" y2=\"265.91\" stroke=\"var(--tick-soft, #A3AAB3)\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><line x1=\"150\" y1=\"256\" x2=\"150\" y2=\"270\" stroke=\"var(--tick, #1C1F24)\" stroke-width=\"3\" stroke-linecap=\"round\"/><line x1=\"122.05\" y1=\"254.32\" x2=\"118.94\" y2=\"265.91\" stroke=\"var(--tick-soft, #A3AAB3)\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><line x1=\"96\" y1=\"243.53\" x2=\"90\" y2=\"253.92\" stroke=\"var(--tick-soft, #A3AAB3)\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><line x1=\"73.63\" y1=\"226.37\" x2=\"65.15\" y2=\"234.85\" stroke=\"var(--tick-soft, #A3AAB3)\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><line x1=\"58.2\" y1=\"203\" x2=\"46.08\" y2=\"210\" stroke=\"var(--tick, #1C1F24)\" stroke-width=\"3\" stroke-linecap=\"round\"/><line x1=\"45.68\" y1=\"177.95\" x2=\"34.09\" y2=\"181.06\" stroke=\"var(--tick-soft, #A3AAB3)\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><line x1=\"42\" y1=\"150\" x2=\"30\" y2=\"150\" stroke=\"var(--tick-soft, #A3AAB3)\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><line x1=\"45.68\" y1=\"122.05\" x2=\"34.09\" y2=\"118.94\" stroke=\"var(--tick-soft, #A3AAB3)\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><line x1=\"58.2\" y1=\"97\" x2=\"46.08\" y2=\"90\" stroke=\"var(--tick, #1C1F24)\" stroke-width=\"3\" stroke-linecap=\"round\"/><line x1=\"73.63\" y1=\"73.63\" x2=\"65.15\" y2=\"65.15\" stroke=\"var(--tick-soft, #A3AAB3)\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><line x1=\"96\" y1=\"56.47\" x2=\"90\" y2=\"46.08\" stroke=\"var(--tick-soft, #A3AAB3)\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><line x1=\"122.05\" y1=\"45.68\" x2=\"118.94\" y2=\"34.09\" stroke=\"var(--tick-soft, #A3AAB3)\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><g font-family=\"Inter, system-ui, sans-serif\" font-size=\"19\" font-weight=\"600\" fill=\"var(--ink, #111317)\" dominant-baseline=\"central\"><text x=\"150\" y=\"16\" text-anchor=\"middle\">0</text><text x=\"259.12\" y=\"87\" text-anchor=\"start\">1</text><text x=\"259.12\" y=\"213\" text-anchor=\"start\">2</text><text x=\"150\" y=\"284\" text-anchor=\"middle\">3</text><text x=\"40.88\" y=\"213\" text-anchor=\"end\">4</text><text x=\"40.88\" y=\"87\" text-anchor=\"end\">5</text></g><circle cx=\"150\" cy=\"150\" r=\"12\" fill=\"var(--hub, #111317)\"/></svg>",
+      "css": ".ds-dial { display:block; border-radius:50%; box-shadow: 0 1px 2px rgba(17,19,23,0.06), 0 12px 28px rgba(17,19,23,0.08); }"
+    },
+    {
+      "name": "Big Dial: Break Face",
+      "kind": "custom",
+      "refersTo": "big-dial",
+      "description": "The back of the same dial: a teal sector against 30 minutes with a break-ink edge, 30 ticks and numerals 0-25 on the rim band. Shown at 18m used.",
+      "html": "<svg class=\"ds-dial\" viewBox=\"0 0 300 300\" width=\"220\" height=\"220\" aria-hidden=\"true\"><circle cx=\"150\" cy=\"150\" r=\"147\" fill=\"var(--face, #FFFFFF)\" stroke=\"var(--face-edge, #E2E5E9)\"/><path d=\"M 150 150 L 150 47 A 103 103 0 1 1 89.46 233.33 Z\" fill=\"var(--break, #12A39A)\" stroke=\"var(--break-ink, #0B6E68)\" stroke-width=\"1.5\" stroke-linejoin=\"round\"/><line x1=\"150\" y1=\"44\" x2=\"150\" y2=\"30\" stroke=\"var(--tick, #1C1F24)\" stroke-width=\"3\" stroke-linecap=\"round\"/><line x1=\"172.45\" y1=\"44.36\" x2=\"174.95\" y2=\"32.62\" stroke=\"var(--tick-soft, #A3AAB3)\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><line x1=\"193.93\" y1=\"51.34\" x2=\"198.81\" y2=\"40.37\" stroke=\"var(--tick-soft, #A3AAB3)\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><line x1=\"213.48\" y1=\"62.63\" x2=\"220.53\" y2=\"52.92\" stroke=\"var(--tick-soft, #A3AAB3)\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><line x1=\"230.26\" y1=\"77.73\" x2=\"239.18\" y2=\"69.7\" stroke=\"var(--tick-soft, #A3AAB3)\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><line x1=\"241.8\" y1=\"97\" x2=\"253.92\" y2=\"90\" stroke=\"var(--tick, #1C1F24)\" stroke-width=\"3\" stroke-linecap=\"round\"/><line x1=\"252.71\" y1=\"116.63\" x2=\"264.13\" y2=\"112.92\" stroke=\"var(--tick-soft, #A3AAB3)\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><line x1=\"257.41\" y1=\"138.71\" x2=\"269.34\" y2=\"137.46\" stroke=\"var(--tick-soft, #A3AAB3)\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><line x1=\"257.41\" y1=\"161.29\" x2=\"269.34\" y2=\"162.54\" stroke=\"var(--tick-soft, #A3AAB3)\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><line x1=\"252.71\" y1=\"183.37\" x2=\"264.13\" y2=\"187.08\" stroke=\"var(--tick-soft, #A3AAB3)\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><line x1=\"241.8\" y1=\"203\" x2=\"253.92\" y2=\"210\" stroke=\"var(--tick, #1C1F24)\" stroke-width=\"3\" stroke-linecap=\"round\"/><line x1=\"230.26\" y1=\"222.27\" x2=\"239.18\" y2=\"230.3\" stroke=\"var(--tick-soft, #A3AAB3)\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><line x1=\"213.48\" y1=\"237.37\" x2=\"220.53\" y2=\"247.08\" stroke=\"var(--tick-soft, #A3AAB3)\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><line x1=\"193.93\" y1=\"248.66\" x2=\"198.81\" y2=\"259.63\" stroke=\"var(--tick-soft, #A3AAB3)\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><line x1=\"172.45\" y1=\"255.64\" x2=\"174.95\" y2=\"267.38\" stroke=\"var(--tick-soft, #A3AAB3)\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><line x1=\"150\" y1=\"256\" x2=\"150\" y2=\"270\" stroke=\"var(--tick, #1C1F24)\" stroke-width=\"3\" stroke-linecap=\"round\"/><line x1=\"127.55\" y1=\"255.64\" x2=\"125.05\" y2=\"267.38\" stroke=\"var(--tick-soft, #A3AAB3)\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><line x1=\"106.07\" y1=\"248.66\" x2=\"101.19\" y2=\"259.63\" stroke=\"var(--tick-soft, #A3AAB3)\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><line x1=\"86.52\" y1=\"237.37\" x2=\"79.47\" y2=\"247.08\" stroke=\"var(--tick-soft, #A3AAB3)\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><line x1=\"69.74\" y1=\"222.27\" x2=\"60.82\" y2=\"230.3\" stroke=\"var(--tick-soft, #A3AAB3)\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><line x1=\"58.2\" y1=\"203\" x2=\"46.08\" y2=\"210\" stroke=\"var(--tick, #1C1F24)\" stroke-width=\"3\" stroke-linecap=\"round\"/><line x1=\"47.29\" y1=\"183.37\" x2=\"35.87\" y2=\"187.08\" stroke=\"var(--tick-soft, #A3AAB3)\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><line x1=\"42.59\" y1=\"161.29\" x2=\"30.66\" y2=\"162.54\" stroke=\"var(--tick-soft, #A3AAB3)\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><line x1=\"42.59\" y1=\"138.71\" x2=\"30.66\" y2=\"137.46\" stroke=\"var(--tick-soft, #A3AAB3)\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><line x1=\"47.29\" y1=\"116.63\" x2=\"35.87\" y2=\"112.92\" stroke=\"var(--tick-soft, #A3AAB3)\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><line x1=\"58.2\" y1=\"97\" x2=\"46.08\" y2=\"90\" stroke=\"var(--tick, #1C1F24)\" stroke-width=\"3\" stroke-linecap=\"round\"/><line x1=\"69.74\" y1=\"77.73\" x2=\"60.82\" y2=\"69.7\" stroke=\"var(--tick-soft, #A3AAB3)\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><line x1=\"86.52\" y1=\"62.63\" x2=\"79.47\" y2=\"52.92\" stroke=\"var(--tick-soft, #A3AAB3)\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><line x1=\"106.07\" y1=\"51.34\" x2=\"101.19\" y2=\"40.37\" stroke=\"var(--tick-soft, #A3AAB3)\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><line x1=\"127.55\" y1=\"44.36\" x2=\"125.05\" y2=\"32.62\" stroke=\"var(--tick-soft, #A3AAB3)\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><g font-family=\"Inter, system-ui, sans-serif\" font-size=\"19\" font-weight=\"600\" fill=\"var(--ink, #111317)\" dominant-baseline=\"central\"><text x=\"150\" y=\"16\" text-anchor=\"middle\">0</text><text x=\"259.12\" y=\"87\" text-anchor=\"start\">5</text><text x=\"259.12\" y=\"213\" text-anchor=\"start\">10</text><text x=\"150\" y=\"284\" text-anchor=\"middle\">15</text><text x=\"40.88\" y=\"213\" text-anchor=\"end\">20</text><text x=\"40.88\" y=\"87\" text-anchor=\"end\">25</text></g><circle cx=\"150\" cy=\"150\" r=\"12\" fill=\"var(--hub, #111317)\"/></svg>",
+      "css": ".ds-dial { display:block; border-radius:50%; box-shadow: 0 1px 2px rgba(17,19,23,0.06), 0 12px 28px rgba(17,19,23,0.08); }"
+    },
+    {
+      "name": "Break Line",
+      "kind": "custom",
+      "refersTo": "break-line",
+      "description": "Slim strip under the dial: cup icon, one nowrap line of used and left, and the quiet Take a break button. Tinted teal while on a break and at the stop.",
+      "html": "<div class=\"ds-break-line\"><svg class=\"ds-cup\" viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" aria-hidden=\"true\"><path d=\"M4.5 9.5h11v4.5a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5V9.5Z\"/><path d=\"M15.5 10.5h1.75a2.75 2.75 0 0 1 0 5.5H15\"/><path d=\"M8.5 3.5v2.5M12 3.5v2.5\"/></svg><p class=\"ds-break-text\"><strong>18m used</strong> · 12m left</p><button class=\"ds-btn-break\">Take a break</button></div><div class=\"ds-break-line is-active\" style=\"margin-top:12px\"><svg class=\"ds-cup\" viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" aria-hidden=\"true\"><path d=\"M4.5 9.5h11v4.5a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5V9.5Z\"/><path d=\"M15.5 10.5h1.75a2.75 2.75 0 0 1 0 5.5H15\"/><path d=\"M8.5 3.5v2.5M12 3.5v2.5\"/></svg><p class=\"ds-break-text\"><strong>On break</strong> · 18m used · 12m left</p></div>",
+      "css": ".ds-break-line { display:flex; align-items:center; gap:8px; width:340px; min-height:48px; padding:4px 4px 4px 12px; border-radius:14px; background: var(--panel, #F6F7F9); font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; font-variant-numeric: tabular-nums; transition: background-color 220ms cubic-bezier(0.16,1,0.3,1); } .ds-break-line.is-active { background: color-mix(in srgb, var(--break, #12A39A) 14%, var(--card, #FFFFFF)); } .ds-cup { flex:none; fill:none; stroke: var(--break-ink, #0B6E68); stroke-width:1.75; stroke-linecap:round; stroke-linejoin:round; } .ds-break-text { flex:1; min-width:0; margin:0; overflow:hidden; color: var(--ink-2, #4B525C); font-size:0.875rem; text-overflow:ellipsis; white-space:nowrap; } .ds-break-text strong { color: var(--ink, #111317); font-weight:600; } .ds-btn-break { flex:none; min-height:40px; padding:0 16px; border:1px solid var(--rule-strong, #D7DBE0); border-radius:10px; background: var(--card, #FFFFFF); color: var(--break-ink, #0B6E68); font: inherit; font-size:0.875rem; font-weight:600; cursor:pointer; transition: background-color 140ms cubic-bezier(0.16,1,0.3,1), border-color 140ms cubic-bezier(0.16,1,0.3,1); } .ds-btn-break:hover { background: var(--panel, #F6F7F9); border-color: var(--ink-3, #666D77); } .ds-btn-break:focus-visible { outline:3px solid var(--focus, #111317); outline-offset:3px; }"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "field",
+      "description": "Card-filled field with an ink focus ring.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-field-label\">GitHub token</span><input class=\"ds-input\" placeholder=\"ghp_...\"></label>",
+      "css": ".ds-field { display:grid; gap:6px; font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; color: var(--ink, #111317); } .ds-field-label { font-size:0.875rem; font-weight:600; } .ds-input { width:100%; min-height:48px; padding:0 14px; border:1px solid var(--rule-strong, #D7DBE0); border-radius:12px; background: var(--card, #FFFFFF); font: inherit; color: inherit; transition: border-color 140ms cubic-bezier(0.16,1,0.3,1), box-shadow 140ms cubic-bezier(0.16,1,0.3,1); } .ds-input::placeholder { color: var(--ink-3, #666D77); } .ds-input:focus { outline:none; border-color: var(--ink, #111317); box-shadow: 0 0 0 1px var(--ink, #111317); }"
+    },
+    {
+      "name": "Segmented Control (weekday rhythm)",
+      "kind": "chip",
+      "refersTo": "segmented-rhythm",
+      "description": "Soft track; the selected option lifts to Card White. The weekday rhythm period is a four-column grid (max 420px) of nowrap options, so All never wraps alone.",
+      "html": "<div class=\"ds-seg\" role=\"radiogroup\" aria-label=\"Period\"><button class=\"ds-seg-btn\" role=\"radio\" aria-checked=\"false\">4 weeks</button><button class=\"ds-seg-btn\" role=\"radio\" aria-checked=\"true\">8 weeks</button><button class=\"ds-seg-btn\" role=\"radio\" aria-checked=\"false\">12 weeks</button><button class=\"ds-seg-btn\" role=\"radio\" aria-checked=\"false\">All</button></div>",
+      "css": ".ds-seg { display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:4px; max-width:420px; padding:4px; border-radius:14px; background: var(--soft, #F1F2F4); font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; } .ds-seg-btn { min-height:38px; padding:0 6px; border:0; border-radius:10px; background:transparent; color: var(--ink-2, #4B525C); font: inherit; font-size:0.875rem; font-weight:600; white-space:nowrap; cursor:pointer; transition: background-color 140ms cubic-bezier(0.16,1,0.3,1), color 140ms cubic-bezier(0.16,1,0.3,1); } .ds-seg-btn:hover { color: var(--ink, #111317); } .ds-seg-btn[aria-checked=\"true\"] { background: var(--card, #FFFFFF); color: var(--ink, #111317); box-shadow: 0 1px 2px rgba(17,19,23,0.04), 0 6px 20px rgba(17,19,23,0.04); } .ds-seg-btn:focus-visible { outline:3px solid var(--focus, #111317); outline-offset:3px; }"
+    },
+    {
+      "name": "Bottom Tabs",
+      "kind": "nav",
+      "refersTo": "tab-bar",
+      "description": "Phone tab bar; the active tab is ink with a 3px top bar.",
+      "html": "<nav class=\"ds-tabs\"><a class=\"ds-tab\" aria-current=\"page\" href=\"#\"><svg width=\"23\" height=\"23\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\"><circle cx=\"12\" cy=\"12\" r=\"8.5\"/><path fill=\"currentColor\" stroke=\"none\" d=\"M12 12V5.25A6.75 6.75 0 0 1 18.75 12Z\"/><path d=\"M12 12V6\"/></svg><span>Today</span></a><a class=\"ds-tab\" href=\"#\"><svg width=\"23\" height=\"23\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\"><path d=\"M9.5 6.5H20M9.5 12H20M9.5 17.5H20\"/><circle cx=\"5\" cy=\"6.5\" r=\"1.4\"/><circle cx=\"5\" cy=\"12\" r=\"1.4\"/><circle cx=\"5\" cy=\"17.5\" r=\"1.4\"/></svg><span>Log</span></a><a class=\"ds-tab\" href=\"#\"><svg width=\"23\" height=\"23\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\"><circle cx=\"12\" cy=\"12\" r=\"8.5\"/><path d=\"M12 3.5V12l6 6\"/><path d=\"M12 12H3.5\"/></svg><span>Insights</span></a></nav>",
+      "css": ".ds-tabs { display:grid; grid-template-columns:repeat(3,1fr); height:64px; background: var(--card, #FFFFFF); border-top:1px solid var(--card-edge, #E5E7EB); font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; } .ds-tab { position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; color: var(--ink-3, #666D77); font-size:0.75rem; font-weight:600; text-decoration:none; transition: color 140ms cubic-bezier(0.16,1,0.3,1); } .ds-tab:hover, .ds-tab[aria-current=\"page\"] { color: var(--ink, #111317); } .ds-tab[aria-current=\"page\"]::before { content:''; position:absolute; top:0; left:32%; right:32%; height:3px; border-radius:0 0 3px 3px; background: var(--ink, #111317); } .ds-tab:focus-visible { outline:3px solid var(--focus, #111317); outline-offset:-4px; }"
+    },
+    {
+      "name": "App Icon",
+      "kind": "custom",
+      "refersTo": "app-icon",
+      "description": "The work dial on a Timer Black tile: white face, flat Topaz sector with its ink edge, black hub, no hand. Shown from the favicon source (6 major ticks).",
+      "html": "<svg class=\"ds-app-icon\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 512 512\" width=\"96\" height=\"96\" aria-hidden=\"true\"><rect width=\"512\" height=\"512\" rx=\"120\" fill=\"#16181C\"/><circle cx=\"256\" cy=\"256\" r=\"214\" fill=\"#FFFFFF\" stroke=\"#E2E5E9\" stroke-width=\"1.28\"/><path d=\"M256.00 256.00L256.00 45.21A210.79 210.79 0 1 1 111.70 409.66Z\" fill=\"#F29A0E\" stroke=\"#8F5A00\" stroke-width=\"2.57\" stroke-linejoin=\"round\"/><line x1=\"256.00\" y1=\"86.94\" x2=\"256.00\" y2=\"54.84\" stroke=\"#111317\" stroke-opacity=\"0.85\" stroke-width=\"6.42\" stroke-linecap=\"round\"/><line x1=\"402.41\" y1=\"171.47\" x2=\"430.21\" y2=\"155.42\" stroke=\"#111317\" stroke-opacity=\"0.85\" stroke-width=\"6.42\" stroke-linecap=\"round\"/><line x1=\"402.41\" y1=\"340.53\" x2=\"430.21\" y2=\"356.58\" stroke=\"#111317\" stroke-opacity=\"0.85\" stroke-width=\"6.42\" stroke-linecap=\"round\"/><line x1=\"256.00\" y1=\"425.06\" x2=\"256.00\" y2=\"457.16\" stroke=\"#111317\" stroke-opacity=\"0.85\" stroke-width=\"6.42\" stroke-linecap=\"round\"/><line x1=\"109.59\" y1=\"340.53\" x2=\"81.79\" y2=\"356.58\" stroke=\"#1C1F24\" stroke-opacity=\"1\" stroke-width=\"6.42\" stroke-linecap=\"round\"/><line x1=\"109.59\" y1=\"171.47\" x2=\"81.79\" y2=\"155.42\" stroke=\"#1C1F24\" stroke-opacity=\"1\" stroke-width=\"6.42\" stroke-linecap=\"round\"/><circle cx=\"256\" cy=\"256\" r=\"23.54\" fill=\"#111317\"/></svg>",
+      "css": ".ds-app-icon { display:block; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Clean Visual Timer",
+    "overview": "Today's time is a white dial in a calm white card, filling clockwise with one flat sector in the day's gem. The break is the back of the same dial: taking a break turns it edge-on to a teal 30-minute face, and Back to work turns it home. A slim break line under the dial says what is used and what is left. Everything else is quiet: near-white ground, hairline-bordered cards with a faint lift, grey ticks and numerals on a white band at the rim, a small black hub, and Inter set big and tight for figures and small, tracked, and uppercase for the headings that name each card. The one loud object on a screen is the full-width black Start/Pause button.\n\nGems are the identity. Each weekday owns a gem: Saturday Topaz, Sunday Emerald, Monday Sapphire, Tuesday Amethyst, Wednesday Diamond, Thursday Ruby, Friday Tourmaline. A faceted stone (an octagonal brilliant in three tones of the gem) names the day beside the date, and the same gem fills that day's dials, bars, and rosette wedges. A neutral eighth stone, Clear, stands for totals and is never a day.\n\nThe system is light-first with a true dark mode, built for an installed PWA on phone and desktop. Density is comfortable but tight enough that the whole Today column fits a 900px-tall desktop window. The system rejects neon-on-dark glow and an object costume for the timer (housings, knobs, hands).",
+    "keyCharacteristics": [
+      "White cards (22px radius, 1px hairline, faint two-layer shadow) on a near-white ground.",
+      "White dials whose ticks and numerals sit on a white band at the rim, with one flat gem sector inside that band and a small black hub. No dial has a hand.",
+      "One big dial with two faces: work in the day's gem, break in teal. Only one face shows at a time.",
+      "Teal for everything about the break, and only the break.",
+      "Faceted octagonal stones as the day mark and the tile mark.",
+      "Inter only: big tight figures, small tracked uppercase card headings, tabular numbers everywhere.",
+      "One full-width black primary button per screen.",
+      "Motion is short and functional (140ms and 220ms). The flip is the one designed motion."
+    ],
+    "rules": [
+      {
+        "name": "The Gem Means a Day Rule",
+        "body": "A gem colour appears only where it stands for its weekday: dial sectors, stones, rosette wedges, weekday bars, and the input caret on that day. Gems are never button, link, status, or decoration colours. The one fixed gem is the app icon, a portrait of the work dial in Topaz (see App icon).",
+        "section": "colors"
+      },
+      {
+        "name": "The Triplet Rule",
+        "body": "Use a gem only through its triplet. Fill with `--g`, edge and text with `--gi`, and marks over the fill with `--go`. Never set text in the fill shade.",
+        "section": "colors"
+      },
+      {
+        "name": "The Clear Is Not a Day Rule",
+        "body": "The Clear stone and sector mean totals: the Week and To goal tiles, and past weeks. Never assign Clear to a weekday or use it as a rest-day colour. Rest days use a Soft face and a Tick Soft hub.",
+        "section": "colors"
+      },
+      {
+        "name": "The Teal Is the Break Rule",
+        "body": "Teal is reserved for the break face, the break line, and break state. Nothing else is teal.",
+        "section": "colors"
+      },
+      {
+        "name": "The Label Is the Heading Rule",
+        "body": "The small tracked uppercase label is the card's actual heading (h2 or h3). It is never an eyebrow or kicker stacked above another heading.",
+        "section": "typography"
+      },
+      {
+        "name": "The One Label Rule",
+        "body": "Every card and section heading uses the one shared label style. Views never restyle it, except the tiles, which only tighten its tracking (0.08em).",
+        "section": "typography"
+      },
+      {
+        "name": "The Still Numbers Rule",
+        "body": "The body sets `font-variant-numeric: tabular-nums`. A ticking figure never shifts its neighbours.",
+        "section": "typography"
+      },
+      {
+        "name": "The Copy Says Break Rule",
+        "body": "The UI says \"break\", never \"paid break\".",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat Face Rule",
+        "body": "Dial faces, sectors, and stones carry no gradient, glow, or bevel. A stone's facets are three flat tones mixed from its gem.",
+        "section": "elevation"
+      },
+      {
+        "name": "The One Lifted Dial Rule",
+        "body": "Only the big dial (either face) gets the dial shadow, on its flip card. Day dials, past-week dials, and rosettes sit flat.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** put every Today block in a white card (22px radius, 1px card-edge, Card shadow) on the Ground.",
+      "**Do** name each card with the small tracked uppercase label as its real h2 or h3 heading.",
+      "**Do** fill the work face with one flat sector in today's gem, edged in the gem's ink at full opacity, under a black hub with no hand.",
+      "**Do** stop every dial's sector short of the rim, so ticks and numerals sit on a white band and are never covered.",
+      "**Do** show the break as the teal back face of the big dial, flipping to it on a break, holding it at the 30-minute stop, and flipping back on Back to work.",
+      "**Do** say break used and left in the one slim break line under the dial.",
+      "**Do** mark the day with its faceted stone, and use the Clear stone only for totals (Week, To goal) and past weeks.",
+      "**Do** map gems Saturday Topaz, Sunday Emerald, Monday Sapphire, Tuesday Amethyst, Wednesday Diamond, Thursday Ruby, Friday Tourmaline.",
+      "**Do** keep one full-width black Start/Pause button as the single primary action on Today.",
+      "**Do** keep the wide Today column fitting a 900px-tall window.",
+      "**Do** use 140ms and 220ms with the shared ease-out for everyday changes; the flip's 240ms out and 320ms back are its own.",
+      "**Do** write \"break\", never \"paid break\".",
+      "**Do** render every app icon from its SVG source: the work dial on a Timer Black tile, one flat Topaz sector, and a black hub with no hand."
+    ],
+    "donts": [
+      "**Don't** add a hand, knob, housing, or any physical-object costume to a dial.",
+      "**Don't** show both faces at once, or draw a separate break dial or break card beside the work dial.",
+      "**Don't** animate anything else the way the flip moves; it is the one designed motion.",
+      "**Don't** use neon-on-dark glow, gradients, or bevels on faces, sectors, or stones.",
+      "**Don't** use a gem colour for buttons, links, or status, and don't give Clear to a weekday.",
+      "**Don't** put an eyebrow or kicker above a heading. The label is the heading.",
+      "**Don't** draw a second rosette. The rosette is the current week only, and past weeks are Clear mini dials.",
+      "**Don't** add a second primary button to a screen."
+    ]
+  }
+}
