@@ -1,0 +1,586 @@
+/* ------------------------------------------------------------ icons */
+
+.icon {
+    width: 24px;
+    height: 24px;
+    flex: none;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.75;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* ------------------------------------------------------------ cards and labels */
+
+.card {
+    background: var(--card);
+    border: 1px solid var(--card-edge);
+    border-radius: var(--r-card);
+    box-shadow: var(--shadow-card);
+}
+
+/* Small tracked headings name each card; they are the headings, not eyebrows. */
+.label {
+    margin: 0;
+    color: var(--ink-3);
+    font-size: var(--t-xs);
+    font-weight: 600;
+    letter-spacing: var(--tracking-label);
+    line-height: 1.3;
+    text-transform: uppercase;
+}
+
+.card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-3);
+    min-height: 28px;
+}
+
+/* ------------------------------------------------------------ dials */
+
+.dial {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+}
+
+.dial-face {
+    fill: var(--face);
+    stroke: var(--face-edge);
+    stroke-width: 1;
+}
+
+/* a full-strength ink edge keeps pale gems (Topaz, Diamond) at 3:1 against the face */
+.dial-gem .sector {
+    fill: var(--g);
+    stroke: var(--gi);
+    stroke-width: 1.5;
+    stroke-linejoin: round;
+}
+
+.sector-lap {
+    fill: var(--gi);
+    opacity: 0.5;
+}
+
+.tick {
+    stroke: var(--tick-soft);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+}
+
+.tick-major {
+    stroke: var(--tick);
+    stroke-width: 3;
+}
+
+.numeral {
+    fill: var(--ink);
+    font-family: var(--font);
+    font-size: 19px;
+    font-weight: 600;
+    dominant-baseline: central;
+    font-variant-numeric: tabular-nums;
+}
+
+.dial-hub {
+    fill: var(--hub);
+}
+
+/* the sector carries an ink edge so pale gems still read against the face */
+.break-sector {
+    fill: var(--break);
+    stroke: var(--break-ink);
+    stroke-width: 1.5;
+    stroke-linejoin: round;
+}
+
+/* ------------------------------------------------------------ the flip
+   Work and break are the two faces of one dial. Only one face is ever shown:
+   the dial turns edge-on, the face swaps, and it turns back. */
+
+.flip {
+    perspective: 1100px;
+}
+
+.flip-card {
+    border-radius: 50%;
+    box-shadow: var(--shadow-dial);
+    transform: rotateY(0deg);
+}
+
+.flip.is-turning-out .flip-card {
+    transform: rotateY(90deg);
+    transition: transform 240ms cubic-bezier(0.55, 0, 1, 0.45);
+}
+
+.flip.is-turned .flip-card {
+    transform: rotateY(-90deg);
+    transition: none;
+}
+
+.flip.is-turning-in .flip-card {
+    transform: rotateY(0deg);
+    transition: transform 320ms var(--ease-out);
+}
+
+.flip[data-face="work"] .face-break,
+.flip[data-face="break"] .face-work {
+    display: none;
+}
+
+/* day dials */
+.mini {
+    overflow: visible;
+    flex: none;
+}
+
+.mini-face {
+    fill: var(--face);
+    stroke: var(--face-edge);
+    stroke-width: 1;
+}
+
+.mini .sector {
+    stroke-width: 1;
+}
+
+.mini-tick {
+    stroke: var(--tick-soft);
+    stroke-width: 1.2;
+    stroke-linecap: round;
+}
+
+.mini-hub {
+    fill: var(--hub);
+}
+
+.mini-off .mini-face {
+    fill: var(--soft);
+    stroke: var(--rule-strong);
+}
+
+.mini-off .mini-hub {
+    fill: var(--tick-soft);
+}
+
+.mini-future {
+    opacity: 0.55;
+}
+
+.rosette {
+    overflow: visible;
+    flex: none;
+}
+
+.rosette .rosette-seg {
+    stroke: var(--face);
+    stroke-width: 1.2;
+    stroke-opacity: 1;
+}
+
+.rosette-tick {
+    stroke-width: 2.2;
+}
+
+/* ------------------------------------------------------------ stones */
+
+.stone {
+    flex: none;
+    overflow: visible;
+}
+
+.stone-girdle,
+.stone-facet-mid {
+    fill: var(--g);
+}
+
+.stone-facet-lit {
+    fill: color-mix(in srgb, var(--g) 55%, #FFFFFF);
+}
+
+.stone-facet-deep {
+    fill: color-mix(in srgb, var(--g) 78%, #000000);
+}
+
+.stone-table {
+    fill: color-mix(in srgb, var(--g) 35%, #FFFFFF);
+}
+
+.stone-edge {
+    fill: none;
+    stroke: var(--gi);
+    stroke-width: 0.6;
+    stroke-linejoin: round;
+    stroke-opacity: 0.6;
+}
+
+/* ------------------------------------------------------------ buttons */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--s-2);
+    min-height: 48px;
+    padding: 0 var(--s-5);
+    border: 1px solid transparent;
+    border-radius: var(--r-md);
+    font-size: var(--t-md);
+    font-weight: 600;
+    line-height: 1.2;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background-color var(--d-fast) var(--ease-out), border-color var(--d-fast) var(--ease-out), transform var(--d-fast) var(--ease-out), opacity var(--d-fast) linear;
+}
+
+.btn .icon {
+    width: 20px;
+    height: 20px;
+}
+
+.btn:active:not(:disabled) {
+    transform: scale(0.985);
+}
+
+.btn:disabled {
+    opacity: 0.45;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: var(--primary-ink);
+}
+
+.btn-primary:hover:not(:disabled) {
+    background: var(--primary-hover);
+}
+
+.btn-block {
+    width: 100%;
+    min-height: 58px;
+    border-radius: var(--r-cta);
+    font-size: var(--t-lg);
+}
+
+.btn-block .icon {
+    width: 22px;
+    height: 22px;
+}
+
+.btn-glyph {
+    display: inline-flex;
+}
+
+/* the stretch stopwatch rides on the primary button */
+.btn-meta {
+    margin-left: var(--s-2);
+    font-size: var(--t-sm);
+    font-weight: 500;
+    opacity: 0.7;
+}
+
+.btn-meta:empty {
+    display: none;
+}
+
+.btn-soft {
+    background: var(--soft);
+    color: var(--ink);
+}
+
+.btn-soft:hover:not(:disabled) {
+    background: var(--soft-hover);
+}
+
+.btn-quiet {
+    background: var(--card);
+    color: var(--ink);
+    border-color: var(--rule-strong);
+}
+
+.btn-quiet:hover:not(:disabled) {
+    background: var(--panel);
+    border-color: var(--ink-3);
+}
+
+.btn-danger {
+    background: var(--danger);
+    color: var(--card);
+}
+
+.btn-danger:hover {
+    opacity: 0.9;
+}
+
+.btn-small {
+    min-height: 40px;
+    padding: 0 var(--s-4);
+    font-size: var(--t-sm);
+    border-radius: var(--r-sm);
+}
+
+.btn-small .icon {
+    width: 18px;
+    height: 18px;
+}
+
+.btn-text {
+    min-height: 32px;
+    padding: 0 var(--s-2);
+    margin-right: calc(-1 * var(--s-2));
+    border: 0;
+    border-radius: var(--r-sm);
+    background: transparent;
+    color: var(--ink-2);
+    font-size: var(--t-sm);
+    font-weight: 600;
+    transition: background-color var(--d-fast) var(--ease-out), color var(--d-fast) var(--ease-out);
+}
+
+.btn-text:hover:not(:disabled) {
+    background: var(--soft);
+    color: var(--ink);
+}
+
+.icon-btn {
+    display: inline-grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--r-sm);
+    color: var(--ink);
+    transition: background-color var(--d-fast) var(--ease-out);
+}
+
+.icon-btn:hover,
+.icon-btn[aria-current="page"] {
+    background: var(--soft);
+}
+
+/* ------------------------------------------------------------ sync status */
+
+.sync {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 40px;
+    padding: 0 10px;
+    border: 0;
+    border-radius: var(--r-pill);
+    background: transparent;
+    color: var(--ink-2);
+    font-size: var(--t-sm);
+    font-weight: 500;
+    white-space: nowrap;
+    transition: background-color var(--d-fast) var(--ease-out);
+}
+
+.sync:hover {
+    background: var(--soft);
+}
+
+.sync-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--tick-soft);
+    flex: none;
+}
+
+.sync[data-state="ok"] .sync-dot { background: var(--ok); }
+.sync[data-state="syncing"] .sync-dot,
+.sync[data-state="idle"] .sync-dot { background: var(--ink-2); }
+.sync[data-state="offline"] .sync-dot,
+.sync[data-state="retry"] .sync-dot { background: var(--warn); }
+.sync[data-state="auth"] .sync-dot,
+.sync[data-state="missing"] .sync-dot,
+.sync[data-state="data"] .sync-dot { background: var(--danger); }
+
+.sync[data-state="auth"],
+.sync[data-state="missing"],
+.sync[data-state="data"] {
+    color: var(--danger);
+}
+
+/* ------------------------------------------------------------ segmented control */
+
+.seg {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 4px;
+    border-radius: var(--r-md);
+    background: var(--soft);
+}
+
+.seg-btn {
+    min-height: 38px;
+    padding: 0 14px;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--ink-2);
+    font-size: var(--t-sm);
+    font-weight: 600;
+    transition: background-color var(--d-fast) var(--ease-out), color var(--d-fast) var(--ease-out);
+}
+
+.seg-btn:hover {
+    color: var(--ink);
+}
+
+.seg-btn[aria-checked="true"] {
+    background: var(--card);
+    color: var(--ink);
+    box-shadow: var(--shadow-card);
+}
+
+/* ------------------------------------------------------------ fields */
+
+.field-label {
+    font-size: var(--t-sm);
+    font-weight: 600;
+}
+
+.field-input {
+    width: 100%;
+    min-height: 48px;
+    padding: 0 14px;
+    border: 1px solid var(--rule-strong);
+    border-radius: var(--r-field);
+    background: var(--card);
+    transition: border-color var(--d-fast) var(--ease-out), box-shadow var(--d-fast) var(--ease-out);
+}
+
+.field-input::placeholder {
+    color: var(--ink-3);
+}
+
+.field-input:focus {
+    border-color: var(--ink);
+    box-shadow: 0 0 0 1px var(--ink);
+}
+
+.field-help {
+    color: var(--ink-3);
+    font-size: var(--t-sm);
+}
+
+.field-error {
+    color: var(--danger);
+    font-size: var(--t-sm);
+    font-weight: 600;
+}
+
+/* ------------------------------------------------------------ banners and notices */
+
+.banner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-3) var(--s-4);
+    padding: var(--s-4);
+}
+
+.banner-text {
+    flex: 1 1 18rem;
+    color: var(--ink);
+}
+
+.banner-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-2);
+}
+
+.notices {
+    position: fixed;
+    left: 50%;
+    bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom) + 12px);
+    z-index: 40;
+    width: min(440px, calc(100% - 2 * var(--gutter)));
+    display: grid;
+    gap: var(--s-2);
+    transform: translateX(-50%);
+    pointer-events: none;
+}
+
+.notice {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--s-3);
+    padding: 12px 8px 12px 16px;
+    border-radius: var(--r-md);
+    background: var(--primary);
+    color: var(--primary-ink);
+    box-shadow: var(--shadow-float);
+    pointer-events: auto;
+    animation: notice-in var(--d-base) var(--ease-out);
+}
+
+.notice.is-leaving {
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity var(--d-fast) linear, transform var(--d-fast) var(--ease-out);
+}
+
+@keyframes notice-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: none; }
+}
+
+.notice-body {
+    flex: 1;
+    min-width: 0;
+    padding-top: 2px;
+}
+
+.notice-title {
+    font-weight: 700;
+}
+
+.notice-text {
+    font-size: var(--t-sm);
+    opacity: 0.88;
+}
+
+.notice-action {
+    align-self: center;
+    min-height: 40px;
+    padding: 0 12px;
+    border: 1px solid currentColor;
+    border-radius: var(--r-sm);
+    background: transparent;
+    color: inherit;
+    font-weight: 700;
+}
+
+.notice-close {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border: 0;
+    border-radius: var(--r-sm);
+    background: transparent;
+    color: inherit;
+    opacity: 0.8;
+}
+
+.notice-close:hover {
+    opacity: 1;
+}
+
+.notice-close .icon {
+    width: 20px;
+    height: 20px;
+}
+
+.notice :focus-visible {
+    outline-color: var(--primary-ink);
+}

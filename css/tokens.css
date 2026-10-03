@@ -1,0 +1,202 @@
+/* FlowFocus tokens: the clean visual timer.
+   White cards on a near-white ground, white dials with grey ticks, one flat
+   sector in the day's gem, a black hub, teal for the break, faceted stones.
+   Light-first; a true dark mode for evenings. */
+
+@font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400 800;
+    font-display: swap;
+    src: url('../assets/fonts/inter-latin.woff2') format('woff2');
+}
+
+:root {
+    color-scheme: light;
+
+    /* neutrals */
+    --ground: #F4F5F7;
+    --card: #FFFFFF;
+    --card-edge: #E5E7EB;
+    --panel: #F6F7F9;
+    --ink: #111317;
+    --ink-2: #4B525C;
+    --ink-3: #666D77;
+    --rule: #ECEEF1;
+    --rule-strong: #D7DBE0;
+    --face: #FFFFFF;
+    --face-edge: #E2E5E9;
+    --tick: #1C1F24;
+    --tick-soft: #A3AAB3;
+    --hub: #111317;
+    --primary: #16181C;
+    --primary-ink: #FFFFFF;
+    --primary-hover: #2A2D33;
+    --soft: #F1F2F4;
+    --soft-hover: #E7E9EC;
+    --break: #12A39A;
+    --break-ink: #0B6E68;
+    --break-on: #FFFFFF;
+    --ok: #16A34A;
+    --warn: #C77A06;
+    --danger: #C2263A;
+    --danger-soft: #FBE9EB;
+    --focus: #111317;
+    --selection: #D6E2FB;
+    --shadow-card: 0 1px 2px rgba(17, 19, 23, 0.04), 0 6px 20px rgba(17, 19, 23, 0.04);
+    --shadow-dial: 0 1px 2px rgba(17, 19, 23, 0.06), 0 12px 28px rgba(17, 19, 23, 0.08);
+    --shadow-float: 0 2px 6px rgba(17, 19, 23, 0.08), 0 16px 36px rgba(17, 19, 23, 0.14);
+
+    /* gems: fill, an ink shade for edges and text, and the colour for marks printed over the fill */
+    --topaz: #F29A0E;      --topaz-ink: #8F5A00;      --topaz-on: #111317;
+    --emerald: #17925C;    --emerald-ink: #0C6440;    --emerald-on: #FFFFFF;
+    --sapphire: #2453CC;   --sapphire-ink: #1A3E9E;   --sapphire-on: #FFFFFF;
+    --amethyst: #8444C6;   --amethyst-ink: #612F97;   --amethyst-on: #FFFFFF;
+    --diamond: #A9D2E4;    --diamond-ink: #2F6684;    --diamond-on: #111317;
+    --ruby: #D42A4C;       --ruby-ink: #9A1533;       --ruby-on: #FFFFFF;
+    --tourmaline: #D6428A; --tourmaline-ink: #A12863; --tourmaline-on: #FFFFFF;
+    --clear: #CDD2D9;      --clear-ink: #5D646E;      --clear-on: #111317;  /* not a day: totals */
+
+    /* type */
+    --font: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --font-mono: ui-monospace, 'Cascadia Mono', Consolas, Menlo, monospace;
+    --t-2xs: 0.6875rem;   /* week-row values on phones */
+    --t-xs: 0.75rem;
+    --t-sm: 0.875rem;
+    --t-md: 1rem;
+    --t-lg: 1.125rem;
+    --t-xl: 1.375rem;
+    --t-2xl: 1.75rem;
+    --t-figure: 3.25rem;
+    --tracking-label: 0.16em;
+    --tracking-label-tight: 0.08em; /* labels in the narrow tiles */
+
+    /* space (4px rhythm) */
+    --s-1: 4px;
+    --s-2: 8px;
+    --s-3: 12px;
+    --s-4: 16px;
+    --s-5: 20px;
+    --s-6: 24px;
+    --s-8: 32px;
+    --s-10: 40px;
+    --s-12: 48px;
+    --s-16: 64px;
+    --gutter: 16px;
+
+    /* shape */
+    --r-sm: 10px;
+    --r-md: 14px;
+    --r-field: 12px;
+    --r-cta: 16px;
+    --r-tile: 18px;
+    --r-card: 22px;
+    --r-pill: 999px;
+
+    /* motion */
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --d-fast: 140ms;
+    --d-base: 220ms;
+
+    --tabbar-h: 64px;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-mode="light"]) {
+        color-scheme: dark;
+        --ground: #0E0F11;
+        --card: #17191C;
+        --card-edge: #26292E;
+        --panel: #1C1E22;
+        --ink: #F1F2F4;
+        --ink-2: #BAC0C8;
+        --ink-3: #9BA2AB;
+        --rule: #23262B;
+        --rule-strong: #343840;
+        --face: #1E2125;
+        --face-edge: #30343A;
+        --tick: #E6E8EB;
+        --tick-soft: #6C737D;
+        --hub: #F1F2F4;
+        --primary: #F1F2F4;
+        --primary-ink: #111317;
+        --primary-hover: #D9DCE1;
+        --soft: #23262B;
+        --soft-hover: #2C3036;
+        --break: #2BBFB4;
+        --break-ink: #7BE0D7;
+        --break-on: #0E0F11;
+        --ok: #34C772;
+        --warn: #F0B54A;
+        --danger: #FF8A97;
+        --danger-soft: #3A1E23;
+        --focus: #F1F2F4;
+        --selection: #2F3D5C;
+        --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.35), 0 6px 20px rgba(0, 0, 0, 0.25);
+        --shadow-dial: 0 1px 2px rgba(0, 0, 0, 0.4), 0 12px 28px rgba(0, 0, 0, 0.4);
+        --shadow-float: 0 2px 6px rgba(0, 0, 0, 0.45), 0 16px 36px rgba(0, 0, 0, 0.5);
+
+        --topaz: #F2AA34;      --topaz-ink: #FFC766;      --topaz-on: #111317;
+        --emerald: #2DB077;    --emerald-ink: #6FD9A4;    --emerald-on: #0E0F11;
+        --sapphire: #5584F0;   --sapphire-ink: #A3BCFF;   --sapphire-on: #0E0F11;
+        --amethyst: #A36EE6;   --amethyst-ink: #CFAEFF;   --amethyst-on: #0E0F11;
+        --diamond: #8EBDD2;    --diamond-ink: #BFE3F2;    --diamond-on: #0E0F11;
+        --ruby: #E8506E;       --ruby-ink: #FF9AAE;       --ruby-on: #0E0F11;
+        --tourmaline: #EC69A9; --tourmaline-ink: #FFA3CF; --tourmaline-on: #0E0F11;
+    --clear: #5A616B;      --clear-ink: #AEB5BE;      --clear-on: #F1F2F4;
+    }
+}
+
+:root[data-mode="dark"] {
+    color-scheme: dark;
+    --ground: #0E0F11;
+    --card: #17191C;
+    --card-edge: #26292E;
+    --panel: #1C1E22;
+    --ink: #F1F2F4;
+    --ink-2: #BAC0C8;
+    --ink-3: #9BA2AB;
+    --rule: #23262B;
+    --rule-strong: #343840;
+    --face: #1E2125;
+    --face-edge: #30343A;
+    --tick: #E6E8EB;
+    --tick-soft: #6C737D;
+    --hub: #F1F2F4;
+    --primary: #F1F2F4;
+    --primary-ink: #111317;
+    --primary-hover: #D9DCE1;
+    --soft: #23262B;
+    --soft-hover: #2C3036;
+    --break: #2BBFB4;
+    --break-ink: #7BE0D7;
+    --break-on: #0E0F11;
+    --ok: #34C772;
+    --warn: #F0B54A;
+    --danger: #FF8A97;
+    --danger-soft: #3A1E23;
+    --focus: #F1F2F4;
+    --selection: #2F3D5C;
+    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.35), 0 6px 20px rgba(0, 0, 0, 0.25);
+    --shadow-dial: 0 1px 2px rgba(0, 0, 0, 0.4), 0 12px 28px rgba(0, 0, 0, 0.4);
+    --shadow-float: 0 2px 6px rgba(0, 0, 0, 0.45), 0 16px 36px rgba(0, 0, 0, 0.5);
+
+    --topaz: #F2AA34;      --topaz-ink: #FFC766;      --topaz-on: #111317;
+    --emerald: #2DB077;    --emerald-ink: #6FD9A4;    --emerald-on: #0E0F11;
+    --sapphire: #5584F0;   --sapphire-ink: #A3BCFF;   --sapphire-on: #0E0F11;
+    --amethyst: #A36EE6;   --amethyst-ink: #CFAEFF;   --amethyst-on: #0E0F11;
+    --diamond: #8EBDD2;    --diamond-ink: #BFE3F2;    --diamond-on: #0E0F11;
+    --ruby: #E8506E;       --ruby-ink: #FF9AAE;       --ruby-on: #0E0F11;
+    --tourmaline: #EC69A9; --tourmaline-ink: #FFA3CF; --tourmaline-on: #0E0F11;
+    --clear: #5A616B;      --clear-ink: #AEB5BE;      --clear-on: #F1F2F4;
+}
+
+/* Each gem-bearing element names its gem; --g (fill), --gi (ink), --go (marks on the fill) follow. */
+[data-gem="topaz"] { --g: var(--topaz); --gi: var(--topaz-ink); --go: var(--topaz-on); }
+[data-gem="emerald"] { --g: var(--emerald); --gi: var(--emerald-ink); --go: var(--emerald-on); }
+[data-gem="sapphire"] { --g: var(--sapphire); --gi: var(--sapphire-ink); --go: var(--sapphire-on); }
+[data-gem="amethyst"] { --g: var(--amethyst); --gi: var(--amethyst-ink); --go: var(--amethyst-on); }
+[data-gem="diamond"] { --g: var(--diamond); --gi: var(--diamond-ink); --go: var(--diamond-on); }
+[data-gem="ruby"] { --g: var(--ruby); --gi: var(--ruby-ink); --go: var(--ruby-on); }
+[data-gem="tourmaline"] { --g: var(--tourmaline); --gi: var(--tourmaline-ink); --go: var(--tourmaline-on); }
+[data-gem="clear"] { --g: var(--clear); --gi: var(--clear-ink); --go: var(--clear-on); }

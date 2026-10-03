@@ -1,0 +1,1241 @@
+/* ------------------------------------------------------------ frame (phone first) */
+
+.app {
+    min-height: 100dvh;
+    padding-bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom) + var(--s-6));
+}
+
+.topbar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: var(--s-3);
+    padding: calc(env(safe-area-inset-top) + 18px) var(--gutter) 14px;
+}
+
+/* the wordmark and the tools share a row; the day line runs full width beneath */
+.brand {
+    display: contents;
+}
+
+.wordmark {
+    font-size: var(--t-2xl);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+}
+
+.dayline {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 2px 8px;
+    margin-top: 6px;
+    color: var(--ink-3);
+    font-size: var(--t-xs);
+    font-weight: 600;
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+}
+
+.day-stone {
+    display: inline-flex;
+}
+
+.dayline-sep {
+    letter-spacing: 0;
+}
+
+.topbar-tools {
+    grid-column: 2;
+    grid-row: 1;
+    display: flex;
+    align-items: center;
+    gap: var(--s-1);
+}
+
+.window-banner {
+    margin: 0 var(--gutter) var(--s-3);
+}
+
+.view {
+    padding: 0 var(--gutter);
+    max-width: 560px;
+    margin: 0 auto;
+}
+
+.main:focus {
+    outline: none;
+}
+
+/* bottom tabs */
+.tabs {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 20;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    height: calc(var(--tabbar-h) + env(safe-area-inset-bottom));
+    padding-bottom: env(safe-area-inset-bottom);
+    background: var(--card);
+    border-top: 1px solid var(--card-edge);
+}
+
+.tab {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    color: var(--ink-3);
+    font-size: var(--t-xs);
+    font-weight: 600;
+    text-decoration: none;
+    transition: color var(--d-fast) var(--ease-out);
+}
+
+.tab .icon {
+    width: 23px;
+    height: 23px;
+}
+
+.tab:hover,
+.tab[aria-current="page"] {
+    color: var(--ink);
+}
+
+.tab[aria-current="page"]::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 32%;
+    right: 32%;
+    height: 3px;
+    border-radius: 0 0 3px 3px;
+    background: var(--ink);
+}
+
+.tab:focus-visible {
+    outline-offset: -4px;
+}
+
+/* ------------------------------------------------------------ Today */
+
+.view-today {
+    display: grid;
+    gap: var(--s-3);
+    align-content: start;
+}
+
+.gap-slot:empty {
+    display: none;
+}
+
+.gap-field {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-2);
+    font-size: var(--t-sm);
+    font-weight: 600;
+}
+
+.gap-time {
+    min-height: 40px;
+    padding: 0 10px;
+    border: 1px solid var(--rule-strong);
+    border-radius: var(--r-sm);
+    background: var(--panel);
+}
+
+.work-card {
+    padding: 18px 18px 16px;
+}
+
+.figure {
+    margin-top: var(--s-2);
+    font-size: var(--t-figure);
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    line-height: 1;
+}
+
+.status {
+    margin-top: var(--s-2);
+    color: var(--ink-2);
+    font-size: var(--t-md);
+}
+
+.status-extra {
+    color: var(--ink-3);
+}
+
+.flip {
+    width: min(100%, 272px);
+    margin: var(--s-4) auto;
+}
+
+/* the slim break line under the dial: what is used, what is left, and the button */
+.break-line {
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+    min-height: 48px;
+    margin-bottom: var(--s-3);
+    padding: 4px 4px 4px 12px;
+    border-radius: var(--r-md);
+    background: var(--panel);
+    transition: background-color var(--d-base) var(--ease-out);
+}
+
+.break-line.is-active {
+    background: color-mix(in srgb, var(--break) 14%, var(--card));
+}
+
+.break-line-icon {
+    width: 20px;
+    height: 20px;
+    color: var(--break-ink);
+}
+
+.break-line-text {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    color: var(--ink-2);
+    font-size: var(--t-sm);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.break-line-text strong {
+    color: var(--ink);
+    font-weight: 600;
+}
+
+.break-line .btn {
+    flex: none;
+}
+
+.btn-break {
+    color: var(--break-ink);
+    border-color: var(--rule-strong);
+}
+
+.note {
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+    margin-top: var(--s-3);
+    padding: 0 12px;
+    border-radius: var(--r-field);
+    background: var(--panel);
+    transition: box-shadow var(--d-fast) var(--ease-out);
+}
+
+.note:focus-within {
+    box-shadow: inset 0 0 0 1.5px var(--ink);
+}
+
+.note-icon {
+    width: 18px;
+    height: 18px;
+    color: var(--ink-3);
+}
+
+.note-input {
+    flex: 1;
+    min-width: 0;
+    min-height: 44px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    font-size: var(--t-sm);
+}
+
+.note-input::placeholder {
+    color: var(--ink-3);
+}
+
+.note-input:focus-visible {
+    outline: none;
+}
+
+.week-card {
+    padding: 16px 14px 14px;
+}
+
+.week-card .card-head {
+    padding: 0 4px;
+}
+
+.week-dials {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 6px;
+    margin-top: var(--s-3);
+}
+
+.wd-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 0;
+    border-radius: var(--r-sm);
+    color: var(--ink);
+    text-decoration: none;
+    transition: background-color var(--d-fast) var(--ease-out);
+}
+
+a.wd-link:hover {
+    background: var(--panel);
+}
+
+.wd-link[aria-disabled="true"] {
+    pointer-events: none;
+}
+
+.wd-link .mini {
+    width: min(44px, 100%);
+    height: auto;
+}
+
+.wd-day {
+    color: var(--ink-3);
+    font-size: var(--t-xs);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+}
+
+.is-today .wd-day {
+    color: var(--ink);
+    font-weight: 800;
+}
+
+.wd-hours {
+    color: var(--ink-2);
+    font-size: var(--t-2xs);
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+}
+
+@media (min-width: 480px) {
+    .wd-hours {
+        font-size: var(--t-xs);
+    }
+}
+
+.is-today .wd-hours {
+    color: var(--ink);
+    font-weight: 700;
+}
+
+.tiles {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.tile {
+    position: relative;
+    padding: 14px 12px 14px 14px;
+    background: var(--card);
+    border: 1px solid var(--card-edge);
+    border-radius: var(--r-tile);
+    box-shadow: var(--shadow-card);
+}
+
+.tile .label {
+    padding-right: 22px;
+    letter-spacing: var(--tracking-label-tight);
+}
+
+.tile-figure {
+    margin-top: var(--s-2);
+    font-size: var(--t-lg);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+}
+
+.tile-sub {
+    margin-top: 2px;
+    color: var(--ink-3);
+    font-size: var(--t-xs);
+}
+
+.tile-stone {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: inline-flex;
+}
+
+.tile-stone .stone {
+    width: 20px;
+    height: 20px;
+}
+
+/* ------------------------------------------------------------ shared view parts */
+
+.view-head {
+    padding: var(--s-2) 0;
+}
+
+.view-title {
+    font-size: var(--t-2xl);
+    font-weight: 800;
+    letter-spacing: -0.025em;
+}
+
+.view-lede {
+    margin-top: var(--s-1);
+    color: var(--ink-2);
+    max-width: 60ch;
+}
+
+/* ------------------------------------------------------------ Log */
+
+.log-week {
+    margin-top: var(--s-3);
+    padding: var(--s-4) var(--s-3) var(--s-2);
+    background: var(--card);
+    border: 1px solid var(--card-edge);
+    border-radius: var(--r-card);
+    box-shadow: var(--shadow-card);
+}
+
+.log-week-head {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--s-3);
+    padding: 0 var(--s-2) var(--s-3);
+    border-bottom: 1px solid var(--rule);
+}
+
+.log-week-title h2 {
+    font-size: var(--t-lg);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+}
+
+.log-week-range {
+    color: var(--ink-3);
+    font-size: var(--t-sm);
+}
+
+.log-week-total {
+    text-align: right;
+    white-space: nowrap;
+}
+
+.log-week-total .num {
+    font-size: var(--t-lg);
+    font-weight: 700;
+}
+
+.of {
+    color: var(--ink-3);
+    font-weight: 500;
+}
+
+.day-row + .day-row {
+    border-top: 1px solid var(--rule);
+}
+
+.day-main {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 34px minmax(0, 1fr) auto;
+    grid-template-areas:
+        'dial name hours'
+        'dial meta hours';
+    align-items: center;
+    column-gap: var(--s-3);
+    padding: 10px 8px;
+    border: 0;
+    border-radius: var(--r-sm);
+    background: transparent;
+    text-align: left;
+    transition: background-color var(--d-fast) var(--ease-out);
+}
+
+.day-main > .mini {
+    grid-area: dial;
+}
+
+button.day-main:hover {
+    background: var(--panel);
+}
+
+.day-name {
+    grid-area: name;
+    display: flex;
+    align-items: baseline;
+    gap: var(--s-2);
+    min-width: 0;
+    white-space: nowrap;
+}
+
+.day-pill {
+    align-self: center;
+    padding: 1px 8px;
+    border-radius: var(--r-pill);
+    background: var(--primary);
+    color: var(--primary-ink);
+    font-size: var(--t-xs);
+    font-weight: 600;
+}
+
+.day-weekday {
+    font-weight: 600;
+}
+
+.day-date {
+    color: var(--ink-3);
+    font-size: var(--t-sm);
+}
+
+.day-meta {
+    grid-area: meta;
+    min-width: 0;
+    color: var(--ink-3);
+    font-size: var(--t-sm);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.day-meta:empty {
+    display: none;
+}
+
+.day-meta.has-note {
+    color: var(--ink-2);
+}
+
+.day-hours {
+    grid-area: hours;
+    font-size: var(--t-md);
+    font-weight: 700;
+    text-align: right;
+}
+
+.day-row.is-future .day-main {
+    color: var(--ink-3);
+}
+
+.day-row.is-open .day-main {
+    background: var(--panel);
+    border-radius: var(--r-sm) var(--r-sm) 0 0;
+}
+
+.editor {
+    display: grid;
+    gap: var(--s-2);
+    margin-bottom: var(--s-2);
+    padding: var(--s-2) var(--s-4) var(--s-4);
+    border-radius: 0 0 var(--r-md) var(--r-md);
+    background: var(--panel);
+}
+
+.editor-row {
+    display: grid;
+    gap: var(--s-2);
+}
+
+.editor-label {
+    font-size: var(--t-sm);
+    font-weight: 600;
+    color: var(--ink-2);
+}
+
+.editor-stepper {
+    display: grid;
+    grid-template-columns: auto auto minmax(0, 1fr) auto auto;
+    gap: 6px;
+}
+
+.step {
+    min-width: 44px;
+    min-height: 50px;
+    padding: 0 6px;
+    border: 1px solid var(--rule-strong);
+    border-radius: var(--r-sm);
+    background: var(--card);
+    font-size: var(--t-sm);
+    font-weight: 700;
+    transition: border-color var(--d-fast) var(--ease-out), transform var(--d-fast) var(--ease-out);
+}
+
+.step:hover {
+    border-color: var(--ink-3);
+}
+
+.step:active {
+    transform: scale(0.97);
+}
+
+.editor-hours {
+    min-width: 0;
+    min-height: 50px;
+    padding: 0 4px;
+    border: 1px solid var(--rule-strong);
+    border-radius: var(--r-sm);
+    background: var(--card);
+    font-size: var(--t-xl);
+    font-weight: 700;
+    text-align: center;
+}
+
+.editor-hours:focus,
+.editor-note:focus {
+    border-color: var(--ink);
+    box-shadow: 0 0 0 1px var(--ink);
+}
+
+.editor-hours[aria-invalid="true"] {
+    border-color: var(--danger);
+    box-shadow: 0 0 0 1px var(--danger);
+}
+
+.editor-hint {
+    color: var(--ink-3);
+    font-size: var(--t-sm);
+}
+
+.editor-error {
+    color: var(--danger);
+    font-size: var(--t-sm);
+    font-weight: 600;
+}
+
+.editor-error:empty {
+    display: none;
+}
+
+.editor-note {
+    min-height: 46px;
+    padding: 0 14px;
+    border: 1px solid var(--rule-strong);
+    border-radius: var(--r-sm);
+    background: var(--card);
+}
+
+.editor-note::placeholder {
+    color: var(--ink-3);
+}
+
+.editor-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--s-3);
+    margin-top: var(--s-2);
+}
+
+.btn-more {
+    margin-top: var(--s-4);
+    width: 100%;
+}
+
+/* ------------------------------------------------------------ Insights */
+
+.insight {
+    margin-top: var(--s-3);
+    padding: var(--s-5) var(--s-4);
+    background: var(--card);
+    border: 1px solid var(--card-edge);
+    border-radius: var(--r-card);
+    box-shadow: var(--shadow-card);
+}
+
+.insight-lede {
+    margin-top: var(--s-2);
+    color: var(--ink-2);
+    font-size: var(--t-sm);
+    max-width: 62ch;
+}
+
+.insight-head + * {
+    margin-top: var(--s-4);
+}
+
+.week-rosette {
+    display: grid;
+    justify-items: center;
+    gap: var(--s-5);
+}
+
+.week-rosette .rosette {
+    width: min(210px, 62vw);
+    height: auto;
+}
+
+.week-rosette-side {
+    width: 100%;
+    display: grid;
+    gap: var(--s-2);
+}
+
+.week-rosette-figure .num {
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: -0.035em;
+}
+
+.week-rosette-figure .of {
+    font-size: var(--t-lg);
+}
+
+.week-rosette-line {
+    color: var(--ink-2);
+}
+
+.legend {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: var(--s-1);
+    margin-top: var(--s-2);
+}
+
+.legend-row {
+    display: grid;
+    justify-items: center;
+    align-content: start;
+    gap: 3px;
+    padding: 6px 0;
+    border-radius: var(--r-sm);
+    text-align: center;
+}
+
+.legend-row.is-today {
+    background: var(--panel);
+}
+
+.legend-day {
+    font-size: var(--t-xs);
+    font-weight: 600;
+    color: var(--ink-3);
+}
+
+.legend-hours {
+    font-size: var(--t-xs);
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.notes {
+    display: grid;
+    max-width: 65ch;
+}
+
+.notes li {
+    padding: var(--s-3) 0;
+    font-size: var(--t-md);
+    line-height: 1.5;
+}
+
+.notes li + li {
+    border-top: 1px solid var(--rule);
+}
+
+.cal-wrap {
+    max-width: 460px;
+}
+
+.cal-head,
+.cal {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 4px;
+}
+
+.cal-head span {
+    text-align: center;
+    font-size: var(--t-xs);
+    font-weight: 600;
+    color: var(--ink-3);
+    padding-bottom: 4px;
+}
+
+.cal-day {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 4px 0;
+    border-radius: var(--r-sm);
+    color: var(--ink);
+    text-decoration: none;
+    transition: background-color var(--d-fast) var(--ease-out);
+}
+
+.cal-day:hover {
+    background: var(--panel);
+}
+
+.cal-date {
+    font-size: var(--t-xs);
+    color: var(--ink-3);
+}
+
+.cal-day.is-today .cal-date {
+    color: var(--ink);
+    font-weight: 700;
+}
+
+.rhythm {
+    display: grid;
+    gap: var(--s-4);
+    max-width: 640px;
+}
+
+.rhythm .seg {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    justify-self: stretch;
+    max-width: 420px;
+}
+
+.rhythm .seg-btn {
+    padding: 0 6px;
+    white-space: nowrap;
+}
+
+.bars {
+    display: grid;
+    gap: 6px;
+}
+
+.bar-row {
+    display: grid;
+    grid-template-columns: 4.5rem minmax(0, 1fr) 4.25rem;
+    align-items: center;
+    gap: var(--s-3);
+}
+
+.bar-label {
+    font-size: var(--t-sm);
+    font-weight: 600;
+    color: var(--ink-2);
+}
+
+.bar-track {
+    position: relative;
+    height: 22px;
+    border-radius: 6px;
+    background: var(--panel);
+}
+
+.bar-tick {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--rule-strong);
+    opacity: 0.6;
+}
+
+.bar-track::after {
+    content: '';
+    position: absolute;
+    top: -4px;
+    bottom: -4px;
+    left: var(--goal);
+    width: 2px;
+    margin-left: -1px;
+    border-radius: 1px;
+    background: var(--ink);
+}
+
+.bar-fill {
+    position: relative;
+    display: block;
+    height: 100%;
+    border-radius: 6px;
+    background: var(--g);
+}
+
+.bar-row.is-off .bar-label::after {
+    content: ' rest';
+    font-weight: 500;
+    color: var(--ink-3);
+}
+
+.bar-value {
+    font-size: var(--t-sm);
+    font-weight: 700;
+    text-align: right;
+}
+
+.bars-axis {
+    display: grid;
+    grid-template-columns: 4.5rem minmax(0, 1fr) 4.25rem;
+    gap: var(--s-3);
+}
+
+.bars-axis-scale {
+    position: relative;
+    height: 1.25em;
+}
+
+.bars-axis-scale span {
+    position: absolute;
+    transform: translateX(-50%);
+    font-size: var(--t-xs);
+    color: var(--ink-3);
+}
+
+.weeks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(86px, 1fr));
+    gap: var(--s-4) var(--s-2);
+}
+
+.week-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    text-align: center;
+}
+
+.week-cell-total {
+    font-weight: 700;
+}
+
+.week-cell-date {
+    font-size: var(--t-xs);
+    color: var(--ink-3);
+}
+
+.week-cell.is-current .week-cell-date {
+    color: var(--ink);
+    font-weight: 600;
+}
+
+.records {
+    display: grid;
+    grid-template-columns: minmax(9rem, 13rem) minmax(0, 1fr);
+    max-width: 640px;
+}
+
+.records dt,
+.records dd {
+    padding: var(--s-3) 0;
+    border-top: 1px solid var(--rule);
+}
+
+.records dt:first-of-type,
+.records dt:first-of-type + dd {
+    border-top: 0;
+}
+
+.records dt {
+    color: var(--ink-2);
+    padding-right: var(--s-4);
+}
+
+.records dd .num {
+    font-weight: 700;
+}
+
+.records-note {
+    display: block;
+    margin-top: 2px;
+    color: var(--ink-3);
+    font-size: var(--t-sm);
+}
+
+.empty {
+    display: grid;
+    justify-items: center;
+    gap: var(--s-3);
+    margin-top: var(--s-3);
+    padding: var(--s-12) var(--s-4);
+    text-align: center;
+    background: var(--card);
+    border: 1px solid var(--card-edge);
+    border-radius: var(--r-card);
+}
+
+.empty-title {
+    font-size: var(--t-xl);
+    font-weight: 700;
+}
+
+.empty-text {
+    max-width: 36ch;
+    color: var(--ink-2);
+}
+
+/* ------------------------------------------------------------ Settings */
+
+.set-section {
+    display: grid;
+    gap: var(--s-3);
+    margin-top: var(--s-3);
+    padding: var(--s-5) var(--s-4);
+    background: var(--card);
+    border: 1px solid var(--card-edge);
+    border-radius: var(--r-card);
+    box-shadow: var(--shadow-card);
+}
+
+.set-status {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-weight: 600;
+}
+
+.set-status-auth,
+.set-status-missing,
+.set-status-data {
+    color: var(--danger);
+}
+
+.set-text {
+    color: var(--ink-2);
+    max-width: 62ch;
+}
+
+.steps {
+    list-style: decimal;
+    padding-left: 1.4rem;
+    color: var(--ink-2);
+    display: grid;
+    gap: 4px;
+}
+
+.steps a {
+    color: var(--ink);
+    font-weight: 600;
+}
+
+.set-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3);
+}
+
+.set-facts {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 4px var(--s-4);
+}
+
+.set-facts dt {
+    color: var(--ink-3);
+}
+
+.confirm {
+    display: grid;
+    gap: var(--s-3);
+    padding: var(--s-4);
+    border-radius: var(--r-md);
+    background: var(--panel);
+}
+
+
+/* ------------------------------------------------------------ wide windows: Today becomes a column */
+
+@media (min-width: 1024px) {
+    .app {
+        display: grid;
+        grid-template-columns: minmax(440px, 500px) minmax(0, 1fr);
+        grid-template-rows: auto auto 1fr;
+        padding-bottom: 0;
+    }
+
+    .topbar {
+        grid-column: 1 / -1;
+        padding: 24px 32px 16px;
+    }
+
+    .window-banner {
+        grid-column: 1 / -1;
+        margin: 0 32px var(--s-4);
+    }
+
+    .view-today {
+        grid-column: 1;
+        grid-row: 3;
+        position: sticky;
+        top: 0;
+        align-self: start;
+        width: 100%;
+        max-width: none;
+        max-height: 100dvh;
+        overflow-y: auto;
+        padding: 0 16px 32px 32px;
+    }
+
+    .main {
+        grid-column: 2;
+        grid-row: 3;
+        min-height: 100dvh;
+        padding: 0 40px var(--s-16) 16px;
+    }
+
+    .tabs {
+        position: static;
+        display: inline-flex;
+        gap: 4px;
+        height: auto;
+        padding: 4px;
+        margin-bottom: var(--s-2);
+        background: var(--soft);
+        border: 0;
+        border-radius: var(--r-md);
+    }
+
+    .tab {
+        flex-direction: row;
+        gap: var(--s-2);
+        padding: 8px 14px;
+        border-radius: 10px;
+        font-size: var(--t-sm);
+        color: var(--ink-2);
+    }
+
+    .tab .icon {
+        width: 18px;
+        height: 18px;
+    }
+
+    .tab-today {
+        display: none;
+    }
+
+    .tab[aria-current="page"] {
+        background: var(--card);
+        color: var(--ink);
+        box-shadow: var(--shadow-card);
+    }
+
+    .tab[aria-current="page"]::before {
+        display: none;
+    }
+
+    .main .view {
+        max-width: 760px;
+        margin: 0;
+        padding: 0;
+    }
+
+    .view-insights .notes,
+    .view-insights .rhythm,
+    .view-insights .records,
+    .view-insights .cal-wrap {
+        max-width: none;
+    }
+
+    .view-insights .cal-day .mini {
+        width: 44px;
+        height: 44px;
+    }
+
+    .editor-stepper {
+        grid-template-columns: auto auto 8.5rem auto auto;
+        justify-content: start;
+    }
+
+    .notices {
+        bottom: var(--s-6);
+        left: auto;
+        right: var(--s-6);
+        transform: none;
+    }
+
+    .week-rosette {
+        grid-template-columns: auto minmax(0, 1fr);
+        justify-items: start;
+        align-items: center;
+        gap: var(--s-8);
+    }
+
+    .week-rosette .rosette {
+        width: 210px;
+    }
+
+    .day-main {
+        grid-template-columns: 34px minmax(10rem, 13rem) minmax(0, 1fr) auto;
+        grid-template-areas: 'dial name meta hours';
+    }
+
+    .day-meta:empty {
+        display: block;
+    }
+
+    .tile-figure {
+        font-size: var(--t-xl);
+    }
+
+    .topbar {
+        padding: 14px 32px 8px;
+    }
+
+    .view-today {
+        gap: 10px;
+    }
+
+    .work-card {
+        padding: 16px 18px 14px;
+    }
+
+    .figure {
+        font-size: 2.75rem;
+    }
+
+    .flip {
+        width: 232px;
+        margin: var(--s-3) auto;
+    }
+
+    .break-line {
+        min-height: 44px;
+    }
+
+    .btn-block {
+        min-height: 52px;
+    }
+
+    .note-input {
+        min-height: 40px;
+    }
+
+    .week-card {
+        padding: 10px 14px;
+    }
+
+    .wd-link {
+        gap: 4px;
+        padding: 4px 0;
+    }
+
+    .week-dials {
+        margin-top: var(--s-2);
+    }
+
+    .wd-link .mini {
+        width: min(38px, 100%);
+    }
+
+    .tile {
+        padding: 10px 12px 10px 14px;
+    }
+}
+
+@media (min-width: 1400px) {
+    .app {
+        grid-template-columns: 540px minmax(0, 1fr);
+    }
+}

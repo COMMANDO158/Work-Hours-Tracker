@@ -1,13 +1,12 @@
 {
-  "name": "FlowFocus - ADHD Work Tracker",
+  "name": "FlowFocus",
   "short_name": "FlowFocus",
-  "description": "A calm space to track your weekly work hours. No clutter, just progress.",
+  "description": "A visual timer for your contracted hours: 6 a workday, 30 a week, with your break counted.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "orientation": "portrait-primary",
-  "background_color": "#0a0a0a",
-  "theme_color": "#0a0a0a",
+  "background_color": "#F4F5F7",
+  "theme_color": "#F4F5F7",
   "icons": [
     {
       "src": "icons/icon-192.png",
@@ -26,6 +25,20 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Log",
+      "short_name": "Log",
+      "description": "Correct a day's hours",
+      "url": "./index.html#/log"
+    },
+    {
+      "name": "Insights",
+      "short_name": "Insights",
+      "description": "Your weeks and patterns",
+      "url": "./index.html#/insights"
     }
   ]
 }
