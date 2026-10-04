@@ -278,7 +278,7 @@ components:
 
 Today's time is a white dial in a calm white card, filling clockwise with one flat sector in the day's gem. The break is the back of the same dial: taking a break turns it edge-on to a teal 30-minute face, and Back to work turns it home. A slim break line under the dial says what is used and what is left. Everything else is quiet: near-white ground, hairline-bordered cards with a faint lift, grey ticks and numerals on a white band at the rim, a small black hub, and Inter set big and tight for figures and small, tracked, and uppercase for the headings that name each card. The one loud object on a screen is the full-width black Start/Pause button.
 
-Gems are the identity. Each weekday owns a gem: Saturday Topaz, Sunday Emerald, Monday Sapphire, Tuesday Amethyst, Wednesday Diamond, Thursday Ruby, Friday Tourmaline. A faceted stone (an octagonal brilliant in three tones of the gem) names the day beside the date, and the same gem fills that day's dials, bars, and rosette wedges. A neutral eighth stone, Clear, stands for totals and is never a day.
+Gems are the identity. Each weekday owns a gem: Saturday Topaz, Sunday Emerald, Monday Sapphire, Tuesday Amethyst, Wednesday Diamond, Thursday Ruby, Friday Tourmaline. Each gem has its own cut, built in CSS 3D. The day's gem turns beside the wordmark, moving in a way that belongs to it, and the same gem fills that day's dials, bars, and rosette wedges. A neutral eighth stone, Clear, stands for totals and is never a day.
 
 The system is light-first with a true dark mode, built for an installed PWA on phone and desktop. Density is comfortable but tight enough that the whole Today column fits a 900px-tall desktop window. The system rejects neon-on-dark glow and an object costume for the timer (housings, knobs, hands).
 
@@ -287,10 +287,10 @@ The system is light-first with a true dark mode, built for an installed PWA on p
 - White dials whose ticks and numerals sit on a white band at the rim, with one flat gem sector inside that band and a small black hub. No dial has a hand.
 - One big dial with two faces: work in the day's gem, break in teal. Only one face shows at a time.
 - Teal for everything about the break, and only the break.
-- Faceted octagonal stones as the day mark and the tile mark.
+- Gems in their own cuts, in CSS 3D: a turning gem of the day in the header, still stones on tiles and in the legend.
 - Inter only: big tight figures, small tracked uppercase card headings, tabular numbers everywhere.
 - One full-width black primary button per screen.
-- Motion is short and functional (140ms and 220ms). The flip is the one designed motion.
+- Motion is short and functional (140ms and 220ms). The flip and the gem of the day are the two designed motions.
 
 ## Colors
 
@@ -368,7 +368,7 @@ Two identical paths: `prefers-color-scheme: dark` on `:root:not([data-mode="ligh
 
 The layout is phone-first, with a single column of cards on a 16px gutter (max width 560px) and a 12px gap between cards. A fixed bottom tab bar (64px plus the safe area) holds Today, Log, and Insights. Settings is the gear in the header.
 
-- **Header:** the wordmark and the tools (sync pill, gear) share the first row. The day line (stone, date, gem name) runs full width beneath them.
+- **Header:** the gem of the day (52px, 44px under 400px wide) spans two rows at the left. The wordmark and the tools (sync pill, gear) share the first row; the day line (date, gem name) runs beneath both.
 - **Work card, top to bottom:** the "Work session" heading with Finish day on the right (the heading stays "Work session" through a break); the display figure and the status line; the big dial, centred (up to 272px wide on phones, 232px when wide), with 16px above and below; the break line; the full-width Start/Pause button; the note field.
 - **This week card:** seven equal columns. Each has a weekday abbreviation, a 44px day dial, and the hours. Today's column is set bold. Nothing sits under the row.
 - **Tiles:** three equal tiles (Today, Week, To goal). Each has a 20px stone pinned to its top-right corner.
@@ -388,13 +388,13 @@ Depth is soft, layered, and quiet. Cards and tiles lift slightly off the ground 
 In dark mode the same three roles use black alpha (0.25 to 0.5).
 
 ### Named Rules
-**The Flat Face Rule.** Dial faces, sectors, and stones carry no gradient, glow, or bevel. A stone's facets are three flat tones mixed from its gem.
+**The Flat Face Rule.** Dial faces, sectors, and stones carry no gradient, glow, or bevel. A stone's depth comes only from its geometry and its light: every facet is one flat tone mixed from its gem.
 
 **The One Lifted Dial Rule.** Only the big dial (either face) gets the dial shadow, on its flip card. Day dials, past-week dials, and rosettes sit flat.
 
 ## Shapes
 
-Shapes are soft rounded rectangles and true circles. Radii step up with the size of the container: 10px for small controls and rows, 12px for fields, 14px for buttons, the segmented track, and the break line, 16px for the block button, 18px for tiles, and 22px for cards. Pills (999px) are used only for the sync pill and the Today pill. Every dial is a full circle with a 1px face-edge rim, and its sector stops short of the rim, leaving a band of white face for the ticks and numerals. The stone is an octagonal brilliant: an octagonal girdle, an octagonal table, and eight kite facets. Hairlines are always 1px.
+Shapes are soft rounded rectangles and true circles. Radii step up with the size of the container: 10px for small controls and rows, 12px for fields, 14px for buttons, the segmented track, and the break line, 16px for the block button, 18px for tiles, and 22px for cards. Pills (999px) are used only for the sync pill and the Today pill. Every dial is a full circle with a 1px face-edge rim, and its sector stops short of the rim, leaving a band of white face for the ticks and numerals. Each stone has its own cut (see Stone). Hairlines are always 1px.
 
 ## Components
 
@@ -464,7 +464,20 @@ The same mini dial with five ticks and one Clear sector against 30 hours. It is 
 One dial for the current week, used in the Insights This week card and as the current cell in Week by week. Each day's hours are laid end to end in its own gem against 30 hours, inside the rim band (sector r45 on a r58 face), with wedges separated by a 1.2px face-coloured stroke. Five heavy ticks (2.2px, r49 to 56) mark the 6-hour shares, around a small hub (r5). There is only ever one rosette, and it is always the current week.
 
 ### Stone
-An octagonal brilliant seen from above. The girdle and mid facets are the gem. The lit facets (upper left) are the gem mixed 55% with white, the deep facets the gem mixed 78% with black, and the table the gem mixed 35% with white, all via `color-mix(in srgb, ...)`. A 0.6px gem-ink outline at 60% finishes it. It is 24px in the day line, 20px on tiles, and 18px in the Insights legend.
+Every gem is a convex solid built from flat faces in CSS 3D (`js/gem-cuts.js` holds the geometry, `js/ui/gem.js` builds one element per face, `css/gems.css` lights and moves them). Each cut comes from the gem's crystal or a classic cut:
+
+| Gem | Cut | Gem-of-the-day motion |
+|---|---|---|
+| Emerald | Step cut: a long octagon, two crown steps, three pavilion steps | Rocks ±28° in the hand (3.5s each way) so the steps catch the light in turn |
+| Sapphire | Hexagonal bipyramid, barrel-shaped, upright | Turns in 10s and floats |
+| Amethyst | Quartz cluster: three hexagonal points (one point under 32px) | The slowest drift: a 24s turn, for a rest day |
+| Diamond | Round brilliant: table, star-and-kite crown, pavilion | A steady 12s turn with one four-point glint each time round |
+| Ruby | Trillion: a triangular brilliant, corner forward | A third of a turn, a rest, and again (9s): a working cadence |
+| Tourmaline | Long rounded-triangle prism with a low point, lying on a diagonal | Rolls along its length in 14s |
+| Topaz | Princess: square table, inverted pyramid, corner forward | Turns in 12s and dips twice a turn to flash its table |
+| Clear | Raw octahedron | Never the gem of the day |
+
+Light comes from the upper left and front. Each facet is one flat tone between the gem's lit end (the gem mixed with `--gem-lift`) and its shaded end (mixed with `--gem-sink`), set from how squarely the facet faces the light. While a gem turns, the stylesheet works the light out live from each facet's normal, so the light moves across the facets. Pale gems (Diamond, Clear) keep more of their own colour at the lit end so they hold on a white card. Under 32px a cut uses fewer faces. The gem of the day is 52px; stones are 20px on tiles and 18px in the Insights legend, still until their tile or legend cell is hovered, when they make one 900ms turn. A new day swaps the gem: the old one sinks away (240ms) and the new one rises in (320ms).
 
 ### App icon
 The installed-app mark is the work dial itself, drawn flat from the light tokens on a 512-unit canvas, in the same proportions as the big face: the sector stops short of the rim and the ticks sit on the white band.
@@ -480,7 +493,7 @@ The installed-app mark is the work dial itself, drawn flat from the light tokens
 Timer Black toasts with a 14px radius and the Float shadow, docked above the tab bar (bottom right when wide). They enter in 220ms (rising 8px and fading in), and action buttons inside are outlined in currentColor.
 
 ### Motion
-There are two everyday durations: 140ms for hover, press, and colour changes, and 220ms for notices and the break line's tint. Both use the cubic-bezier(0.16, 1, 0.3, 1) ease-out. The flip (240ms out, 320ms in, see Big dial) is the one designed motion. Reduced motion collapses everything to 1ms, and the flip becomes an instant face swap. Sectors move only with the live update.
+There are two everyday durations: 140ms for hover, press, and colour changes, and 220ms for notices and the break line's tint. Both use the cubic-bezier(0.16, 1, 0.3, 1) ease-out. The flip (240ms out, 320ms in, see Big dial) and the gem of the day (see Stone) are the two designed motions; a stone's one hover turn borrows the gem's. Reduced motion collapses everything to 1ms: the flip becomes an instant face swap, and every gem holds its pose. Sectors move only with the live update.
 
 ## Do's and Don'ts
 
@@ -491,7 +504,7 @@ There are two everyday durations: 140ms for hover, press, and colour changes, an
 - **Do** stop every dial's sector short of the rim, so ticks and numerals sit on a white band and are never covered.
 - **Do** show the break as the teal back face of the big dial, flipping to it on a break, holding it at the 30-minute stop, and flipping back on Back to work.
 - **Do** say break used and left in the one slim break line under the dial.
-- **Do** mark the day with its faceted stone, and use the Clear stone only for totals (Week, To goal) and past weeks.
+- **Do** mark the day with its gem in its own cut, and use the Clear stone only for totals (Week, To goal) and past weeks.
 - **Do** map gems Saturday Topaz, Sunday Emerald, Monday Sapphire, Tuesday Amethyst, Wednesday Diamond, Thursday Ruby, Friday Tourmaline.
 - **Do** keep one full-width black Start/Pause button as the single primary action on Today.
 - **Do** keep the wide Today column fitting a 900px-tall window.
@@ -502,8 +515,8 @@ There are two everyday durations: 140ms for hover, press, and colour changes, an
 ### Don't:
 - **Don't** add a hand, knob, housing, or any physical-object costume to a dial.
 - **Don't** show both faces at once, or draw a separate break dial or break card beside the work dial.
-- **Don't** animate anything else the way the flip moves; it is the one designed motion.
-- **Don't** use neon-on-dark glow, gradients, or bevels on faces, sectors, or stones.
+- **Don't** animate anything else the way the flip or the gem of the day moves; they are the two designed motions. Stones elsewhere stay still until hovered.
+- **Don't** use neon-on-dark glow, gradients, or bevels on faces, sectors, or stones; a gem's depth is geometry and flat-toned light only.
 - **Don't** use a gem colour for buttons, links, or status, and don't give Clear to a weekday.
 - **Don't** put an eyebrow or kicker above a heading. The label is the heading.
 - **Don't** draw a second rosette. The rosette is the current week only, and past weeks are Clear mini dials.

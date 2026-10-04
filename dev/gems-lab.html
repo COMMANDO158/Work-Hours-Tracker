@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Gem Lab</title>
+    <!-- A development page: every gem's cut at every size, still and moving.
+         Not part of the app and not precached. Query: ?mode=dark, ?still -->
+    <link rel="stylesheet" href="../css/tokens.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/gems.css">
+    <style>
+        body { padding: 24px; background: var(--ground); color: var(--ink); }
+        h1 { font-size: var(--t-xl); font-weight: 800; letter-spacing: -0.02em; }
+        .bar { display: flex; gap: 8px; margin: 12px 0 20px; }
+        .bar button { padding: 6px 12px; border: 1px solid var(--card-edge); border-radius: var(--r-sm); background: var(--card); color: var(--ink); font: inherit; font-size: var(--t-sm); }
+        .card { padding: 20px; margin-bottom: 16px; background: var(--card); border: 1px solid var(--card-edge); border-radius: var(--r-card); box-shadow: var(--shadow-card); }
+        .label { color: var(--ink-3); font-size: var(--t-xs); font-weight: 600; letter-spacing: var(--tracking-label); text-transform: uppercase; }
+        .heroes { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px; margin-top: 12px; }
+        .hero { display: grid; justify-items: center; gap: 10px; padding: 16px 0; }
+        table { border-collapse: collapse; margin-top: 12px; }
+        td, th { padding: 10px 14px; text-align: center; }
+        th { text-align: left; }
+    </style>
+</head>
+<body>
+    <h1>Gem Lab</h1>
+    <div class="bar">
+        <button type="button" id="mode">Light / dark</button>
+        <button type="button" id="still">Still / moving</button>
+    </div>
+    <section class="card">
+        <p class="label">Gem of the day, 120px</p>
+        <div class="heroes" id="heroes"></div>
+    </section>
+    <section class="card">
+        <p class="label">Header, 52px</p>
+        <div class="heroes" id="header"></div>
+    </section>
+    <section class="card">
+        <p class="label">Every size (hover a cell to turn it)</p>
+        <table id="sizes"></table>
+    </section>
+    <script type="module">
+        import { gem } from '../js/ui/gem.js';
+        import { CUT_IDS, cutFor } from '../js/gem-cuts.js';
+
+        const q = new URLSearchParams(location.search);
+        if (q.get('mode')) document.documentElement.dataset.mode = q.get('mode');
+        const motion = q.has('still') ? 'none' : 'hero';
+        const days = ['emerald', 'sapphire', 'amethyst', 'diamond', 'ruby', 'tourmaline', 'topaz'];
+
+        const cell = (id, size, m) => {
+            const el = document.createElement('div');
+            el.className = 'hero';
+            el.append(gem(id, size, { motion: m }));
+            const name = document.createElement('span');
+            name.className = 'label';
+            name.textContent = `${id} · ${cutFor(id).cut}`;
+            el.append(name);
+            return el;
+        };
+        for (const id of days) document.getElementById('heroes').append(cell(id, 120, motion));
+        for (const id of days) document.getElementById('header').append(cell(id, 52, motion));
+
+        const sizes = [18, 20, 34, 52];
+        const table = document.getElementById('sizes');
+        table.innerHTML = `<tr><th></th>${sizes.map((s) => `<th class="label">${s}px</th>`).join('')}</tr>`;
+        for (const id of CUT_IDS) {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<th class="label">${id}</th>`;
+            for (const s of sizes) {
+                const td = document.createElement('td');
+                td.className = 'gem-host';
+                td.append(gem(id, s));
+                tr.append(td);
+            }
+            table.append(tr);
+        }
+
+        document.getElementById('mode').onclick = () => {
+            const root = document.documentElement;
+            root.dataset.mode = root.dataset.mode === 'dark' ? 'light' : 'dark';
+        };
+        document.getElementById('still').onclick = () => {
+            q.has('still') ? q.delete('still') : q.set('still', '');
+            location.search = q.toString();
+        };
+    </script>
+</body>
+</html>

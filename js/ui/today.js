@@ -122,11 +122,11 @@ export function mountToday(root) {
       ]),
       h('article', { class: 'tile', 'aria-labelledby': 'tileWeekH' }, [
         h('div', {}, [h('h3', { class: 'label', id: 'tileWeekH' }, 'Week'), els.tileWeek, h('p', { class: 'tile-sub' }, 'of 30h')]),
-        h('span', { class: 'tile-stone' }, [stone('clear', 34)])
+        h('span', { class: 'tile-stone' }, [stone('clear', 20)])
       ]),
       h('article', { class: 'tile', 'aria-labelledby': 'tileGoalH' }, [
         h('div', {}, [h('h3', { class: 'label', id: 'tileGoalH' }, 'To goal'), els.tileGoal, els.tileGoalSub]),
-        h('span', { class: 'tile-stone' }, [stone('clear', 34)])
+        h('span', { class: 'tile-stone' }, [stone('clear', 20)])
       ])
     ])
   );
@@ -301,7 +301,7 @@ function renderWeek(ref, gem, total) {
   setText(els.tileToday, formatHM(total));
   if (els.tileTodayStone.dataset.gem !== gem) {
     els.tileTodayStone.dataset.gem = gem;
-    clear(els.tileTodayStone).appendChild(stone(gem, 34));
+    clear(els.tileTodayStone).appendChild(stone(gem, 20));
   }
   setText(els.tileWeek, formatHM(pace.total));
   setText(els.tileGoal, pace.met ? 'Done' : formatRemaining(pace.remaining));

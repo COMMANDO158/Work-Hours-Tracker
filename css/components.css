@@ -186,38 +186,6 @@
     stroke-width: 2.2;
 }
 
-/* ------------------------------------------------------------ stones */
-
-.stone {
-    flex: none;
-    overflow: visible;
-}
-
-.stone-girdle,
-.stone-facet-mid {
-    fill: var(--g);
-}
-
-.stone-facet-lit {
-    fill: color-mix(in srgb, var(--g) 55%, #FFFFFF);
-}
-
-.stone-facet-deep {
-    fill: color-mix(in srgb, var(--g) 78%, #000000);
-}
-
-.stone-table {
-    fill: color-mix(in srgb, var(--g) 35%, #FFFFFF);
-}
-
-.stone-edge {
-    fill: none;
-    stroke: var(--gi);
-    stroke-width: 0.6;
-    stroke-linejoin: round;
-    stroke-opacity: 0.6;
-}
-
 /* ------------------------------------------------------------ buttons */
 
 .btn {

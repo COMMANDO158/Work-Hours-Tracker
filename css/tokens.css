@@ -57,6 +57,13 @@
     --tourmaline: #D6428A; --tourmaline-ink: #A12863; --tourmaline-on: #FFFFFF;
     --clear: #CDD2D9;      --clear-ink: #5D646E;      --clear-on: #111317;  /* not a day: totals */
 
+    /* gem facets: how much of the gem sits at the lit and shaded ends of a facet */
+    --gem-lift: #FFFFFF;
+    --gem-sink: #000000;
+    --gem-lit-k: 64%;
+    --gem-shade-k: 62%;
+    --gem-pale-lit-k: 82%;
+
     /* type */
     --font: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
     --font-mono: ui-monospace, 'Cascadia Mono', Consolas, Menlo, monospace;
@@ -143,7 +150,11 @@
         --diamond: #8EBDD2;    --diamond-ink: #BFE3F2;    --diamond-on: #0E0F11;
         --ruby: #E8506E;       --ruby-ink: #FF9AAE;       --ruby-on: #0E0F11;
         --tourmaline: #EC69A9; --tourmaline-ink: #FFA3CF; --tourmaline-on: #0E0F11;
-    --clear: #5A616B;      --clear-ink: #AEB5BE;      --clear-on: #F1F2F4;
+        --clear: #5A616B;      --clear-ink: #AEB5BE;      --clear-on: #F1F2F4;
+
+        --gem-lit-k: 70%;
+        --gem-shade-k: 58%;
+        --gem-pale-lit-k: 70%;
     }
 }
 
@@ -189,6 +200,10 @@
     --ruby: #E8506E;       --ruby-ink: #FF9AAE;       --ruby-on: #0E0F11;
     --tourmaline: #EC69A9; --tourmaline-ink: #FFA3CF; --tourmaline-on: #0E0F11;
     --clear: #5A616B;      --clear-ink: #AEB5BE;      --clear-on: #F1F2F4;
+
+    --gem-lit-k: 70%;
+    --gem-shade-k: 58%;
+    --gem-pale-lit-k: 70%;
 }
 
 /* Each gem-bearing element names its gem; --g (fill), --gi (ink), --go (marks on the fill) follow. */

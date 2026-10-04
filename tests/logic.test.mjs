@@ -10,6 +10,8 @@ import { mergeRemoteData, mergeToday, cloudNeedsUpdate } from '../js/merge.js';
 import { calculateStreak, longestStreak, weekPace, weekdayPattern, lastDays, observations } from '../js/insights.js';
 import { parseDuration, formatHM, formatRemaining, clampDay, formatEditable } from '../js/format.js';
 import { deriveTodayState } from '../js/today-state.js';
+import { GEMS } from '../js/gems.js';
+import { CUT_IDS, cutFor, facesOf, toneAt, isConvex, isPlanar } from '../js/gem-cuts.js';
 
 const H = 3600;
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -286,4 +288,42 @@ test('APP_SHELL lists every shipped file, and every listed file exists', () => {
 
 test('parseDateKey round-trips', () => {
   assert.equal(getDateKey(parseDateKey('2026-02-28')), '2026-02-28');
+});
+
+// ---------------------------------------------------------------- gem cuts
+
+test('every gem, and Clear, has its own cut', () => {
+  const ids = [...GEMS.map((g) => g.id), 'clear'];
+  assert.deepEqual([...CUT_IDS].sort(), [...ids].sort());
+  const cuts = ids.map((id) => cutFor(id).cut);
+  assert.equal(new Set(cuts).size, ids.length, 'no two gems share a cut');
+});
+
+test('gem cuts are closed convex solids of flat faces', () => {
+  for (const id of CUT_IDS) {
+    for (const lod of ['full', 'lite']) {
+      for (const polys of cutFor(id, lod).solids) {
+        assert.ok(polys.every((p) => isPlanar(p)), `${id} ${lod}: a face is not flat`);
+        assert.ok(isConvex(polys), `${id} ${lod}: not convex, so back faces would show`);
+      }
+    }
+  }
+});
+
+test('gem faces stay within budget and are drawable', () => {
+  for (const id of CUT_IDS) {
+    const full = facesOf(cutFor(id, 'full'));
+    const lite = facesOf(cutFor(id, 'lite'));
+    assert.ok(full.length <= 45, `${id}: ${full.length} faces at full size`);
+    assert.ok(lite.length <= 20, `${id}: ${lite.length} faces when small`);
+    for (const f of [...full, ...lite]) {
+      assert.ok(f.w > 0.01 && f.h > 0.01, `${id}: a face is too thin to draw`);
+      const nums = [f.w, f.h, ...f.o, ...f.u, ...f.v, ...f.n, ...f.clip.flat()];
+      assert.ok(nums.every(Number.isFinite), `${id}: a face has a non-finite number`);
+      assert.ok(f.clip.flat().every((x) => x >= -1e-6 && x <= 100 + 1e-6), `${id}: clip outside the face`);
+    }
+    const cut = cutFor(id);
+    const tones = full.map((f) => toneAt(f.n, cut.light, cut.rest));
+    assert.ok(Math.max(...tones) - Math.min(...tones) > 0.3, `${id}: facets need light and shade`);
+  }
 });

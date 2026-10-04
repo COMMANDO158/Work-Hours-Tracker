@@ -1,0 +1,204 @@
+/* ------------------------------------------------------------ gems in 3D */
+
+/* ui/gem.js places every face; this sheet lights them and turns the gem.
+   --turn spins the body around its own axis, --tip tips it toward the viewer,
+   --lift floats it. They are registered so they animate and so each face can
+   work out its light from them. */
+
+@property --turn {
+    syntax: '<angle>';
+    inherits: true;
+    initial-value: 0deg;
+}
+
+@property --tip {
+    syntax: '<angle>';
+    inherits: true;
+    initial-value: 0deg;
+}
+
+@property --lift {
+    syntax: '<length>';
+    inherits: true;
+    initial-value: 0px;
+}
+
+.gem {
+    /* the two ends of a facet's light, mixed from the gem */
+    --gem-lit: color-mix(in oklab, var(--g) var(--gem-lit-k), var(--gem-lift));
+    --gem-shade: color-mix(in oklab, var(--g) var(--gem-shade-k), var(--gem-sink));
+    position: relative;
+    display: inline-block;
+    flex: none;
+    width: 1em;
+    height: 1em;
+    font-size: var(--gem-size, 24px);
+    line-height: 0;
+    vertical-align: middle;
+    perspective: 4.5em;
+}
+
+/* the pale gems need more of their own colour at the lit end to hold a white card */
+.gem:is([data-gem="diamond"], [data-gem="clear"]) {
+    --gem-lit-k: var(--gem-pale-lit-k);
+}
+
+.gem-pose,
+.gem-body {
+    position: absolute;
+    inset: 0;
+    transform-style: preserve-3d;
+}
+
+.gem-body {
+    --yaw: calc(var(--rest, 0deg) + var(--turn));
+    transform: translateY(var(--lift)) rotateX(var(--tip)) rotateY(var(--yaw));
+}
+
+.gem-face {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform-origin: 0 0;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    /* the light at rest, worked out in JS */
+    background-color: color-mix(in oklab, var(--gem-lit) var(--tone), var(--gem-shade));
+}
+
+/* Live light: the face's normal turned by the body, against the light. */
+@supports (color: color-mix(in oklab, red clamp(0%, calc(50% + 10% * cos(0deg)), 100%), blue)) {
+    .gem-face {
+        --x1: calc(var(--nx) * cos(var(--yaw)) + var(--nz) * sin(var(--yaw)));
+        --z1: calc(var(--nz) * cos(var(--yaw)) - var(--nx) * sin(var(--yaw)));
+        --lit: calc(var(--lx) * var(--x1) + var(--ly) * (var(--ny) * cos(var(--tip)) - var(--z1) * sin(var(--tip))) + var(--lz) * (var(--ny) * sin(var(--tip)) + var(--z1) * cos(var(--tip))));
+        background-color: color-mix(in oklab, var(--gem-lit) clamp(0%, calc(30% + 70% * var(--lit) + var(--jitter, 0%)), 100%), var(--gem-shade));
+    }
+}
+
+/* The diamond's glint: a crisp four-point star, never a glow. */
+.gem-glint {
+    position: absolute;
+    left: 22%;
+    top: 14%;
+    width: 0.3em;
+    height: 0.3em;
+    background: var(--gem-lift);
+    clip-path: polygon(50% 0, 58% 42%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0 50%, 42% 42%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* ------------------------------------------------------------ the gem of the day */
+
+/* Each gem moves in its own way. */
+@media (prefers-reduced-motion: no-preference) {
+    .gem[data-motion="hero"] .gem-body {
+        animation: gem-turn 12s linear infinite;
+    }
+
+    /* Emerald: turned in the hand, so the steps catch the light one by one */
+    .gem[data-motion="hero"][data-cut="step"] .gem-body {
+        animation: gem-rock 3.5s ease-in-out infinite alternate;
+    }
+
+    /* Sapphire: an upright spin, floating */
+    .gem[data-motion="hero"][data-cut="spindle"] .gem-body {
+        animation: gem-turn 10s linear infinite, gem-float 2.5s ease-in-out infinite alternate;
+    }
+
+    /* Amethyst: the slowest drift, for a rest day */
+    .gem[data-motion="hero"][data-cut="cluster"] .gem-body {
+        animation-duration: 24s;
+    }
+
+    /* Ruby: a third of a turn, a rest, and again: a working cadence */
+    .gem[data-motion="hero"][data-cut="trillion"] .gem-body {
+        animation: gem-tick 9s infinite;
+    }
+
+    /* Tourmaline: rolls along its length */
+    .gem[data-motion="hero"][data-cut="pencil"] .gem-body {
+        animation-duration: 14s;
+    }
+
+    /* Topaz: turns and dips twice a turn, flashing its table */
+    .gem[data-motion="hero"][data-cut="princess"] .gem-body {
+        animation: gem-turn 12s linear infinite, gem-dip 6s ease-in-out infinite;
+    }
+
+    /* Diamond: a steady turn with one glint each time round */
+    .gem[data-motion="hero"] .gem-glint {
+        animation: gem-glint 12s linear infinite;
+    }
+}
+
+@keyframes gem-turn {
+    from { --turn: 0deg; }
+    to { --turn: 360deg; }
+}
+
+@keyframes gem-rock {
+    from { --turn: -28deg; --tip: 4deg; }
+    to { --turn: 28deg; --tip: -6deg; }
+}
+
+@keyframes gem-float {
+    from { --lift: 0.02em; }
+    to { --lift: -0.03em; }
+}
+
+@keyframes gem-tick {
+    0% { --turn: 0deg; animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1); }
+    18% { --turn: 120deg; }
+    33.33% { --turn: 120deg; animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1); }
+    51.33% { --turn: 240deg; }
+    66.67% { --turn: 240deg; animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1); }
+    84.67%, 100% { --turn: 360deg; }
+}
+
+@keyframes gem-dip {
+    0%, 100% { --tip: 0deg; }
+    50% { --tip: -16deg; }
+}
+
+@keyframes gem-glint {
+    0%, 30% { opacity: 0; transform: scale(0) rotate(0deg); }
+    34% { opacity: 1; transform: scale(1) rotate(45deg); }
+    40%, 100% { opacity: 0; transform: scale(0) rotate(90deg); }
+}
+
+/* A new day: the old gem sinks away and the new one rises in (ui/shell.js). */
+.gem.is-leaving {
+    animation: gem-leave 240ms cubic-bezier(0.55, 0, 1, 0.45) forwards;
+}
+
+.gem.is-arriving {
+    animation: gem-arrive 320ms var(--ease-out);
+}
+
+@keyframes gem-leave {
+    to { opacity: 0; transform: translateY(0.12em) scale(0.6); }
+}
+
+@keyframes gem-arrive {
+    from { opacity: 0; transform: translateY(-0.12em) scale(0.6); }
+}
+
+/* ------------------------------------------------------------ gems elsewhere */
+
+/* Still, until their tile or legend cell is hovered: then one turn. */
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    :is(.tile, .legend-row, .gem-host):is(:hover, :focus-within) .gem[data-motion="hover"] .gem-body {
+        animation: gem-turn 900ms var(--ease-out);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .gem .gem-body,
+    .gem .gem-glint,
+    .gem.is-leaving,
+    .gem.is-arriving {
+        animation: none !important;
+    }
+}

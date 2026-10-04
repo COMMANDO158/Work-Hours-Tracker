@@ -20,7 +20,7 @@ FlowFocus is a visual timer for contracted work hours. Instead of a clock you ha
 - **Streak:** workdays in a row with at least 30 minutes. Rest days neither add to it nor break it, and a new morning doesn't reset it before you've started.
 - A running timer survives a reload or the phone closing the app. If FlowFocus was closed for more than two hours while the timer ran, it asks whether to keep that time or stop it at the time you choose. It never counts past one midnight.
 - An optional "What are you working on?" note is saved for each day.
-- Each weekday has its gem. A small faceted stone names the day in the header, and today's dial takes that gem's colour:
+- Each weekday has its gem. The day's gem turns in the header, each gem in its own cut and its own motion, and today's dial takes that gem's colour:
 
   | Day | Gem |
   | --- | --- |
@@ -56,8 +56,8 @@ Known limitation: today's time from two devices is added together, but once midn
 
 This is a static site with no build step:
 
-- `index.html` — the app shell, icon sprite, and the gem facet patterns.
-- `css/` — `tokens.css` (palette, gems, type, light and dark), `base.css`, `components.css` (dials, stones, buttons, cards, notices), `views.css` (layouts for phone, the narrow desktop window, and wide screens).
+- `index.html` — the app shell and icon sprite.
+- `css/` — `tokens.css` (palette, gems, type, light and dark), `base.css`, `components.css` (dials, buttons, cards, notices), `views.css` (layouts for phone, the narrow desktop window, and wide screens), `gems.css` (the gems' light and motion).
 - `js/` — the domain logic:
   - `timer.js`, `breaks.js` — the timer and break;
   - `store.js` — the saved ledger;
@@ -67,11 +67,13 @@ This is a static site with no build step:
   - `backup.js` — export and import;
   - `lock.js` — one active window;
   - `dates.js`, `format.js` — dates and formatting;
+  - `gems.js`, `gem-cuts.js` — the weekday gems and the 3D geometry of each gem's cut;
   - `app.js` — boot.
-- `js/ui/` — the views (`today.js`, `log.js`, `insights-view.js`, `settings.js`), the frame (`shell.js`), and the SVG dials and stones (`dial.js`).
+- `js/ui/` — the views (`today.js`, `log.js`, `insights-view.js`, `settings.js`), the frame (`shell.js`), the SVG dials (`dial.js`), and the CSS-3D gems (`gem.js`).
 - `assets/fonts/` — Inter, self-hosted.
 - `icons/` — app icons, rendered from the SVGs in `icons/src/`.
 - `weekly-reflection.html` — redirects old bookmarks to Insights.
+- `dev/gems-lab.html` — a development page showing every gem at every size, still and moving (not cached).
 - `sw.js` and `manifest.json` — offline caching and installable-app settings. Bump `CACHE_VERSION` in `sw.js` on every deploy.
 - `tests/` — logic tests: `node --test tests/logic.test.mjs`.
 - `PRODUCT.md` — product facts and principles. `DESIGN.md` — the design system.
