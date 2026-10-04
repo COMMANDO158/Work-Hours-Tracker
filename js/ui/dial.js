@@ -1,9 +1,10 @@
 // SVG drawing for the clean visual timer. Every dial is a white face whose
 // ticks and numerals sit on a band at the rim; the coloured sector grows inside
 // that band, so it never covers a mark. The work face fills in the day's gem;
-// its back face is the 30-minute break, filling in teal. Stones (faceted gems
-// seen from above) name the days.
+// its back face is the 30-minute break, filling in teal. Stones (the gems in
+// their own cuts, see gem.js) name the days.
 import { DAILY_GOAL, WEEKLY_GOAL, BREAK_LIMIT } from '../config.js';
+import { gem } from './gem.js';
 
 const NS = 'http://www.w3.org/2000/svg';
 const TAU = Math.PI * 2;
@@ -189,32 +190,8 @@ export function rosette({ days, size = 120, label = null, isCurrent = false }) {
 
 // ---------------------------------------------------------------- stone
 
-// A faceted gem seen from above: an octagonal girdle, a table, and kite facets
-// in three tones of the gem.
-export function stone(gem, size = 24, label = null) {
-  const C = 12;
-  const R = 11;
-  const r = 5.4;
-  const root = svg('svg', {
-    viewBox: '0 0 24 24', width: size, height: size, class: 'stone', 'data-gem': gem,
-    role: label ? 'img' : null, 'aria-label': label, 'aria-hidden': label ? null : 'true', focusable: 'false'
-  });
-  const outer = [];
-  const inner = [];
-  for (let i = 0; i < 8; i++) {
-    const a = TOP + Math.PI / 8 + (i / 8) * TAU;
-    outer.push(point(C, C, R, a));
-    inner.push(point(C, C, r, a));
-  }
-  const pts = (arr) => arr.map(([x, y]) => `${f(x)},${f(y)}`).join(' ');
-  root.appendChild(svg('polygon', { points: pts(outer), class: 'stone-girdle' }));
-  for (let i = 0; i < 8; i++) {
-    const j = (i + 1) % 8;
-    // Facet i faces TOP + 45° × (i + 1). Light comes from the upper left.
-    const tone = i >= 5 ? 'stone-facet-lit' : (i === 0 || i === 4 ? 'stone-facet-mid' : 'stone-facet-deep');
-    root.appendChild(svg('polygon', { points: pts([outer[i], outer[j], inner[j], inner[i]]), class: tone }));
-  }
-  root.appendChild(svg('polygon', { points: pts(inner), class: 'stone-table' }));
-  root.appendChild(svg('polygon', { points: pts(outer), class: 'stone-edge' }));
-  return root;
+// The day's gem in its own cut, in CSS 3D (see gem.js). Still until its tile or
+// legend cell is hovered.
+export function stone(id, size = 24, label = null) {
+  return gem(id, size, { label });
 }

@@ -1,0 +1,23 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "all-caps-body",
+        "value": "*",
+        "files": [
+          "dev/gems-lab.html"
+        ],
+        "createdAt": "2026-10-04T22:12:21.303Z",
+        "reason": "Claude triage: the uppercase text is short tracked labels (gem name and cut, sizes), the app's own label style from DESIGN.md, not body text"
+      },
+      {
+        "rule": "overused-font",
+        "value": "inter",
+        "createdAt": "2026-10-04T22:12:21.535Z",
+        "reason": "Claude triage: DESIGN.md names Inter (self-hosted) as the app typeface; the lab page inherits the app's base.css"
+      }
+    ]
+  }
+}

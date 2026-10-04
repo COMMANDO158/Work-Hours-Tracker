@@ -2,7 +2,7 @@
 // view-only banner for a second window.
 import { S, on } from '../state.js';
 import { h, icon, clear, setText, $ } from './dom.js';
-import { stone } from './dial.js';
+import { gem as gemStone } from './gem.js';
 import { syncStatus } from '../sync.js';
 import { gemFor } from '../gems.js';
 import { today, weekdayLong } from '../dates.js';
@@ -43,8 +43,27 @@ export function applyGem() {
   const stoneEl = $('#dayStone');
   if (stoneEl && stoneEl.dataset.gem !== gem.id) {
     stoneEl.dataset.gem = gem.id;
-    clear(stoneEl).appendChild(stone(gem.id, 24));
+    turnOver(stoneEl, gemStone(gem.id, 52, { motion: 'hero' }));
   }
+}
+
+// A new day: the old gem sinks away and the new one rises in. Instant on first
+// render, under reduced motion, and when the page is hidden.
+let turnTimer = 0;
+function turnOver(host, next) {
+  const old = host.querySelector('.gem');
+  clearTimeout(turnTimer);
+  const still = !old || matchMedia('(prefers-reduced-motion: reduce)').matches || document.hidden;
+  if (still) {
+    clear(host).appendChild(next);
+    return;
+  }
+  old.classList.add('is-leaving');
+  turnTimer = setTimeout(() => {
+    next.classList.add('is-arriving');
+    clear(host).appendChild(next);
+    turnTimer = setTimeout(() => next.classList.remove('is-arriving'), 320);
+  }, 240);
 }
 
 export function isWide() {
