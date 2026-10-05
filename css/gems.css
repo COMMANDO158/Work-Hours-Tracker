@@ -91,40 +91,6 @@
 
 /* ------------------------------------------------------------ the gem of the day */
 
-/* Polished facets: a narrow white reflection over a deeper coloured body.
-   Keep the paint on the faces so the existing 3D depth stays intact. */
-.gem[data-motion="hero"] .gem-face {
-    --polish: 0.48;
-    filter: saturate(1.4);
-    background-image:
-        linear-gradient(115deg,
-            rgb(255 255 255 / 0) 28%,
-            rgb(255 255 255 / 0.12) 40%,
-            rgb(255 255 255 / var(--polish)) 45%,
-            rgb(255 255 255 / var(--polish)) 47%,
-            rgb(255 255 255 / 0) 49%),
-        radial-gradient(ellipse at 72% 80%,
-            rgb(225 250 255 / 0.48),
-            rgb(225 250 255 / 0) 58%),
-        linear-gradient(155deg,
-            rgb(255 255 255 / 0.52),
-            rgb(255 255 255 / 0.08) 24%,
-            rgb(0 0 0 / 0.24) 48%,
-            rgb(255 255 255 / 0.08) 72%,
-            rgb(255 255 255 / 0.44));
-    background-size: 220% 180%, 100% 100%, 100% 100%;
-    background-position: 50% 50%, center, center;
-}
-
-/* Reflections brighten and travel as each facet turns into the light.
-   Reduced motion retains the same polish at the gem's resting angle. */
-@supports (color: color-mix(in oklab, red clamp(0%, calc(50% + 10% * cos(0deg)), 100%), blue)) {
-    .gem[data-motion="hero"] .gem-face {
-        --polish: clamp(0.22, calc((var(--lit) - 0.15) * 1.7), 0.96);
-        background-position: calc(50% + var(--lit) * 45%) 50%, center, center;
-    }
-}
-
 /* Each gem moves in its own way. */
 @media (prefers-reduced-motion: no-preference) {
     .gem[data-motion="hero"] .gem-body {
