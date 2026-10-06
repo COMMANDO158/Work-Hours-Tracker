@@ -23,10 +23,42 @@
     initial-value: 0px;
 }
 
+/* Each facet's light, resolved once per facet instead of again in every gradient. */
+@property --lit {
+    syntax: '<number>';
+    inherits: true;
+    initial-value: 0;
+}
+
+@property --lit2 {
+    syntax: '<number>';
+    inherits: true;
+    initial-value: 0;
+}
+
+@property --bp {
+    syntax: '<percentage>';
+    inherits: true;
+    initial-value: 50%;
+}
+
+@property --sp {
+    syntax: '<percentage>';
+    inherits: true;
+    initial-value: 0%;
+}
+
 .gem {
-    /* the two ends of a facet's light, mixed from the gem */
+    /* the two ends of a facet's light where live light isn't supported */
     --gem-lit: color-mix(in oklab, var(--g) var(--gem-lit-k), var(--gem-lift));
     --gem-shade: color-mix(in oklab, var(--g) var(--gem-shade-k), var(--gem-sink));
+    /* the deepest shade, lifted toward the body colour on a dark ground */
+    --c-floor: color-mix(in oklch, var(--c-mid, var(--g)) var(--gem-deep-lift, 0%), var(--c-deep, var(--g)));
+    /* a fixed fill light, low on the right: it lights the facets the key light
+       misses, so the far side of the stone glows in colour instead of going dead */
+    --fx: 0.62;
+    --fy: 0.5;
+    --fz: 0.6;
     position: relative;
     display: inline-block;
     flex: none;
@@ -36,11 +68,27 @@
     line-height: 0;
     vertical-align: middle;
     perspective: 4.5em;
+    /* the light the stone throws back: a contact shadow and a spill of its own colour */
+    filter:
+        drop-shadow(0 0.03em 0.05em color-mix(in oklch, var(--c-floor) 38%, transparent))
+        drop-shadow(0 0 0.09em color-mix(in oklch, var(--c-mid, var(--g)) var(--gem-bloom, 30%), transparent))
+        saturate(1.1) contrast(1.05);
 }
 
 /* the pale gems need more of their own colour at the lit end to hold a white card */
 .gem:is([data-gem="diamond"], [data-gem="clear"]) {
     --gem-lit-k: var(--gem-pale-lit-k);
+    filter:
+        drop-shadow(0 0.03em 0.05em color-mix(in oklch, var(--c-floor) 40%, transparent))
+        drop-shadow(0 0 0.08em rgb(170 220 255 / 0.28))
+        contrast(1.08);
+}
+
+/* Small gems: one soft spill, so the bloom doesn't blur the silhouette. */
+.gem[data-lod="lite"] {
+    filter:
+        drop-shadow(0 0 0.06em color-mix(in oklch, var(--c-mid, var(--g)) var(--gem-bloom, 30%), transparent))
+        saturate(1.1) contrast(1.05);
 }
 
 .gem-pose,
@@ -55,7 +103,10 @@
     transform: translateY(var(--lift)) rotateX(var(--tip)) rotateY(var(--yaw));
 }
 
-.gem-face {
+/* .gem-face is the outside of a facet; .gem-back is the same plane seen from
+   inside, so you look through the front facets and catch the rear ones. */
+.gem-face,
+.gem-back {
     position: absolute;
     left: 50%;
     top: 50%;
@@ -66,17 +117,93 @@
     background-color: color-mix(in oklab, var(--gem-lit) var(--tone), var(--gem-shade));
 }
 
-/* Live light: the face's normal turned by the body, against the light. */
-@supports (color: color-mix(in oklab, red clamp(0%, calc(50% + 10% * cos(0deg)), 100%), blue)) {
-    .gem-face {
+.gem-back {
+    opacity: 0.55;
+}
+
+/* Live light and glass: the face's normal turned by the body, against two lights. */
+@supports (color: color-mix(in oklch, red clamp(0%, calc(50% + 10% * pow(2, 3) * cos(0deg)), 100%), blue)) {
+    .gem-face,
+    .gem-back {
         --x1: calc(var(--nx) * cos(var(--yaw)) + var(--nz) * sin(var(--yaw)));
         --z1: calc(var(--nz) * cos(var(--yaw)) - var(--nx) * sin(var(--yaw)));
-        --lit: calc(var(--lx) * var(--x1) + var(--ly) * (var(--ny) * cos(var(--tip)) - var(--z1) * sin(var(--tip))) + var(--lz) * (var(--ny) * sin(var(--tip)) + var(--z1) * cos(var(--tip))));
-        background-color: color-mix(in oklab, var(--gem-lit) clamp(0%, calc(30% + 70% * var(--lit) + var(--jitter, 0%)), 100%), var(--gem-shade));
+        --y1: calc(var(--ny) * cos(var(--tip)) - var(--z1) * sin(var(--tip)));
+        --z2: calc(var(--ny) * sin(var(--tip)) + var(--z1) * cos(var(--tip)));
+        /* key light and fill light against that normal */
+        --lit: calc(var(--lx) * var(--x1) + var(--ly) * var(--y1) + var(--lz) * var(--z2));
+        --lit2: calc(var(--fx) * var(--x1) + var(--fy) * var(--y1) + var(--fz) * var(--z2));
+        /* how bright the facet is */
+        --bp: clamp(0%, calc(24% + 64% * var(--lit) + 30% * var(--lit2) + var(--jitter, 0%) * 1.5), 100%);
+        /* the flash: a tight power curve, so a facet lights for only a few degrees of turn */
+        --sp: calc(100% * pow(clamp(0, var(--lit), 1), var(--spec-pow, 11)));
+        /* deep -> mid -> hi, mixed in OKLCH so the colour holds its chroma */
+        --lo: color-mix(in oklch, var(--c-mid) clamp(0%, calc(var(--bp) * 1.7), 100%), var(--c-floor));
+        --fill: color-mix(in oklch, var(--c-hi) clamp(0%, calc((var(--bp) - 38%) * 1.9), 100%), var(--lo));
+        /* each facet reflects in its own direction */
+        --ang: calc(115deg + var(--s, 0.5) * 170deg + var(--nx) * 30deg);
+        --fire: linear-gradient(transparent, transparent);
+    }
+
+    /* Front facet: the element is the bright bevelled edge, ::after the facet inside it. */
+    .gem-face {
+        opacity: var(--glass, 0.86);
+        background: color-mix(in oklch, var(--c-hi) 46%, var(--fill));
+    }
+
+    .gem-face::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        clip-path: inherit;
+        transform: scale(0.84);
+        transform-origin: var(--cx, 50%) var(--cy, 50%);
+        background:
+            /* a bright streak that sweeps across the facet as it turns... */
+            linear-gradient(var(--ang),
+                transparent 22%,
+                color-mix(in srgb, #fff var(--sp), transparent) 50%,
+                transparent 78%),
+            /* ...and a whole-facet flash as it squares up to the light */
+            linear-gradient(color-mix(in srgb, #fff calc(var(--sp) * 0.55), transparent) 0 100%),
+            var(--fire),
+            /* depth: light pooling at one end, colour sinking at the other */
+            linear-gradient(var(--ang),
+                color-mix(in oklch, var(--c-hi) 52%, transparent),
+                transparent 52%,
+                color-mix(in oklch, var(--c-floor) 46%, transparent)),
+            var(--fill);
+    }
+
+    /* at small sizes a deep bevel reads as an outline */
+    .gem[data-lod="lite"] .gem-face::after {
+        transform: scale(0.9);
+    }
+
+    /* Back facet: the inside of the stone, lit by light that came through. */
+    .gem-back {
+        --bp: clamp(0%, calc(36% + 34% * var(--lit) + 34% * var(--lit2) + var(--jitter, 0%)), 100%);
+        background:
+            radial-gradient(ellipse at var(--cx, 50%) var(--cy, 50%),
+                color-mix(in oklch, var(--c-hi) 55%, transparent),
+                transparent 70%),
+            linear-gradient(var(--ang),
+                color-mix(in oklch, var(--c-hi) 40%, transparent),
+                transparent 60%),
+            var(--fill);
+    }
+
+    /* Diamond and clear quartz: a narrow band of spectral fire inside the flash. */
+    .gem:is([data-gem="diamond"], [data-gem="clear"]) :is(.gem-face, .gem-back) {
+        --fire: linear-gradient(calc(var(--ang) + 90deg),
+            color-mix(in oklch, oklch(0.85 0.17 25) calc(var(--sp) * 0.7), transparent) 8%,
+            color-mix(in oklch, oklch(0.9 0.17 95) calc(var(--sp) * 0.7), transparent) 30%,
+            color-mix(in oklch, oklch(0.85 0.15 175) calc(var(--sp) * 0.7), transparent) 52%,
+            color-mix(in oklch, oklch(0.78 0.17 255) calc(var(--sp) * 0.7), transparent) 74%,
+            color-mix(in oklch, oklch(0.78 0.2 320) calc(var(--sp) * 0.7), transparent) 94%);
     }
 }
 
-/* The diamond's glint: a crisp four-point star, never a glow. */
+/* The diamond's glint: a crisp four-point star. */
 .gem-glint {
     position: absolute;
     left: 22%;
@@ -87,6 +214,32 @@
     clip-path: polygon(50% 0, 58% 42%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0 50%, 42% 42%);
     opacity: 0;
     pointer-events: none;
+}
+
+/* Sparkles: two small four-point glints on the gem of the day, out of step. */
+.gem[data-motion="hero"]::before,
+.gem[data-motion="hero"]::after {
+    content: "";
+    position: absolute;
+    z-index: 3;
+    left: 14%;
+    top: 12%;
+    width: 0.46em;
+    height: 0.46em;
+    pointer-events: none;
+    opacity: 0;
+    background:
+        radial-gradient(circle, #fff 0 7%, rgb(255 255 255 / 0.65) 14%, transparent 42%),
+        linear-gradient(90deg, transparent 4%, #fff 50%, transparent 96%) center / 100% 5% no-repeat,
+        linear-gradient(0deg, transparent 4%, #fff 50%, transparent 96%) center / 5% 100% no-repeat;
+    filter: drop-shadow(0 0 0.03em rgb(255 255 255 / 0.9));
+}
+
+.gem[data-motion="hero"]::after {
+    left: 62%;
+    top: 52%;
+    width: 0.36em;
+    height: 0.36em;
 }
 
 /* ------------------------------------------------------------ the gem of the day */
@@ -131,6 +284,16 @@
     .gem[data-motion="hero"] .gem-glint {
         animation: gem-glint 12s linear infinite;
     }
+
+    .gem[data-motion="hero"]::before {
+        animation: gem-sparkle 4.6s ease-in-out infinite;
+        animation-delay: calc(var(--i, 0) * -0.9s);
+    }
+
+    .gem[data-motion="hero"]::after {
+        animation: gem-sparkle 5.8s ease-in-out infinite;
+        animation-delay: calc(var(--i, 0) * -1.7s - 2.1s);
+    }
 }
 
 @keyframes gem-turn {
@@ -168,6 +331,12 @@
     40%, 100% { opacity: 0; transform: scale(0) rotate(90deg); }
 }
 
+@keyframes gem-sparkle {
+    0%, 58% { opacity: 0; transform: scale(0.2) rotate(0deg); }
+    66% { opacity: 1; transform: scale(1) rotate(45deg); }
+    76%, 100% { opacity: 0; transform: scale(0.15) rotate(90deg); }
+}
+
 /* A new day: the old gem sinks away and the new one rises in (ui/shell.js). */
 .gem.is-leaving {
     animation: gem-leave 240ms cubic-bezier(0.55, 0, 1, 0.45) forwards;
@@ -200,5 +369,11 @@
     .gem.is-leaving,
     .gem.is-arriving {
         animation: none !important;
+    }
+
+    .gem::before,
+    .gem::after {
+        animation: none !important;
+        opacity: 0;
     }
 }

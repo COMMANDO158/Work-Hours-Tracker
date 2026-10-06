@@ -228,15 +228,30 @@ export function facesOf(cut) {
     const minB = Math.min(...b);
     const w = Math.max(...a) - minA;
     const h = Math.max(...b) - minB;
+    const clip = a.map((x, i) => [((x - minA) / w) * 100, ((b[i] - minB) / h) * 100]);
     return {
       w, h, n,
       // a small fixed nudge per facet, so neighbours facing alike still read apart
       jitter: (((i * 5) % 7) - 3) * 0.025,
       o: plus(grown[0], plus(times(u, minA), times(v, minB))),
       u, v,
-      clip: a.map((x, i) => [((x - minA) / w) * 100, ((b[i] - minB) / h) * 100])
+      clip,
+      c: centroidOf(clip)
     };
   });
+}
+
+// The centre of area of a flat polygon (shoelace formula).
+function centroidOf(pts) {
+  let area = 0, x = 0, y = 0;
+  pts.forEach(([x0, y0], i) => {
+    const [x1, y1] = pts[(i + 1) % pts.length];
+    const k = x0 * y1 - x1 * y0;
+    area += k;
+    x += (x0 + x1) * k;
+    y += (y0 + y1) * k;
+  });
+  return [x / (3 * area), y / (3 * area)];
 }
 
 // How lit a face is (0 to 1) when the body has turned `spin` degrees: the same

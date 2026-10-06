@@ -325,7 +325,7 @@ Each gem is a triplet: the **fill** (sector, stone girdle, bar), the **ink** (th
 - **Soft** (soft, soft-hover): soft buttons, the segmented track, icon-button hover, rest-day dial faces.
 
 ### Dark mode
-Two identical paths: `prefers-color-scheme: dark` on `:root:not([data-mode="light"])`, and an explicit `:root[data-mode="dark"]`. Every token is re-declared. Ground goes near-black (#0E0F11), cards dark grey (#17191C), the hub and primary invert to near-white, and gems lift in lightness. Every gem's "on" colour becomes near-black, and its ink becomes a pale tint used for edges and text. Clear darkens to a mid grey. Shadows deepen to plain black alpha. There is no glow.
+Two identical paths: `prefers-color-scheme: dark` on `:root:not([data-mode="light"])`, and an explicit `:root[data-mode="dark"]`. Every token is re-declared. Ground goes near-black (#0E0F11), cards dark grey (#17191C), the hub and primary invert to near-white, and gems lift in lightness. Every gem's "on" colour becomes near-black, and its ink becomes a pale tint used for edges and text. Clear darkens to a mid grey. Shadows deepen to plain black alpha. Nothing glows except a stone's own small bloom.
 
 ### Named Rules
 **The Gem Means a Day Rule.** A gem colour appears only where it stands for its weekday: dial sectors, stones, rosette wedges, weekday bars, and the input caret on that day. Gems are never button, link, status, or decoration colours. The one fixed gem is the app icon, a portrait of the work dial in Topaz (see App icon).
@@ -388,7 +388,7 @@ Depth is soft, layered, and quiet. Cards and tiles lift slightly off the ground 
 In dark mode the same three roles use black alpha (0.25 to 0.5).
 
 ### Named Rules
-**The Flat Face Rule.** Dial faces, sectors, and stones carry no gradient, glow, or bevel. A stone's depth comes only from its geometry and its light: every facet is one flat tone mixed from its gem.
+**The Flat Face Rule.** Dial faces and sectors carry no gradient, glow, or bevel. Stones are the one exception: they are cut glass (see Stone), and their shine stays inside the stone and its own small bloom.
 
 **The One Lifted Dial Rule.** Only the big dial (either face) gets the dial shadow, on its flip card. Day dials, past-week dials, and rosettes sit flat.
 
@@ -477,7 +477,7 @@ Every gem is a convex solid built from flat faces in CSS 3D (`js/gem-cuts.js` ho
 | Topaz | Princess: square table, inverted pyramid, corner forward | Turns in 12s and dips twice a turn to flash its table |
 | Clear | Raw octahedron | Never the gem of the day |
 
-Light comes from the upper left and front. Each facet is one flat tone between the gem's lit end (the gem mixed with `--gem-lift`) and its shaded end (mixed with `--gem-sink`), set from how squarely the facet faces the light. While a gem turns, the stylesheet works the light out live from each facet's normal, so the light moves across the facets. Pale gems (Diamond, Clear) keep more of their own colour at the lit end so they hold on a white card. Under 32px a cut uses fewer faces. The gem of the day is 52px; stones are 20px on tiles and 18px in the Insights legend, still until their tile or legend cell is hovered, when they make one 900ms turn. A new day swaps the gem: the old one sinks away (240ms) and the new one rises in (320ms).
+Each stone is cut glass. Its colour is a three-stop OKLCH ramp (`--c-deep`, `--c-mid`, `--c-hi`, set per gem in `tokens.css`) that holds its chroma, so shaded facets go deep rather than grey and lit ones glow in their own colour. Two lights fall on it: a key from the upper left and front, and a fixed fill low on the right, so no side goes dead. The stylesheet works both out live from each facet's normal as the gem turns. Each facet has a bright bevelled edge, a streak and a brief power-curve flash when it squares up to the key light, and a depth gradient. Diamond and Clear add a narrow band of spectral fire inside the flash. From 32px up, every facet also has a mirrored inner skin, so the rear facets show through the front ones (`--glass`). A stone throws a small bloom of its own colour; in dark mode its deepest shade lifts toward the body colour (`--gem-deep-lift`) and the bloom strengthens (`--gem-bloom`). Under 32px a cut uses fewer faces, no inner skins, a finer bevel, and a single soft bloom. Without live CSS maths, each facet falls back to one flat tone set at rest. The gem of the day also catches two small four-point sparkles, out of step with each other. The gem of the day is 52px; stones are 20px on tiles and 18px in the Insights legend, still until their tile or legend cell is hovered, when they make one 900ms turn. A new day swaps the gem: the old one sinks away (240ms) and the new one rises in (320ms).
 
 ### App icon
 The installed-app mark is the work dial itself, drawn flat from the light tokens on a 512-unit canvas, in the same proportions as the big face: the sector stops short of the rim and the ticks sit on the white band.
@@ -516,7 +516,7 @@ There are two everyday durations: 140ms for hover, press, and colour changes, an
 - **Don't** add a hand, knob, housing, or any physical-object costume to a dial.
 - **Don't** show both faces at once, or draw a separate break dial or break card beside the work dial.
 - **Don't** animate anything else the way the flip or the gem of the day moves; they are the two designed motions. Stones elsewhere stay still until hovered.
-- **Don't** use neon-on-dark glow, gradients, or bevels on faces, sectors, or stones; a gem's depth is geometry and flat-toned light only.
+- **Don't** use neon-on-dark glow, gradients, or bevels on dial faces or sectors. Only stones are rendered as glass, and their bloom stays small and in their own colour.
 - **Don't** use a gem colour for buttons, links, or status, and don't give Clear to a weekday.
 - **Don't** put an eyebrow or kicker above a heading. The label is the heading.
 - **Don't** draw a second rosette. The rosette is the current week only, and past weeks are Clear mini dials.
