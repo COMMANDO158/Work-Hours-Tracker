@@ -321,6 +321,7 @@ test('gem faces stay within budget and are drawable', () => {
       const nums = [f.w, f.h, ...f.o, ...f.u, ...f.v, ...f.n, ...f.clip.flat()];
       assert.ok(nums.every(Number.isFinite), `${id}: a face has a non-finite number`);
       assert.ok(f.clip.flat().every((x) => x >= -1e-6 && x <= 100 + 1e-6), `${id}: clip outside the face`);
+      assert.ok(f.c.every((x) => Number.isFinite(x) && x >= 0 && x <= 100), `${id}: facet centre outside the face`);
     }
     const cut = cutFor(id);
     const tones = full.map((f) => toneAt(f.n, cut.light, cut.rest));
