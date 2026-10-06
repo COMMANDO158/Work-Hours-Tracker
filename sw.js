@@ -1,7 +1,7 @@
 // FlowFocus service worker.
 // Bump CACHE_VERSION on every deploy. The whole app shell is served from one
 // versioned cache, so a new page never runs against old modules.
-const CACHE_VERSION = 'v12';
+const CACHE_VERSION = 'v13';
 const CACHE_NAME = `flowfocus-${CACHE_VERSION}`;
 
 const APP_SHELL = [
