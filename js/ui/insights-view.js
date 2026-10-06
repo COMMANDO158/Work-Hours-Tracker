@@ -67,7 +67,7 @@ function thisWeek(data, ref) {
   const days = weekSeries(data, ref);
   const pace = weekPace(data, ref);
   const legend = h('ol', { class: 'legend' }, days.map((d) => h('li', { class: `legend-row${d.isToday ? ' is-today' : ''}${d.off ? ' is-off' : ''}` }, [
-    stone(d.gem, 18),
+    stone(d.gem, 26),
     h('span', { class: 'legend-day' }, weekdayShort(d.date)),
     h('span', { class: 'legend-hours num' }, d.seconds ? formatHM(d.seconds) : (d.off ? 'rest' : '–'))
   ])));
