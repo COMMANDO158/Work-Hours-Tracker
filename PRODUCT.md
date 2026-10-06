@@ -48,7 +48,7 @@ A personal ledger of contracted time, not a corporate timesheet and not a produc
 ## Evidence on Hand
 
 - The owner's own tracked hours in localStorage and in their secret Gist.
-- Existing app icons in `icons/` (a stopwatch mark); replacing them is open.
+- Existing app icons in `icons/` (a Ruby brilliant on Ghost White, chosen by the owner 2026-10-06).
 - There are no other users, testimonials, metrics, or press. Never invent any.
 
 ## Product Principles

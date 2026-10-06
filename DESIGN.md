@@ -259,7 +259,7 @@ components:
     padding: "0 10px"
     height: "40px"
   app-icon:
-    backgroundColor: "{colors.primary}"
+    backgroundColor: "#F8F8FF"
     width: "512px"
     height: "512px"
   notice:
@@ -301,7 +301,7 @@ A neutral grey-and-white field where colour means something: the day's gem, the 
 - **Hub Black** (hub, tick): the dial hub and the major ticks. It is the only solid mark at the centre of every dial.
 
 ### Secondary: the weekday gems
-Each gem is a triplet: the **fill** (sector, stone girdle, bar), the **ink** (the sector's edge stroke, stone outline, the lap sector, and any gem-coloured text), and the **on** colour (marks printed over the fill). Elements opt in with `data-gem`, which sets `--g`, `--gi`, and `--go`. Since the rim band, no dial in the app prints a mark over its fill; the on colours survive in the tokens and in the app icon.
+Each gem is a triplet: the **fill** (sector, stone girdle, bar), the **ink** (the sector's edge stroke, stone outline, the lap sector, and any gem-coloured text), and the **on** colour (marks printed over the fill). Elements opt in with `data-gem`, which sets `--g`, `--gi`, and `--go`. Since the rim band, no dial in the app prints a mark over its fill; the on colours survive in the tokens.
 - **Topaz** (topaz / topaz-ink / topaz-on): Saturday. Dark marks on the fill.
 - **Emerald** (emerald / emerald-ink / emerald-on): Sunday.
 - **Sapphire** (sapphire / sapphire-ink / sapphire-on): Monday.
@@ -328,7 +328,7 @@ Each gem is a triplet: the **fill** (sector, stone girdle, bar), the **ink** (th
 Two identical paths: `prefers-color-scheme: dark` on `:root:not([data-mode="light"])`, and an explicit `:root[data-mode="dark"]`. Every token is re-declared. Ground goes near-black (#0E0F11), cards dark grey (#17191C), the hub and primary invert to near-white, and gems lift in lightness. Every gem's "on" colour becomes near-black, and its ink becomes a pale tint used for edges and text. Clear darkens to a mid grey. Shadows deepen to plain black alpha. Nothing glows except a stone's own small bloom.
 
 ### Named Rules
-**The Gem Means a Day Rule.** A gem colour appears only where it stands for its weekday: dial sectors, stones, rosette wedges, weekday bars, and the input caret on that day. Gems are never button, link, status, or decoration colours. The one fixed gem is the app icon, a portrait of the work dial in Topaz (see App icon).
+**The Gem Means a Day Rule.** A gem colour appears only where it stands for its weekday: dial sectors, stones, rosette wedges, weekday bars, and the input caret on that day. Gems are never button, link, status, or decoration colours. The one fixed gem is the app icon, a Ruby brilliant (see App icon).
 
 **The Triplet Rule.** Use a gem only through its triplet. Fill with `--g`, edge and text with `--gi`, and marks over the fill with `--go`. Never set text in the fill shade.
 
@@ -480,14 +480,12 @@ Every gem is a convex solid built from flat faces in CSS 3D (`js/gem-cuts.js` ho
 Each stone is cut glass. Its colour is a three-stop OKLCH ramp (`--c-deep`, `--c-mid`, `--c-hi`, set per gem in `tokens.css`) that holds its chroma, so shaded facets go deep rather than grey and lit ones glow in their own colour. Two lights fall on it: a key from the upper left and front, and a fixed fill low on the right, so no side goes dead. The stylesheet works both out live from each facet's normal as the gem turns. Each facet has a bright bevelled edge, a streak and a brief power-curve flash when it squares up to the key light, and a depth gradient. Diamond and Clear add a narrow band of spectral fire inside the flash. From 32px up, every facet also has a mirrored inner skin, so the rear facets show through the front ones (`--glass`). A stone throws a small bloom of its own colour; in dark mode its deepest shade lifts toward the body colour (`--gem-deep-lift`) and the bloom strengthens (`--gem-bloom`). Under 32px a cut uses fewer faces, no inner skins, a finer bevel, and a single soft bloom. Without live CSS maths, each facet falls back to one flat tone set at rest. The gem of the day also catches two small four-point sparkles, out of step with each other. The gem of the day is 52px; stones are 20px on tiles and 26px in the Insights legend, still until their tile or legend cell is hovered, when they make one 900ms turn. A new day swaps the gem: the old one sinks away (240ms) and the new one rises in (320ms).
 
 ### App icon
-The installed-app mark is the work dial itself, drawn flat from the light tokens on a 512-unit canvas, in the same proportions as the big face: the sector stops short of the rim and the ticks sit on the white band.
-- **Tile:** a Timer Black square. The standard icon is a rounded tile (112-unit radius, inset 8 units). The maskable and Apple icons are full-bleed, so the platform applies its own mask.
-- **Dial:** a white face with a face-edge hairline of about 1.2 units (radius 196 standard, 214 Apple and favicon, 160 maskable to stay inside the safe zone).
-- **Sector:** one flat Topaz sector from 12 o'clock to 3h 45m, with its topaz-ink edge, inset to 103/147 of the face radius.
-- **Ticks:** 24 ticks on the white band (106–124/147 of the radius). Majors are Major Tick and minors are Tick Soft; nothing is drawn over the fill.
-- **Centre:** a black hub, and no hand and no numerals.
-- **Favicon:** the 32px favicon uses a reduced source with the six major ticks only, on a rounded tile.
-- **Sources:** `icons/src/icon.svg`, `icon-maskable.svg`, `icon-small.svg`, and `icon-apple.svg`. Every PNG in `icons/` is rendered from them, never drawn by hand.
+The installed-app mark is one gem: a Ruby brilliant in side view, crown over pavilion, on a Ghost White tile, drawn flat on a 512-unit canvas. The owner chose it on 2026-10-06 from seven concepts (the options sheet is `dev/icon-options.html`).
+- **Tile:** Ghost White (#F8F8FF). The standard icon is a rounded tile (112-unit radius, inset 8 units) with a 2-unit #E4E4EE hairline, so it holds on a white launcher. The favicon source uses a 120-unit radius and a heavier hairline. The maskable and Apple icons are full-bleed with no hairline, so the platform applies its own mask.
+- **Stone:** five crown facets over four pavilion facets, each one flat tone from the Ruby ramp in `tokens.css`, lit from the upper left like the stones in the app. An icon can't move, so there is no live light, bevel or bloom.
+- **Sparkle:** one four-point sparkle in Ruby at the upper right of the crown. The favicon leaves it out.
+- **Scale:** the stone is drawn at 0.92 on the standard tile, 0.88 for Apple, 0.74 for maskable (inside the safe circle) and 1.12 for the favicon.
+- **Sources:** `icons/src/icon.svg`, `icon-maskable.svg`, `icon-small.svg`, and `icon-apple.svg`. Every PNG in `icons/` is rendered from them at its exact size, never drawn by hand.
 
 ### Notices
 Timer Black toasts with a 14px radius and the Float shadow, docked above the tab bar (bottom right when wide). They enter in 220ms (rising 8px and fading in), and action buttons inside are outlined in currentColor.
@@ -510,7 +508,7 @@ There are two everyday durations: 140ms for hover, press, and colour changes, an
 - **Do** keep the wide Today column fitting a 900px-tall window.
 - **Do** use 140ms and 220ms with the shared ease-out for everyday changes; the flip's 240ms out and 320ms back are its own.
 - **Do** write "break", never "paid break".
-- **Do** render every app icon from its SVG source: the work dial on a Timer Black tile, one flat Topaz sector, and a black hub with no hand.
+- **Do** render every app icon from its SVG source: one faceted Ruby brilliant, side view, on a Ghost White tile.
 
 ### Don't:
 - **Don't** add a hand, knob, housing, or any physical-object costume to a dial.

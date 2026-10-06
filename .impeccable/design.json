@@ -494,7 +494,7 @@
         "displayName": "Topaz On",
         "canonical": "#111317",
         "dark": "#111317",
-        "purpose": "Saturday. Marks over the fill (--go). No app dial prints over its fill since the rim band; used by the app icon.",
+        "purpose": "Saturday. Marks over the fill (--go). No app dial prints over its fill since the rim band.",
         "tonalRamp": [
           "#090B0F",
           "#222428",
@@ -545,7 +545,7 @@
         "displayName": "Emerald On",
         "canonical": "#FFFFFF",
         "dark": "#0E0F11",
-        "purpose": "Sunday. Marks over the fill (--go). No app dial prints over its fill since the rim band; used by the app icon.",
+        "purpose": "Sunday. Marks over the fill (--go). No app dial prints over its fill since the rim band.",
         "tonalRamp": [
           "#0B0B0B",
           "#242424",
@@ -596,7 +596,7 @@
         "displayName": "Sapphire On",
         "canonical": "#FFFFFF",
         "dark": "#0E0F11",
-        "purpose": "Monday. Marks over the fill (--go). No app dial prints over its fill since the rim band; used by the app icon.",
+        "purpose": "Monday. Marks over the fill (--go). No app dial prints over its fill since the rim band.",
         "tonalRamp": [
           "#0B0B0B",
           "#242424",
@@ -647,7 +647,7 @@
         "displayName": "Amethyst On",
         "canonical": "#FFFFFF",
         "dark": "#0E0F11",
-        "purpose": "Tuesday. Marks over the fill (--go). No app dial prints over its fill since the rim band; used by the app icon.",
+        "purpose": "Tuesday. Marks over the fill (--go). No app dial prints over its fill since the rim band.",
         "tonalRamp": [
           "#0B0B0B",
           "#242424",
@@ -698,7 +698,7 @@
         "displayName": "Diamond On",
         "canonical": "#111317",
         "dark": "#0E0F11",
-        "purpose": "Wednesday. Marks over the fill (--go). No app dial prints over its fill since the rim band; used by the app icon.",
+        "purpose": "Wednesday. Marks over the fill (--go). No app dial prints over its fill since the rim band.",
         "tonalRamp": [
           "#090B0F",
           "#222428",
@@ -749,7 +749,7 @@
         "displayName": "Ruby On",
         "canonical": "#FFFFFF",
         "dark": "#0E0F11",
-        "purpose": "Thursday. Marks over the fill (--go). No app dial prints over its fill since the rim band; used by the app icon.",
+        "purpose": "Thursday. Marks over the fill (--go). No app dial prints over its fill since the rim band.",
         "tonalRamp": [
           "#0B0B0B",
           "#242424",
@@ -800,7 +800,7 @@
         "displayName": "Tourmaline On",
         "canonical": "#FFFFFF",
         "dark": "#0E0F11",
-        "purpose": "Friday. Marks over the fill (--go). No app dial prints over its fill since the rim band; used by the app icon.",
+        "purpose": "Friday. Marks over the fill (--go). No app dial prints over its fill since the rim band.",
         "tonalRamp": [
           "#0B0B0B",
           "#242424",
@@ -851,7 +851,7 @@
         "displayName": "Clear On",
         "canonical": "#111317",
         "dark": "#F1F2F4",
-        "purpose": "Totals and past weeks; never a day. Marks over the fill (--go). No app dial prints over its fill since the rim band; used by the app icon.",
+        "purpose": "Totals and past weeks; never a day. Marks over the fill (--go). No app dial prints over its fill since the rim band.",
         "tonalRamp": [
           "#090B0F",
           "#222428",
@@ -1017,19 +1017,17 @@
     },
     "appIcon": {
       "canvas": "512-unit viewBox",
-      "tile": "Timer Black (#16181C). Standard icon: rounded tile rx112 inset 8; maskable and Apple: full-bleed square; favicon source: rx120.",
-      "dial": "White face with a face-edge (#E2E5E9) hairline of about 1.2 units; r196 standard, r214 Apple and favicon, r160 maskable (safe zone).",
-      "sector": "One flat Topaz sector (#F29A0E) from 12 o'clock to 3h 45m with a topaz-ink (#8F5A00) edge, inset to 103/147 of the face radius like the big face, leaving the white rim band.",
-      "ticks": "24 ticks on the white rim band (106–124/147 of the radius), every 4th major: majors Major Tick (#1C1F24), minors Tick Soft (#A3AAB3). Nothing is drawn over the fill. The favicon source keeps the 6 majors only.",
-      "hub": "Black hub (#111317); no hand, no numerals.",
+      "tile": "Ghost White (#F8F8FF) with an #E4E4EE hairline. Standard icon: rounded tile rx112 inset 8; favicon source: rx120 with a heavier hairline; maskable and Apple: full-bleed square, no hairline.",
+      "stone": "One Ruby brilliant in side view, crown over pavilion: five crown facets and four pavilion facets in flat tones from the Ruby ramp (oklch deep 0.17 0.11 18, mid 0.5 0.245 24, hi 0.77 0.2 18), lit from the upper left.",
+      "sparkle": "One four-point sparkle in Ruby (#D6042D) at the upper right of the crown. The favicon source leaves it out.",
+      "scale": "Stone scaled 0.92 standard, 0.88 Apple, 0.74 maskable (inside the safe circle), 1.12 favicon.",
       "sources": [
         "icons/src/icon.svg",
         "icons/src/icon-maskable.svg",
         "icons/src/icon-small.svg",
         "icons/src/icon-apple.svg"
       ],
-      "rendered": "Every PNG in icons/ (icon-192, icon-512, icon-maskable-512, apple-touch-icon, favicon-32) is rendered from these sources.",
-      "note": "Predates the rim band: the sector runs to near the rim, under the ticks, which switch to topaz-on over the fill."
+      "rendered": "Every PNG in icons/ (icon-192, icon-512, icon-maskable-512, apple-touch-icon, favicon-32) is rendered from these sources with headless Edge at its exact size."
     }
   },
   "components": [
@@ -1149,8 +1147,8 @@
       "name": "App Icon",
       "kind": "custom",
       "refersTo": "app-icon",
-      "description": "The work dial on a Timer Black tile: white face, flat Topaz sector with its ink edge, black hub, no hand. Shown from the favicon source (6 major ticks).",
-      "html": "<svg class=\"ds-app-icon\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 512 512\" width=\"96\" height=\"96\" aria-hidden=\"true\"><rect width=\"512\" height=\"512\" rx=\"120\" fill=\"#16181C\"/><circle cx=\"256\" cy=\"256\" r=\"214\" fill=\"#FFFFFF\" stroke=\"#E2E5E9\" stroke-width=\"1.28\"/><path d=\"M256.00 256.00L256.00 45.21A210.79 210.79 0 1 1 111.70 409.66Z\" fill=\"#F29A0E\" stroke=\"#8F5A00\" stroke-width=\"2.57\" stroke-linejoin=\"round\"/><line x1=\"256.00\" y1=\"86.94\" x2=\"256.00\" y2=\"54.84\" stroke=\"#111317\" stroke-opacity=\"0.85\" stroke-width=\"6.42\" stroke-linecap=\"round\"/><line x1=\"402.41\" y1=\"171.47\" x2=\"430.21\" y2=\"155.42\" stroke=\"#111317\" stroke-opacity=\"0.85\" stroke-width=\"6.42\" stroke-linecap=\"round\"/><line x1=\"402.41\" y1=\"340.53\" x2=\"430.21\" y2=\"356.58\" stroke=\"#111317\" stroke-opacity=\"0.85\" stroke-width=\"6.42\" stroke-linecap=\"round\"/><line x1=\"256.00\" y1=\"425.06\" x2=\"256.00\" y2=\"457.16\" stroke=\"#111317\" stroke-opacity=\"0.85\" stroke-width=\"6.42\" stroke-linecap=\"round\"/><line x1=\"109.59\" y1=\"340.53\" x2=\"81.79\" y2=\"356.58\" stroke=\"#1C1F24\" stroke-opacity=\"1\" stroke-width=\"6.42\" stroke-linecap=\"round\"/><line x1=\"109.59\" y1=\"171.47\" x2=\"81.79\" y2=\"155.42\" stroke=\"#1C1F24\" stroke-opacity=\"1\" stroke-width=\"6.42\" stroke-linecap=\"round\"/><circle cx=\"256\" cy=\"256\" r=\"23.54\" fill=\"#111317\"/></svg>",
+      "description": "A Ruby brilliant, side view, on a Ghost White tile. Shown from the favicon source (no sparkle).",
+      "html": "<svg class=\"ds-app-icon\" width=\"96\" height=\"96\" aria-hidden=\"true\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 512 512\"><rect x=\"4\" y=\"4\" width=\"504\" height=\"504\" rx=\"120\" fill=\"#F8F8FF\" stroke=\"#E4E4EE\" stroke-width=\"8\"/><g transform=\"translate(256 256) scale(1.12) translate(-256 -262)\"><polygon points=\"92,200 172,132 204,200\" fill=\"#F93F52\" stroke=\"#F93F52\" stroke-width=\"0.8\" stroke-linejoin=\"round\"/><polygon points=\"172,132 256,132 204,200\" fill=\"#FF8288\" stroke=\"#FF8288\" stroke-width=\"0.8\" stroke-linejoin=\"round\"/><polygon points=\"256,132 204,200 308,200\" fill=\"#E51136\" stroke=\"#E51136\" stroke-width=\"0.8\" stroke-linejoin=\"round\"/><polygon points=\"256,132 340,132 308,200\" fill=\"#FE5563\" stroke=\"#FE5563\" stroke-width=\"0.8\" stroke-linejoin=\"round\"/><polygon points=\"340,132 308,200 420,200\" fill=\"#BB0322\" stroke=\"#BB0322\" stroke-width=\"0.8\" stroke-linejoin=\"round\"/><polygon points=\"92,200 204,200 256,392\" fill=\"#D6042D\" stroke=\"#D6042D\" stroke-width=\"0.8\" stroke-linejoin=\"round\"/><polygon points=\"204,200 256,200 256,392\" fill=\"#A1021F\" stroke=\"#A1021F\" stroke-width=\"0.8\" stroke-linejoin=\"round\"/><polygon points=\"256,200 308,200 256,392\" fill=\"#710117\" stroke=\"#710117\" stroke-width=\"0.8\" stroke-linejoin=\"round\"/><polygon points=\"308,200 420,200 256,392\" fill=\"#4C000D\" stroke=\"#4C000D\" stroke-width=\"0.8\" stroke-linejoin=\"round\"/></g></svg>",
       "css": ".ds-app-icon { display:block; }"
     }
   ],
@@ -1170,7 +1168,7 @@
     "rules": [
       {
         "name": "The Gem Means a Day Rule",
-        "body": "A gem colour appears only where it stands for its weekday: dial sectors, stones, rosette wedges, weekday bars, and the input caret on that day. Gems are never button, link, status, or decoration colours. The one fixed gem is the app icon, a portrait of the work dial in Topaz (see App icon).",
+        "body": "A gem colour appears only where it stands for its weekday: dial sectors, stones, rosette wedges, weekday bars, and the input caret on that day. Gems are never button, link, status, or decoration colours. The one fixed gem is the app icon, a Ruby brilliant (see App icon).",
         "section": "colors"
       },
       {
@@ -1232,7 +1230,7 @@
       "**Do** keep the wide Today column fitting a 900px-tall window.",
       "**Do** use 140ms and 220ms with the shared ease-out for everyday changes; the flip's 240ms out and 320ms back are its own.",
       "**Do** write \"break\", never \"paid break\".",
-      "**Do** render every app icon from its SVG source: the work dial on a Timer Black tile, one flat Topaz sector, and a black hub with no hand."
+      "**Do** render every app icon from its SVG source: one faceted Ruby brilliant, side view, on a Ghost White tile."
     ],
     "donts": [
       "**Don't** add a hand, knob, housing, or any physical-object costume to a dial.",
