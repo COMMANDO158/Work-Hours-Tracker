@@ -61,6 +61,37 @@
     stroke-linejoin: round;
 }
 
+/* The glassy fill: each gem's own gradient (gf-<id>, built in dial.js from the
+   stone's --c-deep/--c-mid/--c-hi ramp) with a gloss twin laid over it. The flat
+   --g above stays as the fallback if the sprite is missing. */
+.dial-gem[data-gem="topaz"] .sector { fill: url(#gf-topaz); }
+.dial-gem[data-gem="emerald"] .sector { fill: url(#gf-emerald); }
+.dial-gem[data-gem="sapphire"] .sector { fill: url(#gf-sapphire); }
+.dial-gem[data-gem="amethyst"] .sector { fill: url(#gf-amethyst); }
+.dial-gem[data-gem="diamond"] .sector { fill: url(#gf-diamond); }
+.dial-gem[data-gem="ruby"] .sector { fill: url(#gf-ruby); }
+.dial-gem[data-gem="tourmaline"] .sector { fill: url(#gf-tourmaline); }
+.dial-gem[data-gem="clear"] .sector { fill: url(#gf-clear); }
+
+.dial-gem[data-gem="topaz"] .sector-gloss { fill: url(#gs-topaz); }
+.dial-gem[data-gem="emerald"] .sector-gloss { fill: url(#gs-emerald); }
+.dial-gem[data-gem="sapphire"] .sector-gloss { fill: url(#gs-sapphire); }
+.dial-gem[data-gem="amethyst"] .sector-gloss { fill: url(#gs-amethyst); }
+.dial-gem[data-gem="diamond"] .sector-gloss { fill: url(#gs-diamond); }
+.dial-gem[data-gem="ruby"] .sector-gloss { fill: url(#gs-ruby); }
+.dial-gem[data-gem="tourmaline"] .sector-gloss { fill: url(#gs-tourmaline); }
+.dial-gem[data-gem="clear"] .sector-gloss { fill: url(#gs-clear); }
+
+.sector-gloss {
+    stroke: none;
+    pointer-events: none;
+}
+
+.gem-grad .gs-hi { stop-color: var(--c-hi); }
+.gem-grad .gs-mid { stop-color: var(--c-mid); }
+/* a touch of the body colour in the shade keeps the edge rich, not near-black */
+.gem-grad .gs-deep { stop-color: color-mix(in oklch, var(--c-mid) 30%, var(--c-deep)); }
+
 .sector-lap {
     fill: var(--gi);
     opacity: 0.5;

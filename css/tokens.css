@@ -226,11 +226,11 @@
 /* A cut gem's glass: three stops in OKLCH, deep (shadow) -> mid (body) -> hi (lit),
    held at full chroma so shaded facets go rich, not grey, and lit ones glow in
    their own colour. --glass is how much of the inside shows through a facet. */
-.gem[data-gem="topaz"] { --c-deep: oklch(0.3 0.095 52); --c-mid: oklch(0.74 0.175 65); --c-hi: oklch(0.94 0.15 92); --glass: 0.82; }
-.gem[data-gem="emerald"] { --c-deep: oklch(0.19 0.075 168); --c-mid: oklch(0.55 0.175 158); --c-hi: oklch(0.86 0.215 156); --glass: 0.86; }
-.gem[data-gem="sapphire"] { --c-deep: oklch(0.17 0.115 268); --c-mid: oklch(0.46 0.215 264); --c-hi: oklch(0.78 0.17 245); --glass: 0.85; }
-.gem[data-gem="amethyst"] { --c-deep: oklch(0.18 0.12 305); --c-mid: oklch(0.5 0.235 305); --c-hi: oklch(0.8 0.17 318); --glass: 0.87; }
-.gem[data-gem="diamond"] { --c-deep: oklch(0.3 0.1 255); --c-mid: oklch(0.88 0.06 220); --c-hi: oklch(1 0.005 205); --glass: 0.8; --spec-pow: 5; }
-.gem[data-gem="ruby"] { --c-deep: oklch(0.17 0.11 18); --c-mid: oklch(0.5 0.245 24); --c-hi: oklch(0.77 0.2 18); --glass: 0.85; }
-.gem[data-gem="tourmaline"] { --c-deep: oklch(0.2 0.125 350); --c-mid: oklch(0.56 0.25 355); --c-hi: oklch(0.82 0.18 350); --glass: 0.86; }
-.gem[data-gem="clear"] { --c-deep: oklch(0.28 0.07 265); --c-mid: oklch(0.86 0.03 240); --c-hi: oklch(1 0.004 225); --glass: 0.8; --spec-pow: 5; }
+:is(.gem, .dial-gem, .gem-grad)[data-gem="topaz"] { --c-deep: oklch(0.3 0.095 52); --c-mid: oklch(0.74 0.175 65); --c-hi: oklch(0.94 0.15 92); --glass: 0.82; }
+:is(.gem, .dial-gem, .gem-grad)[data-gem="emerald"] { --c-deep: oklch(0.19 0.075 168); --c-mid: oklch(0.55 0.175 158); --c-hi: oklch(0.86 0.215 156); --glass: 0.86; }
+:is(.gem, .dial-gem, .gem-grad)[data-gem="sapphire"] { --c-deep: oklch(0.17 0.115 268); --c-mid: oklch(0.46 0.215 264); --c-hi: oklch(0.78 0.17 245); --glass: 0.85; }
+:is(.gem, .dial-gem, .gem-grad)[data-gem="amethyst"] { --c-deep: oklch(0.18 0.12 305); --c-mid: oklch(0.5 0.235 305); --c-hi: oklch(0.8 0.17 318); --glass: 0.87; }
+:is(.gem, .dial-gem, .gem-grad)[data-gem="diamond"] { --c-deep: oklch(0.3 0.1 255); --c-mid: oklch(0.88 0.06 220); --c-hi: oklch(1 0.005 205); --glass: 0.8; --spec-pow: 5; }
+:is(.gem, .dial-gem, .gem-grad)[data-gem="ruby"] { --c-deep: oklch(0.17 0.11 18); --c-mid: oklch(0.5 0.245 24); --c-hi: oklch(0.77 0.2 18); --glass: 0.85; }
+:is(.gem, .dial-gem, .gem-grad)[data-gem="tourmaline"] { --c-deep: oklch(0.2 0.125 350); --c-mid: oklch(0.56 0.25 355); --c-hi: oklch(0.82 0.18 350); --glass: 0.86; }
+:is(.gem, .dial-gem, .gem-grad)[data-gem="clear"] { --c-deep: oklch(0.28 0.07 265); --c-mid: oklch(0.86 0.03 240); --c-hi: oklch(1 0.004 225); --glass: 0.8; --spec-pow: 5; }
