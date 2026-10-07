@@ -40,42 +40,36 @@ export function wedgePath(cx, cy, r, a0, sweep) {
   return `M ${f(cx)} ${f(cy)} L ${f(x0)} ${f(y0)} A ${r} ${r} 0 ${large} ${s > 0 ? 1 : 0} ${f(x1)} ${f(y1)} Z`;
 }
 
-// The glassy gem fill. SVG gradients can't read custom properties from the shape
-// that references them, so each gem gets its own gradient in one shared sprite,
-// carrying data-gem so it picks up that stone's --c-deep/--c-mid/--c-hi ramp
-// (tokens.css). The wedge is filled with the body gradient (gf-<id>) and a
-// matching gloss path (gs-<id>) is laid over it. Static paint, so the per-second
-// update only changes two path strings.
+// The gem tint: a flat wedge with a gentle straight tint from the stone's body
+// tone to a lighter one, no highlight and no depth. SVG gradients can't read
+// custom properties from the shape that references them, so each gem gets its
+// own gradient in one shared sprite, carrying data-gem so it picks up that
+// stone's --c-mid/--c-hi ramp (tokens.css). Each gradient runs corner to corner
+// across the dial's own face, so a gem needs one per dial size (centre C, wedge
+// radius R in that dial's viewBox). To go back to the flat one-colour fill, set
+// data-dial-fill="flat" on <html> (see components.css).
 const GEM_IDS = [...GEMS.map((g) => g.id), 'clear'];
+const TINT_SIZES = { big: [150, 103], mini: [20, 14.6], rosette: [60, 45] };
+
+// The fill for a gem's wedge on one size of dial; the flat colour is the fallback.
+function tintFill(gemId, size) {
+  return `url(#gt-${gemId}-${size}) var(--g)`;
+}
 
 function ensureGemDefs() {
   if (document.getElementById('gem-defs')) return;
   const defs = svg('defs');
   for (const id of GEM_IDS) {
-    defs.appendChild(svg('radialGradient', { id: `gf-${id}`, class: 'gem-grad', 'data-gem': id, cx: 0.32, cy: 0.28, fx: 0.32, fy: 0.28, r: 0.85 }, [
-      svg('stop', { offset: 0, class: 'gs-hi' }),
-      svg('stop', { offset: 0.5, class: 'gs-mid' }),
-      svg('stop', { offset: 1, class: 'gs-deep' })
-    ]));
-    defs.appendChild(svg('linearGradient', { id: `gs-${id}`, x1: 0, y1: 0, x2: 0.7, y2: 1 }, [
-      svg('stop', { offset: 0, 'stop-color': '#fff', 'stop-opacity': 0.6 }),
-      svg('stop', { offset: 0.55, 'stop-color': '#fff', 'stop-opacity': 0.08 }),
-      svg('stop', { offset: 1, 'stop-color': '#fff', 'stop-opacity': 0 })
-    ]));
+    for (const [size, [C, R]] of Object.entries(TINT_SIZES)) {
+      defs.appendChild(svg('linearGradient', { id: `gt-${id}-${size}`, class: 'gem-grad', 'data-gem': id, gradientUnits: 'userSpaceOnUse', x1: C - R, y1: C - R, x2: C + R, y2: C + R }, [
+        svg('stop', { offset: 0, class: 'gs-a' }),
+        svg('stop', { offset: 1, class: 'gs-b' })
+      ]));
+    }
   }
   const sprite = svg('svg', { id: 'gem-defs', width: 0, height: 0, 'aria-hidden': 'true', focusable: 'false' }, [defs]);
   sprite.style.cssText = 'position:absolute;width:0;height:0;overflow:hidden';
   document.body.appendChild(sprite);
-}
-
-// A gem wedge and its gloss twin, always given the same path.
-function glassWedge(cls = 'sector') {
-  const body = svg('path', { class: cls });
-  const gloss = svg('path', { class: 'sector-gloss' });
-  return {
-    els: [body, gloss],
-    set(d) { body.setAttribute('d', d); gloss.setAttribute('d', d); }
-  };
 }
 
 function line(cx, cy, r0, r1, a, cls) {
@@ -122,17 +116,19 @@ export function createWorkDial() {
   const root = bigFace('dial-work');
   ensureGemDefs();
   const gem = svg('g', { class: 'dial-gem' });
-  const sector = glassWedge();
+  const sector = svg('path', { class: 'sector' });
   const lap = svg('path', { class: 'sector-lap' });
-  gem.append(...sector.els, lap);
+  gem.append(sector, lap);
   root.appendChild(gem);
   bigMarks(root, 24, 4, ['0', '1', '2', '3', '4', '5']);
   root.appendChild(svg('circle', { cx: C, cy: C, r: 12, class: 'dial-hub' }));
 
+  let tinted = null;
   function update(seconds, gemId) {
     gem.setAttribute('data-gem', gemId);
+    if (tinted !== gemId) { tinted = gemId; sector.style.fill = tintFill(gemId, 'big'); }
     const frac = Math.max(0, seconds / DAILY_GOAL);
-    sector.set(wedgePath(C, C, BIG.sector, TOP, Math.min(1, frac) * TAU));
+    sector.setAttribute('d', wedgePath(C, C, BIG.sector, TOP, Math.min(1, frac) * TAU));
     const over = Math.min(1, Math.max(0, frac - 1));
     lap.setAttribute('d', over > 0 ? wedgePath(C, C, BIG.sector, TOP, over * TAU) : '');
   }
@@ -178,9 +174,7 @@ export function miniDial({ seconds, gem, off = false, isToday = false, isFuture 
   if (frac > 0) {
     ensureGemDefs();
     const g = svg('g', { class: 'dial-gem', 'data-gem': gem });
-    const wedge = glassWedge();
-    wedge.set(wedgePath(20, 20, 14.6, TOP, Math.min(1, frac) * TAU));
-    g.append(...wedge.els);
+    g.appendChild(svg('path', { d: wedgePath(20, 20, 14.6, TOP, Math.min(1, frac) * TAU), class: 'sector', style: `fill: ${tintFill(gem, 'mini')}` }));
     if (frac > 1) g.appendChild(svg('path', { d: wedgePath(20, 20, 14.6, TOP, Math.min(1, frac - 1) * TAU), class: 'sector-lap' }));
     root.appendChild(g);
   }
@@ -196,9 +190,7 @@ export function weekDial({ seconds, size = 56, label = null }) {
   if (frac > 0) {
     ensureGemDefs();
     const g = svg('g', { class: 'dial-gem', 'data-gem': 'clear' });
-    const wedge = glassWedge();
-    wedge.set(wedgePath(20, 20, 14.6, TOP, frac * TAU));
-    g.append(...wedge.els);
+    g.appendChild(svg('path', { d: wedgePath(20, 20, 14.6, TOP, frac * TAU), class: 'sector', style: `fill: ${tintFill('clear', 'mini')}` }));
     root.appendChild(g);
   }
   smallMarks(root, 5);
@@ -225,9 +217,7 @@ export function rosette({ days, size = 120, label = null, isCurrent = false }) {
     if (share <= 0) break;
     ensureGemDefs();
     const g = svg('g', { class: 'dial-gem', 'data-gem': d.gem });
-    const wedge = glassWedge('sector rosette-seg');
-    wedge.set(wedgePath(C, C, 45, start, share * TAU));
-    g.append(...wedge.els);
+    g.appendChild(svg('path', { d: wedgePath(C, C, 45, start, share * TAU), class: 'sector rosette-seg', style: `fill: ${tintFill(d.gem, 'rosette')}` }));
     root.appendChild(g);
     start += share * TAU;
     used += share;
