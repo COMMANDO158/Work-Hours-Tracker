@@ -1,7 +1,8 @@
 // FlowFocus service worker.
-// Bump CACHE_VERSION on every deploy. The whole app shell is served from one
-// versioned cache, so a new page never runs against old modules.
-const CACHE_VERSION = 'v15';
+// Bump CACHE_VERSION on every deploy. The app shell is precached in one
+// versioned cache; pages, styles and scripts are then fetched network-first
+// (see the fetch handler), so the cache is the offline fallback.
+const CACHE_VERSION = 'v16';
 const CACHE_NAME = `flowfocus-${CACHE_VERSION}`;
 
 const APP_SHELL = [
@@ -78,15 +79,28 @@ self.addEventListener('fetch', (event) => {
   // the network: caching it would store private data and serve stale syncs.
   if (url.origin !== self.location.origin) return;
 
-  if (request.mode === 'navigate') {
+  // The pages, styles and scripts go network-first, so a restyle shows on the
+  // very next load instead of whatever the cache holds. The cache is the
+  // offline (or slow-network) fallback only. 'no-cache' revalidates past
+  // GitHub Pages' 10-minute HTTP cache.
+  if (request.mode === 'navigate' || /\.(?:html|css|js|json)$/.test(url.pathname)) {
     event.respondWith(
       caches.open(CACHE_NAME).then(async (cache) => {
-        const cached = await cache.match(request, { ignoreSearch: true });
-        if (cached) return cached;
+        const fallback = async () => (await cache.match(request, { ignoreSearch: true }))
+          || (request.mode === 'navigate' && (await cache.match('./index.html')))
+          || Response.error();
         try {
-          return await fetch(request);
+          const ctl = new AbortController();
+          const timer = setTimeout(() => ctl.abort(), 4000);
+          const response = await fetch(request.url, { cache: 'no-cache', signal: ctl.signal });
+          clearTimeout(timer);
+          if (response.ok && response.type === 'basic') {
+            cache.put(request, response.clone());
+            return response;
+          }
+          return (await cache.match(request, { ignoreSearch: true })) || response;
         } catch {
-          return (await cache.match('./index.html')) || Response.error();
+          return fallback();
         }
       })
     );

@@ -173,7 +173,7 @@ function records(data, ref) {
   const bestWeek = bestDay(weekSeries(data, ref));
   const life = lifetime(data);
   const rows = [
-    ['Current streak', plural(streak, 'workday', 'workdays'), 'Workdays in a row with 30+ minutes. Rest days don’t break it.'],
+    ['Current streak', plural(streak, 'workday', 'workdays'), 'Workdays in a row with 30+ minutes. Rest days don’t break it, and count if you work them.'],
     ['Longest streak', plural(longest, 'workday', 'workdays'), null],
     ['Best day this week', bestWeek ? `${formatHM(bestWeek.seconds)} · ${weekdayLong(bestWeek.date)}` : '–', null],
     ['Best day ever', best ? `${formatHM(best.seconds)} · ${formatShortDate(best.date)} ${best.date.getFullYear()}` : '–', null],

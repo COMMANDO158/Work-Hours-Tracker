@@ -244,40 +244,59 @@
 
 /* ------------------------------------------------------------ the gem of the day */
 
-/* Each gem moves in its own way. */
+/* Each gem moves in its own way.
+
+   Every animated value is stepped, 30 to a second. The facets work out their
+   light from --turn, --tip and --lift through registered, inheriting custom
+   properties, and Blink keeps every distinct value it computes. A smooth
+   animation never repeats a value, so left running it grew the renderer by
+   gigabytes. Stepped, a loop only ever visits the same few hundred values.
+   Eased loops (rock, float, dip, tick) are keyframe tables, below, sampled
+   from their easing at 30 stops a second; use step-end to hold each stop.
+   Keep every loop on that 30-a-second grid so combined loops repeat together. */
 @media (prefers-reduced-motion: no-preference) {
     .gem[data-motion="hero"] .gem-body {
-        animation: gem-turn 12s linear infinite;
+        animation: gem-turn 12s steps(360) infinite;
     }
 
     /* Emerald: turned in the hand, so the steps catch the light one by one */
     .gem[data-motion="hero"][data-cut="step"] .gem-body {
-        animation: gem-rock 3.5s ease-in-out infinite alternate;
+        animation: gem-rock 3.5s step-end infinite alternate;
     }
 
     /* Sapphire: an upright spin, floating */
     .gem[data-motion="hero"][data-cut="spindle"] .gem-body {
-        animation: gem-turn 10s linear infinite, gem-float 2.5s ease-in-out infinite alternate;
+        animation: gem-turn 10s steps(300) infinite, gem-float 2.5s step-end infinite alternate;
     }
 
     /* Amethyst: the slowest drift, for a rest day */
     .gem[data-motion="hero"][data-cut="cluster"] .gem-body {
         animation-duration: 24s;
+        animation-timing-function: steps(720);
     }
 
     /* Ruby: a third of a turn, a rest, and again: a working cadence */
     .gem[data-motion="hero"][data-cut="trillion"] .gem-body {
-        animation: gem-tick 9s infinite;
+        animation: gem-tick 9s step-end infinite;
     }
 
     /* Tourmaline: rolls along its length */
     .gem[data-motion="hero"][data-cut="pencil"] .gem-body {
         animation-duration: 14s;
+        animation-timing-function: steps(420);
     }
 
     /* Topaz: turns and dips twice a turn, flashing its table */
     .gem[data-motion="hero"][data-cut="princess"] .gem-body {
-        animation: gem-turn 12s linear infinite, gem-dip 6s ease-in-out infinite;
+        animation: gem-turn 12s steps(360) infinite, gem-dip 6s step-end infinite;
+    }
+
+    /* Out of sight, nothing runs (shell.js sets .is-away while the window is hidden). */
+    .is-away .gem .gem-body,
+    .is-away .gem .gem-glint,
+    .is-away .gem::before,
+    .is-away .gem::after {
+        animation-play-state: paused;
     }
 
     /* Diamond: a steady turn with one glint each time round */
@@ -302,27 +321,514 @@
 }
 
 @keyframes gem-rock {
-    from { --turn: -28deg; --tip: 4deg; }
-    to { --turn: 28deg; --tip: -6deg; }
+    0% { --turn: -28deg; --tip: 4deg; }
+    0.952% { --turn: -27.99deg; --tip: 4deg; }
+    1.905% { --turn: -27.96deg; --tip: 3.99deg; }
+    2.857% { --turn: -27.91deg; --tip: 3.98deg; }
+    3.81% { --turn: -27.84deg; --tip: 3.97deg; }
+    4.762% { --turn: -27.75deg; --tip: 3.96deg; }
+    5.714% { --turn: -27.65deg; --tip: 3.94deg; }
+    6.667% { --turn: -27.52deg; --tip: 3.91deg; }
+    7.619% { --turn: -27.37deg; --tip: 3.89deg; }
+    8.571% { --turn: -27.19deg; --tip: 3.86deg; }
+    9.524% { --turn: -27deg; --tip: 3.82deg; }
+    10.476% { --turn: -26.79deg; --tip: 3.78deg; }
+    11.429% { --turn: -26.55deg; --tip: 3.74deg; }
+    12.381% { --turn: -26.29deg; --tip: 3.69deg; }
+    13.333% { --turn: -26.01deg; --tip: 3.64deg; }
+    14.286% { --turn: -25.71deg; --tip: 3.59deg; }
+    15.238% { --turn: -25.39deg; --tip: 3.53deg; }
+    16.19% { --turn: -25.04deg; --tip: 3.47deg; }
+    17.143% { --turn: -24.67deg; --tip: 3.41deg; }
+    18.095% { --turn: -24.28deg; --tip: 3.34deg; }
+    19.048% { --turn: -23.86deg; --tip: 3.26deg; }
+    20% { --turn: -23.43deg; --tip: 3.18deg; }
+    20.952% { --turn: -22.97deg; --tip: 3.1deg; }
+    21.905% { --turn: -22.49deg; --tip: 3.02deg; }
+    22.857% { --turn: -21.98deg; --tip: 2.93deg; }
+    23.81% { --turn: -21.46deg; --tip: 2.83deg; }
+    24.762% { --turn: -20.91deg; --tip: 2.73deg; }
+    25.714% { --turn: -20.34deg; --tip: 2.63deg; }
+    26.667% { --turn: -19.74deg; --tip: 2.53deg; }
+    27.619% { --turn: -19.13deg; --tip: 2.42deg; }
+    28.571% { --turn: -18.5deg; --tip: 2.3deg; }
+    29.524% { --turn: -17.84deg; --tip: 2.19deg; }
+    30.476% { --turn: -17.17deg; --tip: 2.07deg; }
+    31.429% { --turn: -16.47deg; --tip: 1.94deg; }
+    32.381% { --turn: -15.75deg; --tip: 1.81deg; }
+    33.333% { --turn: -15.02deg; --tip: 1.68deg; }
+    34.286% { --turn: -14.27deg; --tip: 1.55deg; }
+    35.238% { --turn: -13.5deg; --tip: 1.41deg; }
+    36.19% { --turn: -12.71deg; --tip: 1.27deg; }
+    37.143% { --turn: -11.91deg; --tip: 1.13deg; }
+    38.095% { --turn: -11.09deg; --tip: 0.98deg; }
+    39.048% { --turn: -10.26deg; --tip: 0.83deg; }
+    40% { --turn: -9.41deg; --tip: 0.68deg; }
+    40.952% { --turn: -8.56deg; --tip: 0.53deg; }
+    41.905% { --turn: -7.69deg; --tip: 0.37deg; }
+    42.857% { --turn: -6.81deg; --tip: 0.22deg; }
+    43.81% { --turn: -5.92deg; --tip: 0.06deg; }
+    44.762% { --turn: -5.02deg; --tip: -0.1deg; }
+    45.714% { --turn: -4.12deg; --tip: -0.26deg; }
+    46.667% { --turn: -3.21deg; --tip: -0.43deg; }
+    47.619% { --turn: -2.3deg; --tip: -0.59deg; }
+    48.571% { --turn: -1.38deg; --tip: -0.75deg; }
+    49.524% { --turn: -0.46deg; --tip: -0.92deg; }
+    50.476% { --turn: 0.46deg; --tip: -1.08deg; }
+    51.429% { --turn: 1.38deg; --tip: -1.25deg; }
+    52.381% { --turn: 2.3deg; --tip: -1.41deg; }
+    53.333% { --turn: 3.21deg; --tip: -1.57deg; }
+    54.286% { --turn: 4.12deg; --tip: -1.74deg; }
+    55.238% { --turn: 5.02deg; --tip: -1.9deg; }
+    56.19% { --turn: 5.92deg; --tip: -2.06deg; }
+    57.143% { --turn: 6.81deg; --tip: -2.22deg; }
+    58.095% { --turn: 7.69deg; --tip: -2.37deg; }
+    59.048% { --turn: 8.56deg; --tip: -2.53deg; }
+    60% { --turn: 9.41deg; --tip: -2.68deg; }
+    60.952% { --turn: 10.26deg; --tip: -2.83deg; }
+    61.905% { --turn: 11.09deg; --tip: -2.98deg; }
+    62.857% { --turn: 11.91deg; --tip: -3.13deg; }
+    63.81% { --turn: 12.71deg; --tip: -3.27deg; }
+    64.762% { --turn: 13.5deg; --tip: -3.41deg; }
+    65.714% { --turn: 14.27deg; --tip: -3.55deg; }
+    66.667% { --turn: 15.02deg; --tip: -3.68deg; }
+    67.619% { --turn: 15.75deg; --tip: -3.81deg; }
+    68.571% { --turn: 16.47deg; --tip: -3.94deg; }
+    69.524% { --turn: 17.17deg; --tip: -4.07deg; }
+    70.476% { --turn: 17.84deg; --tip: -4.19deg; }
+    71.429% { --turn: 18.5deg; --tip: -4.3deg; }
+    72.381% { --turn: 19.13deg; --tip: -4.42deg; }
+    73.333% { --turn: 19.74deg; --tip: -4.53deg; }
+    74.286% { --turn: 20.34deg; --tip: -4.63deg; }
+    75.238% { --turn: 20.91deg; --tip: -4.73deg; }
+    76.19% { --turn: 21.46deg; --tip: -4.83deg; }
+    77.143% { --turn: 21.98deg; --tip: -4.93deg; }
+    78.095% { --turn: 22.49deg; --tip: -5.02deg; }
+    79.048% { --turn: 22.97deg; --tip: -5.1deg; }
+    80% { --turn: 23.43deg; --tip: -5.18deg; }
+    80.952% { --turn: 23.86deg; --tip: -5.26deg; }
+    81.905% { --turn: 24.28deg; --tip: -5.34deg; }
+    82.857% { --turn: 24.67deg; --tip: -5.41deg; }
+    83.81% { --turn: 25.04deg; --tip: -5.47deg; }
+    84.762% { --turn: 25.39deg; --tip: -5.53deg; }
+    85.714% { --turn: 25.71deg; --tip: -5.59deg; }
+    86.667% { --turn: 26.01deg; --tip: -5.64deg; }
+    87.619% { --turn: 26.29deg; --tip: -5.69deg; }
+    88.571% { --turn: 26.55deg; --tip: -5.74deg; }
+    89.524% { --turn: 26.79deg; --tip: -5.78deg; }
+    90.476% { --turn: 27deg; --tip: -5.82deg; }
+    91.429% { --turn: 27.19deg; --tip: -5.86deg; }
+    92.381% { --turn: 27.37deg; --tip: -5.89deg; }
+    93.333% { --turn: 27.52deg; --tip: -5.91deg; }
+    94.286% { --turn: 27.65deg; --tip: -5.94deg; }
+    95.238% { --turn: 27.75deg; --tip: -5.96deg; }
+    96.19% { --turn: 27.84deg; --tip: -5.97deg; }
+    97.143% { --turn: 27.91deg; --tip: -5.98deg; }
+    98.095% { --turn: 27.96deg; --tip: -5.99deg; }
+    99.048% { --turn: 27.99deg; --tip: -6deg; }
+    100% { --turn: 28deg; --tip: -6deg; }
 }
 
 @keyframes gem-float {
-    from { --lift: 0.02em; }
-    to { --lift: -0.03em; }
-}
-
-@keyframes gem-tick {
-    0% { --turn: 0deg; animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1); }
-    18% { --turn: 120deg; }
-    33.33% { --turn: 120deg; animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1); }
-    51.33% { --turn: 240deg; }
-    66.67% { --turn: 240deg; animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1); }
-    84.67%, 100% { --turn: 360deg; }
+    0% { --lift: 0.02em; }
+    1.333% { --lift: 0.02em; }
+    2.667% { --lift: 0.0199em; }
+    4% { --lift: 0.0198em; }
+    5.333% { --lift: 0.0197em; }
+    6.667% { --lift: 0.0196em; }
+    8% { --lift: 0.0194em; }
+    9.333% { --lift: 0.0191em; }
+    10.667% { --lift: 0.0189em; }
+    12% { --lift: 0.0186em; }
+    13.333% { --lift: 0.0182em; }
+    14.667% { --lift: 0.0178em; }
+    16% { --lift: 0.0174em; }
+    17.333% { --lift: 0.017em; }
+    18.667% { --lift: 0.0165em; }
+    20% { --lift: 0.0159em; }
+    21.333% { --lift: 0.0153em; }
+    22.667% { --lift: 0.0147em; }
+    24% { --lift: 0.0141em; }
+    25.333% { --lift: 0.0134em; }
+    26.667% { --lift: 0.0126em; }
+    28% { --lift: 0.0119em; }
+    29.333% { --lift: 0.011em; }
+    30.667% { --lift: 0.0102em; }
+    32% { --lift: 0.0093em; }
+    33.333% { --lift: 0.0084em; }
+    34.667% { --lift: 0.0075em; }
+    36% { --lift: 0.0065em; }
+    37.333% { --lift: 0.0055em; }
+    38.667% { --lift: 0.0045em; }
+    40% { --lift: 0.0034em; }
+    41.333% { --lift: 0.0023em; }
+    42.667% { --lift: 0.0012em; }
+    44% { --lift: 0.0001em; }
+    45.333% { --lift: -0.001em; }
+    46.667% { --lift: -0.0021em; }
+    48% { --lift: -0.0033em; }
+    49.333% { --lift: -0.0044em; }
+    50.667% { --lift: -0.0056em; }
+    52% { --lift: -0.0067em; }
+    53.333% { --lift: -0.0079em; }
+    54.667% { --lift: -0.009em; }
+    56% { --lift: -0.0101em; }
+    57.333% { --lift: -0.0112em; }
+    58.667% { --lift: -0.0123em; }
+    60% { --lift: -0.0134em; }
+    61.333% { --lift: -0.0145em; }
+    62.667% { --lift: -0.0155em; }
+    64% { --lift: -0.0165em; }
+    65.333% { --lift: -0.0175em; }
+    66.667% { --lift: -0.0184em; }
+    68% { --lift: -0.0193em; }
+    69.333% { --lift: -0.0202em; }
+    70.667% { --lift: -0.021em; }
+    72% { --lift: -0.0219em; }
+    73.333% { --lift: -0.0226em; }
+    74.667% { --lift: -0.0234em; }
+    76% { --lift: -0.0241em; }
+    77.333% { --lift: -0.0247em; }
+    78.667% { --lift: -0.0253em; }
+    80% { --lift: -0.0259em; }
+    81.333% { --lift: -0.0265em; }
+    82.667% { --lift: -0.027em; }
+    84% { --lift: -0.0274em; }
+    85.333% { --lift: -0.0278em; }
+    86.667% { --lift: -0.0282em; }
+    88% { --lift: -0.0286em; }
+    89.333% { --lift: -0.0289em; }
+    90.667% { --lift: -0.0291em; }
+    92% { --lift: -0.0294em; }
+    93.333% { --lift: -0.0296em; }
+    94.667% { --lift: -0.0297em; }
+    96% { --lift: -0.0298em; }
+    97.333% { --lift: -0.0299em; }
+    98.667% { --lift: -0.03em; }
+    100% { --lift: -0.03em; }
 }
 
 @keyframes gem-dip {
-    0%, 100% { --tip: 0deg; }
+    0% { --tip: 0deg; }
+    0.556% { --tip: 0deg; }
+    1.111% { --tip: -0.02deg; }
+    1.667% { --tip: -0.03deg; }
+    2.222% { --tip: -0.06deg; }
+    2.778% { --tip: -0.1deg; }
+    3.333% { --tip: -0.14deg; }
+    3.889% { --tip: -0.19deg; }
+    4.444% { --tip: -0.25deg; }
+    5% { --tip: -0.32deg; }
+    5.556% { --tip: -0.39deg; }
+    6.111% { --tip: -0.48deg; }
+    6.667% { --tip: -0.57deg; }
+    7.222% { --tip: -0.67deg; }
+    7.778% { --tip: -0.78deg; }
+    8.333% { --tip: -0.9deg; }
+    8.889% { --tip: -1.03deg; }
+    9.444% { --tip: -1.16deg; }
+    10% { --tip: -1.31deg; }
+    10.556% { --tip: -1.46deg; }
+    11.111% { --tip: -1.62deg; }
+    11.667% { --tip: -1.79deg; }
+    12.222% { --tip: -1.97deg; }
+    12.778% { --tip: -2.16deg; }
+    13.333% { --tip: -2.36deg; }
+    13.889% { --tip: -2.56deg; }
+    14.444% { --tip: -2.78deg; }
+    15% { --tip: -3deg; }
+    15.556% { --tip: -3.23deg; }
+    16.111% { --tip: -3.46deg; }
+    16.667% { --tip: -3.71deg; }
+    17.222% { --tip: -3.96deg; }
+    17.778% { --tip: -4.22deg; }
+    18.333% { --tip: -4.48deg; }
+    18.889% { --tip: -4.75deg; }
+    19.444% { --tip: -5.03deg; }
+    20% { --tip: -5.31deg; }
+    20.556% { --tip: -5.6deg; }
+    21.111% { --tip: -5.89deg; }
+    21.667% { --tip: -6.18deg; }
+    22.222% { --tip: -6.48deg; }
+    22.778% { --tip: -6.78deg; }
+    23.333% { --tip: -7.08deg; }
+    23.889% { --tip: -7.39deg; }
+    24.444% { --tip: -7.69deg; }
+    25% { --tip: -8deg; }
+    25.556% { --tip: -8.31deg; }
+    26.111% { --tip: -8.61deg; }
+    26.667% { --tip: -8.92deg; }
+    27.222% { --tip: -9.22deg; }
+    27.778% { --tip: -9.52deg; }
+    28.333% { --tip: -9.82deg; }
+    28.889% { --tip: -10.11deg; }
+    29.444% { --tip: -10.4deg; }
+    30% { --tip: -10.69deg; }
+    30.556% { --tip: -10.97deg; }
+    31.111% { --tip: -11.25deg; }
+    31.667% { --tip: -11.52deg; }
+    32.222% { --tip: -11.78deg; }
+    32.778% { --tip: -12.04deg; }
+    33.333% { --tip: -12.29deg; }
+    33.889% { --tip: -12.54deg; }
+    34.444% { --tip: -12.77deg; }
+    35% { --tip: -13deg; }
+    35.556% { --tip: -13.22deg; }
+    36.111% { --tip: -13.44deg; }
+    36.667% { --tip: -13.64deg; }
+    37.222% { --tip: -13.84deg; }
+    37.778% { --tip: -14.03deg; }
+    38.333% { --tip: -14.21deg; }
+    38.889% { --tip: -14.38deg; }
+    39.444% { --tip: -14.54deg; }
+    40% { --tip: -14.69deg; }
+    40.556% { --tip: -14.84deg; }
+    41.111% { --tip: -14.97deg; }
+    41.667% { --tip: -15.1deg; }
+    42.222% { --tip: -15.22deg; }
+    42.778% { --tip: -15.33deg; }
+    43.333% { --tip: -15.43deg; }
+    43.889% { --tip: -15.52deg; }
+    44.444% { --tip: -15.61deg; }
+    45% { --tip: -15.68deg; }
+    45.556% { --tip: -15.75deg; }
+    46.111% { --tip: -15.81deg; }
+    46.667% { --tip: -15.86deg; }
+    47.222% { --tip: -15.9deg; }
+    47.778% { --tip: -15.94deg; }
+    48.333% { --tip: -15.97deg; }
+    48.889% { --tip: -15.98deg; }
+    49.444% { --tip: -16deg; }
     50% { --tip: -16deg; }
+    50.556% { --tip: -16deg; }
+    51.111% { --tip: -15.98deg; }
+    51.667% { --tip: -15.97deg; }
+    52.222% { --tip: -15.94deg; }
+    52.778% { --tip: -15.9deg; }
+    53.333% { --tip: -15.86deg; }
+    53.889% { --tip: -15.81deg; }
+    54.444% { --tip: -15.75deg; }
+    55% { --tip: -15.68deg; }
+    55.556% { --tip: -15.61deg; }
+    56.111% { --tip: -15.52deg; }
+    56.667% { --tip: -15.43deg; }
+    57.222% { --tip: -15.33deg; }
+    57.778% { --tip: -15.22deg; }
+    58.333% { --tip: -15.1deg; }
+    58.889% { --tip: -14.97deg; }
+    59.444% { --tip: -14.84deg; }
+    60% { --tip: -14.69deg; }
+    60.556% { --tip: -14.54deg; }
+    61.111% { --tip: -14.38deg; }
+    61.667% { --tip: -14.21deg; }
+    62.222% { --tip: -14.03deg; }
+    62.778% { --tip: -13.84deg; }
+    63.333% { --tip: -13.64deg; }
+    63.889% { --tip: -13.44deg; }
+    64.444% { --tip: -13.22deg; }
+    65% { --tip: -13deg; }
+    65.556% { --tip: -12.77deg; }
+    66.111% { --tip: -12.54deg; }
+    66.667% { --tip: -12.29deg; }
+    67.222% { --tip: -12.04deg; }
+    67.778% { --tip: -11.78deg; }
+    68.333% { --tip: -11.52deg; }
+    68.889% { --tip: -11.25deg; }
+    69.444% { --tip: -10.97deg; }
+    70% { --tip: -10.69deg; }
+    70.556% { --tip: -10.4deg; }
+    71.111% { --tip: -10.11deg; }
+    71.667% { --tip: -9.82deg; }
+    72.222% { --tip: -9.52deg; }
+    72.778% { --tip: -9.22deg; }
+    73.333% { --tip: -8.92deg; }
+    73.889% { --tip: -8.61deg; }
+    74.444% { --tip: -8.31deg; }
+    75% { --tip: -8deg; }
+    75.556% { --tip: -7.69deg; }
+    76.111% { --tip: -7.39deg; }
+    76.667% { --tip: -7.08deg; }
+    77.222% { --tip: -6.78deg; }
+    77.778% { --tip: -6.48deg; }
+    78.333% { --tip: -6.18deg; }
+    78.889% { --tip: -5.89deg; }
+    79.444% { --tip: -5.6deg; }
+    80% { --tip: -5.31deg; }
+    80.556% { --tip: -5.03deg; }
+    81.111% { --tip: -4.75deg; }
+    81.667% { --tip: -4.48deg; }
+    82.222% { --tip: -4.22deg; }
+    82.778% { --tip: -3.96deg; }
+    83.333% { --tip: -3.71deg; }
+    83.889% { --tip: -3.46deg; }
+    84.444% { --tip: -3.23deg; }
+    85% { --tip: -3deg; }
+    85.556% { --tip: -2.78deg; }
+    86.111% { --tip: -2.56deg; }
+    86.667% { --tip: -2.36deg; }
+    87.222% { --tip: -2.16deg; }
+    87.778% { --tip: -1.97deg; }
+    88.333% { --tip: -1.79deg; }
+    88.889% { --tip: -1.62deg; }
+    89.444% { --tip: -1.46deg; }
+    90% { --tip: -1.31deg; }
+    90.556% { --tip: -1.16deg; }
+    91.111% { --tip: -1.03deg; }
+    91.667% { --tip: -0.9deg; }
+    92.222% { --tip: -0.78deg; }
+    92.778% { --tip: -0.67deg; }
+    93.333% { --tip: -0.57deg; }
+    93.889% { --tip: -0.48deg; }
+    94.444% { --tip: -0.39deg; }
+    95% { --tip: -0.32deg; }
+    95.556% { --tip: -0.25deg; }
+    96.111% { --tip: -0.19deg; }
+    96.667% { --tip: -0.14deg; }
+    97.222% { --tip: -0.1deg; }
+    97.778% { --tip: -0.06deg; }
+    98.333% { --tip: -0.03deg; }
+    98.889% { --tip: -0.02deg; }
+    99.444% { --tip: 0deg; }
+    100% { --tip: 0deg; }
+}
+
+@keyframes gem-tick {
+    0% { --turn: 0deg; }
+    0.37% { --turn: 14.82deg; }
+    0.741% { --turn: 28.34deg; }
+    1.111% { --turn: 40.46deg; }
+    1.481% { --turn: 51.19deg; }
+    1.852% { --turn: 60.56deg; }
+    2.222% { --turn: 68.7deg; }
+    2.593% { --turn: 75.72deg; }
+    2.963% { --turn: 81.77deg; }
+    3.333% { --turn: 86.97deg; }
+    3.704% { --turn: 91.44deg; }
+    4.074% { --turn: 95.29deg; }
+    4.444% { --turn: 98.62deg; }
+    4.815% { --turn: 101.49deg; }
+    5.185% { --turn: 103.97deg; }
+    5.556% { --turn: 106.13deg; }
+    5.926% { --turn: 108deg; }
+    6.296% { --turn: 109.63deg; }
+    6.667% { --turn: 111.04deg; }
+    7.037% { --turn: 112.28deg; }
+    7.407% { --turn: 113.35deg; }
+    7.778% { --turn: 114.29deg; }
+    8.148% { --turn: 115.11deg; }
+    8.519% { --turn: 115.82deg; }
+    8.889% { --turn: 116.44deg; }
+    9.259% { --turn: 116.98deg; }
+    9.63% { --turn: 117.45deg; }
+    10% { --turn: 117.86deg; }
+    10.37% { --turn: 118.21deg; }
+    10.741% { --turn: 118.51deg; }
+    11.111% { --turn: 118.77deg; }
+    11.481% { --turn: 118.99deg; }
+    11.852% { --turn: 119.18deg; }
+    12.222% { --turn: 119.34deg; }
+    12.593% { --turn: 119.48deg; }
+    12.963% { --turn: 119.59deg; }
+    13.333% { --turn: 119.68deg; }
+    13.704% { --turn: 119.76deg; }
+    14.074% { --turn: 119.82deg; }
+    14.444% { --turn: 119.87deg; }
+    14.815% { --turn: 119.91deg; }
+    15.185% { --turn: 119.94deg; }
+    15.556% { --turn: 119.96deg; }
+    15.926% { --turn: 119.98deg; }
+    16.296% { --turn: 119.99deg; }
+    17.037% { --turn: 120deg; }
+    33.704% { --turn: 134.83deg; }
+    34.074% { --turn: 148.35deg; }
+    34.444% { --turn: 160.47deg; }
+    34.815% { --turn: 171.19deg; }
+    35.185% { --turn: 180.57deg; }
+    35.556% { --turn: 188.71deg; }
+    35.926% { --turn: 195.73deg; }
+    36.296% { --turn: 201.78deg; }
+    36.667% { --turn: 206.98deg; }
+    37.037% { --turn: 211.45deg; }
+    37.407% { --turn: 215.3deg; }
+    37.778% { --turn: 218.62deg; }
+    38.148% { --turn: 221.49deg; }
+    38.519% { --turn: 223.98deg; }
+    38.889% { --turn: 226.13deg; }
+    39.259% { --turn: 228.01deg; }
+    39.63% { --turn: 229.63deg; }
+    40% { --turn: 231.05deg; }
+    40.37% { --turn: 232.28deg; }
+    40.741% { --turn: 233.36deg; }
+    41.111% { --turn: 234.3deg; }
+    41.481% { --turn: 235.11deg; }
+    41.852% { --turn: 235.83deg; }
+    42.222% { --turn: 236.45deg; }
+    42.593% { --turn: 236.99deg; }
+    42.963% { --turn: 237.45deg; }
+    43.333% { --turn: 237.86deg; }
+    43.704% { --turn: 238.21deg; }
+    44.074% { --turn: 238.51deg; }
+    44.444% { --turn: 238.77deg; }
+    44.815% { --turn: 239deg; }
+    45.185% { --turn: 239.18deg; }
+    45.556% { --turn: 239.34deg; }
+    45.926% { --turn: 239.48deg; }
+    46.296% { --turn: 239.59deg; }
+    46.667% { --turn: 239.69deg; }
+    47.037% { --turn: 239.76deg; }
+    47.407% { --turn: 239.82deg; }
+    47.778% { --turn: 239.87deg; }
+    48.148% { --turn: 239.91deg; }
+    48.519% { --turn: 239.94deg; }
+    48.889% { --turn: 239.96deg; }
+    49.259% { --turn: 239.98deg; }
+    49.63% { --turn: 239.99deg; }
+    50.37% { --turn: 240deg; }
+    67.037% { --turn: 254.82deg; }
+    67.407% { --turn: 268.34deg; }
+    67.778% { --turn: 280.46deg; }
+    68.148% { --turn: 291.18deg; }
+    68.519% { --turn: 300.55deg; }
+    68.889% { --turn: 308.69deg; }
+    69.259% { --turn: 315.71deg; }
+    69.63% { --turn: 321.76deg; }
+    70% { --turn: 326.96deg; }
+    70.37% { --turn: 331.43deg; }
+    70.741% { --turn: 335.29deg; }
+    71.111% { --turn: 338.61deg; }
+    71.481% { --turn: 341.48deg; }
+    71.852% { --turn: 343.97deg; }
+    72.222% { --turn: 346.12deg; }
+    72.593% { --turn: 348deg; }
+    72.963% { --turn: 349.62deg; }
+    73.333% { --turn: 351.04deg; }
+    73.704% { --turn: 352.28deg; }
+    74.074% { --turn: 353.35deg; }
+    74.444% { --turn: 354.29deg; }
+    74.815% { --turn: 355.11deg; }
+    75.185% { --turn: 355.82deg; }
+    75.556% { --turn: 356.44deg; }
+    75.926% { --turn: 356.98deg; }
+    76.296% { --turn: 357.45deg; }
+    76.667% { --turn: 357.86deg; }
+    77.037% { --turn: 358.21deg; }
+    77.407% { --turn: 358.51deg; }
+    77.778% { --turn: 358.77deg; }
+    78.148% { --turn: 358.99deg; }
+    78.519% { --turn: 359.18deg; }
+    78.889% { --turn: 359.34deg; }
+    79.259% { --turn: 359.48deg; }
+    79.63% { --turn: 359.59deg; }
+    80% { --turn: 359.68deg; }
+    80.37% { --turn: 359.76deg; }
+    80.741% { --turn: 359.82deg; }
+    81.111% { --turn: 359.87deg; }
+    81.481% { --turn: 359.91deg; }
+    81.852% { --turn: 359.94deg; }
+    82.222% { --turn: 359.96deg; }
+    82.593% { --turn: 359.98deg; }
+    82.963% { --turn: 359.99deg; }
+    83.704% { --turn: 360deg; }
 }
 
 @keyframes gem-glint {

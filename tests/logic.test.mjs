@@ -139,24 +139,45 @@ test('streak: rest days neither add nor break; today under 30m does not reset', 
   assert.equal(calculateStreak(d, ref), 5);
 });
 
-test('streak: a workday under 30 minutes ends it; work on a rest day adds nothing', () => {
+test('streak: a workday under 30 minutes ends it; work on a rest day counts', () => {
   const d = data({
     '2026-09-27': 6 * H,   // Sun
     '2026-09-28': 1000,    // Mon (under 30m) breaks
-    '2026-09-29': 5 * H,   // Tue rest (ignored)
+    '2026-09-29': 5 * H,   // Tue rest, worked: counts
     '2026-09-30': 2 * H    // Wed
   });
-  assert.equal(calculateStreak(d, new Date(2026, 8, 30, 20)), 1);
+  assert.equal(calculateStreak(d, new Date(2026, 8, 30, 20)), 2);
+  assert.equal(longestStreak(d, new Date(2026, 8, 30, 20)), 2);
+});
+
+test('streak: a rest day under 30 minutes is neutral, a worked one adds one', () => {
+  // Sat 26 Sep 2026 to Thu 1 Oct. Tue 29 is a rest day.
+  const base = {
+    '2026-09-26': 2 * H, '2026-09-27': 2 * H, '2026-09-28': 2 * H, // Sat, Sun, Mon
+    '2026-09-30': 2 * H, '2026-10-01': 2 * H                       // Wed, Thu
+  };
+  const ref = new Date(2026, 9, 1, 20);
+  assert.equal(calculateStreak(base, ref), 5);
+  assert.equal(calculateStreak({ ...base, '2026-09-29': 600 }, ref), 5);
+  assert.equal(calculateStreak({ ...base, '2026-09-29': 2 * H }, ref), 6);
+  assert.equal(longestStreak({ ...base, '2026-09-29': 2 * H }, ref), 6);
 });
 
 test('streak: no 30-day cap', () => {
-  const d = {};
   const start = new Date(2026, 0, 1);
-  for (let i = 0; i < 80; i++) d[getDateKey(addDays(start, i))] = 2 * H;
+  const days = Array.from({ length: 80 }, (_, i) => addDays(start, i));
   const ref = addDays(start, 79);
-  const expected = Array.from({ length: 80 }, (_, i) => addDays(start, i)).filter((x) => ![2, 5].includes(x.getDay())).length;
-  assert.equal(calculateStreak(d, ref), expected);
-  assert.equal(longestStreak(d, ref), expected);
+  // Rest days left blank: they stay neutral, so only the workdays count.
+  const work = {};
+  for (const x of days) if (![2, 5].includes(x.getDay())) work[getDateKey(x)] = 2 * H;
+  const workdays = days.filter((x) => ![2, 5].includes(x.getDay())).length;
+  assert.equal(calculateStreak(work, ref), workdays);
+  assert.equal(longestStreak(work, ref), workdays);
+  // Rest days worked too: every day counts.
+  const all = {};
+  for (const x of days) all[getDateKey(x)] = 2 * H;
+  assert.equal(calculateStreak(all, ref), 80);
+  assert.equal(longestStreak(all, ref), 80);
 });
 
 test('streak: empty data is zero', () => {

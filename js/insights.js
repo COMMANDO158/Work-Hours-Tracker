@@ -21,8 +21,8 @@ export function firstTrackedKey(data) {
 }
 
 // Consecutive workdays with at least 30 minutes, counting back from today.
-// Rest days (Tue/Fri) neither add to nor break it, and today still being under
-// 30 minutes does not reset it. No upper cap.
+// Rest days (Tue/Fri) never break it, and count as a day if you work 30+ minutes
+// on one. Today still being under 30 minutes does not reset it. No upper cap.
 export function calculateStreak(data, ref) {
   const first = firstTrackedKey(data);
   if (!first) return 0;
@@ -33,9 +33,8 @@ export function calculateStreak(data, ref) {
     if (key < first) break;
     const v = secondsOf(data, key);
     if (key === todayK && v < STREAK_MIN) continue;
-    if (isOffDay(d)) continue;
     if (v >= STREAK_MIN) streak++;
-    else break;
+    else if (!isOffDay(d)) break;
   }
   return streak;
 }
@@ -49,9 +48,8 @@ export function longestStreak(data, ref) {
   for (let d = parseDateKey(first); getDateKey(d) <= todayK; d = addDays(d, 1)) {
     const key = getDateKey(d);
     const v = secondsOf(data, key);
-    if (isOffDay(d)) continue;
     if (v >= STREAK_MIN) { run++; best = Math.max(best, run); }
-    else if (key !== todayK) run = 0;
+    else if (!isOffDay(d) && key !== todayK) run = 0;
   }
   return best;
 }

@@ -66,6 +66,11 @@ function turnOver(host, next) {
   }, 240);
 }
 
+// The gem's loops stop while the window is hidden (gems.css, .is-away) and pick up again on return.
+document.addEventListener('visibilitychange', () => {
+  document.documentElement.classList.toggle('is-away', document.hidden);
+});
+
 export function isWide() {
   return matchMedia(WIDE).matches;
 }
