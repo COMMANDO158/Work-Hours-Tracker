@@ -320,6 +320,38 @@
     to { --turn: 360deg; }
 }
 
+/* The one turn on hover: the same ease-out, sampled 30 stops a second (900ms), held with step-end. */
+@keyframes gem-turn-once {
+    0% { --turn: 0deg; }
+    3.704% { --turn: 77.24deg; }
+    7.407% { --turn: 141.19deg; }
+    11.111% { --turn: 191.88deg; }
+    14.815% { --turn: 231.01deg; }
+    18.519% { --turn: 260.9deg; }
+    22.222% { --turn: 283.7deg; }
+    25.926% { --turn: 301.17deg; }
+    29.63% { --turn: 314.62deg; }
+    33.333% { --turn: 325.03deg; }
+    37.037% { --turn: 333.13deg; }
+    40.741% { --turn: 339.45deg; }
+    44.444% { --turn: 344.39deg; }
+    48.148% { --turn: 348.25deg; }
+    51.852% { --turn: 351.25deg; }
+    55.556% { --turn: 353.57deg; }
+    59.259% { --turn: 355.36deg; }
+    62.963% { --turn: 356.73deg; }
+    66.667% { --turn: 357.75deg; }
+    70.37% { --turn: 358.51deg; }
+    74.074% { --turn: 359.05deg; }
+    77.778% { --turn: 359.44deg; }
+    81.481% { --turn: 359.69deg; }
+    85.185% { --turn: 359.85deg; }
+    88.889% { --turn: 359.94deg; }
+    92.593% { --turn: 359.98deg; }
+    96.296% { --turn: 360deg; }
+    100% { --turn: 360deg; }
+}
+
 @keyframes gem-rock {
     0% { --turn: -28deg; --tip: 4deg; }
     0.952% { --turn: -27.99deg; --tip: 4deg; }
@@ -865,7 +897,7 @@
 /* Still, until their tile or legend cell is hovered: then one turn. */
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
     :is(.tile, .legend-row, .gem-host):is(:hover, :focus-within) .gem[data-motion="hover"] .gem-body {
-        animation: gem-turn 900ms var(--ease-out);
+        animation: gem-turn-once 900ms step-end;
     }
 }
 
