@@ -105,6 +105,88 @@ export function weekPace(data, ref) {
   };
 }
 
+// The rest of the week as a plan: the hours still to go against 30, spread
+// evenly over the workdays that remain. Today counts among them until it is
+// finished (todayClosed); a rest day never does. The share is rounded up to the
+// minute, so keeping to it never leaves the week short.
+export function weekPlan(data, ref, { todayClosed = false } = {}) {
+  const days = weekSeries(data, ref);
+  const total = days.reduce((s, d) => s + d.seconds, 0);
+  const remaining = Math.max(0, WEEKLY_GOAL - total);
+  const workdays = days.filter((d) => !d.off && (d.isFuture || (d.isToday && !todayClosed)));
+  const perWorkday = remaining > 0 && workdays.length ? Math.ceil(remaining / workdays.length / 60) * 60 : 0;
+  return {
+    total,
+    remaining,
+    met: total >= WEEKLY_GOAL,
+    workdays,
+    perWorkday,
+    includesToday: workdays.some((d) => d.isToday)
+  };
+}
+
+// What stands out, as up to three plain sentences, each with a lead to set in
+// bold: { lead, rest }. Read from finished days only; no praise, no scolding.
+export function standouts(data, ref) {
+  const first = firstTrackedKey(data);
+  if (!first) return [];
+  const out = [];
+  const todayK = getDateKey(ref);
+
+  // The longest and shortest workday over eight weeks.
+  const pattern = weekdayPattern(data, ref, 8).filter((d) => !d.off && d.samples >= 3);
+  if (pattern.length >= 2) {
+    const sorted = [...pattern].sort((a, b) => b.average - a.average);
+    const top = sorted[0];
+    const low = sorted[sorted.length - 1];
+    if (top.average - low.average >= 1800) {
+      out.push({
+        lead: `${top.name}s are usually your longest workday`,
+        rest: `, ${formatHM(top.average)} on average over eight weeks. ${low.name}s are usually the shortest, at ${formatHM(low.average)}.`
+      });
+    }
+  }
+
+  // The last seven days against the seven before; failing a clear change, last week's total.
+  const before = lastDays(data, ref, 15).slice(0, 14).filter((d) => d.key >= first && !d.off);
+  const avg = (rows) => (rows.length ? rows.reduce((s, d) => s + d.seconds, 0) / rows.length : 0);
+  const cut = getDateKey(addDays(startOfDay(ref), -7));
+  const lastSeven = before.filter((d) => d.key >= cut);
+  const sevenBefore = before.filter((d) => d.key < cut);
+  const a1 = avg(lastSeven);
+  const a0 = avg(sevenBefore);
+  if (lastSeven.length && sevenBefore.length && a0 > 0 && Math.abs(a1 - a0) >= 3600) {
+    out.push({
+      lead: `Over the last seven days your workdays averaged ${formatHM(a1)}`,
+      rest: `, ${a1 > a0 ? 'up' : 'down'} from ${formatHM(a0)} the week before.`
+    });
+  } else {
+    const lastWeekEnd = addDays(weekStart(ref), -1);
+    if (getDateKey(lastWeekEnd) >= first) {
+      const total = weekTotal(data, lastWeekEnd);
+      const gap = WEEKLY_GOAL - total;
+      out.push({
+        lead: `Last week came to ${formatHM(total)}`,
+        rest: gap > 0 ? `, ${formatHM(gap)} short of 30h.` : gap < 0 ? `, ${formatHM(-gap)} past 30h.` : ', exactly 30h.'
+      });
+    }
+  }
+
+  // Time logged on rest days, over the last sixteen of them.
+  const rest = [];
+  for (let d = addDays(startOfDay(ref), -1); rest.length < 16 && getDateKey(d) >= first; d = addDays(d, -1)) {
+    if (isOffDay(d) && getDateKey(d) < todayK) rest.push(secondsOf(data, getDateKey(d)));
+  }
+  const worked = rest.filter((s) => s > 0);
+  if (rest.length >= 4 && worked.length) {
+    out.push({
+      lead: `You logged time on ${worked.length} of the last ${rest.length} rest days`,
+      rest: `, ${formatHM(worked.reduce((s, x) => s + x, 0))} in all. It counts toward the week like any other hour.`
+    });
+  }
+  return out.slice(0, 3);
+}
+
 export function lastDays(data, ref, count = 30) {
   const todayK = getDateKey(ref);
   const out = [];

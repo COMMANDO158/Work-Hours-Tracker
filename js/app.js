@@ -12,12 +12,12 @@ import { previousWeekRecap } from './insights.js';
 import { formatHM } from './format.js';
 import { claimWindow, takeOver } from './lock.js';
 import {
-  applyMode, applyGem, startRouter, renderSyncPill, mountNotices, renderWindowBanner, updateThemeColor
+  applyMode, applyGem, startRouter, renderSync, mountNav, mountNotices, renderWindowBanner, updateThemeColor
 } from './ui/shell.js';
 import { mountToday, renderToday } from './ui/today.js';
 import { mountLog, renderLog, openDay, tickLog } from './ui/log.js';
 import { mountInsights, renderInsights } from './ui/insights-view.js';
-import { mountSettings } from './ui/settings.js';
+import { mountSettings, renderSettings } from './ui/settings.js';
 
 const isLocal = ['localhost', '127.0.0.1'].includes(location.hostname);
 let mainView = 'today';
@@ -56,10 +56,10 @@ function loadAll() {
 }
 
 function renderVisible() {
-  renderToday();
+  renderToday(true);
   if (mainView === 'log') renderLog();
   if (mainView === 'insights') renderInsights();
-  renderSyncPill();
+  renderSync();
 }
 
 let changeQueued = false;
@@ -123,6 +123,7 @@ function becomeReadOnly() {
   S.readOnly = true;
   loadAll();
   renderWindowBanner(useHere);
+  renderSettings();
   emit('change');
 }
 
@@ -130,8 +131,11 @@ function useHere() {
   takeOver({ onLost: becomeReadOnly });
 }
 
-function onRoute({ mainView: view, view: routeView, param }) {
+let routed = false;
+function onRoute({ view, param }) {
+  const moved = routed && view !== mainView;
   mainView = view;
+  routed = true;
   if (view === 'log') {
     if (param) openDay(param);
     else renderLog();
@@ -140,11 +144,13 @@ function onRoute({ mainView: view, view: routeView, param }) {
     renderInsights();
     scheduleCloudSync({ minInterval: 15000 });
   }
-  if (routeView === 'today' || view === 'today') renderToday();
-  const main = document.getElementById('main');
-  if (main && !param) main.scrollTop = 0;
-  if (!param && document.activeElement && document.activeElement.matches('[data-nav]')) {
-    window.scrollTo({ top: 0 });
+  if (view === 'settings') renderSettings();
+  if (view === 'today') renderToday(true);
+  if (!param) window.scrollTo({ top: 0 });
+  // A new screen: its heading takes focus, so a screen reader starts there.
+  if (moved && !param) {
+    const heading = document.querySelector(`[data-view="${view}"] h1`);
+    if (heading) heading.focus({ preventScroll: true });
   }
 }
 
@@ -165,7 +171,6 @@ function registerServiceWorker() {
 async function boot() {
   setupDevClock();
   applyMode(readPrefs().mode);
-  applyGem();
   mountNotices();
 
   await claimWindow({ onLost: becomeReadOnly });
@@ -175,22 +180,24 @@ async function boot() {
   mountLog(document.getElementById('view-log'));
   mountInsights(document.getElementById('view-insights'));
   mountSettings(document.getElementById('view-settings'));
+  mountNav(document.getElementById('shell'));
+  applyGem();
 
   on((type) => {
     if (type === 'change') onChange();
-    if (type === 'sync') renderSyncPill();
+    if (type === 'sync') renderSync();
     if (type === 'window') {
       if (!S.readOnly) loadAll();
       renderWindowBanner(useHere);
+      renderSettings();
       onChange();
       scheduleCloudSync({ force: true });
     }
   });
 
   startRouter(onRoute);
-  renderSyncPill();
+  renderSync();
   renderWindowBanner(useHere);
-  document.getElementById('syncPill').addEventListener('click', () => { location.hash = '#/settings'; });
 
   setInterval(tick, 1000);
   setInterval(autosave, 30000);

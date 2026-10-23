@@ -1,177 +1,119 @@
-*,
-*::before,
-*::after {
-    box-sizing: border-box;
-}
+/* Base: reset, type, focus, and the filled numeral. */
+
+*, *::before, *::after { box-sizing: border-box; }
 
 html {
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
-    background: var(--ground);
 }
 
 body {
     margin: 0;
     min-height: 100vh;
-    min-height: 100dvh;
     background: var(--ground);
     color: var(--ink);
-    font-family: var(--font);
-    font-size: var(--t-md);
-    line-height: 1.5;
-    font-variant-numeric: tabular-nums;
+    font: 400 17px/1.5 var(--f-text);
+    font-kerning: normal;
     -webkit-font-smoothing: antialiased;
     -webkit-tap-highlight-color: transparent;
 }
 
-h1, h2, h3, p, ol, ul, dl, dd, figure {
-    margin: 0;
-}
+h1, h2, h3, p, dl, dd, figure { margin: 0; }
+ol, ul { margin: 0; padding: 0; list-style: none; }
+button, input, select, textarea { font: inherit; color: inherit; }
+a { color: inherit; text-underline-offset: 0.2em; text-decoration-thickness: 2px; }
+[hidden] { display: none !important; }
+::selection { background: var(--ink); color: var(--ground); }
+:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+:focus:not(:focus-visible) { outline: none; }
+.tnum { font-variant-numeric: tabular-nums; }
+.muted { color: var(--muted); }
 
-ol, ul {
-    padding: 0;
-    list-style: none;
-}
-
-h1, h2, h3 {
-    font-weight: 700;
-    line-height: 1.2;
-    text-wrap: balance;
-    letter-spacing: -0.01em;
-}
-
-p {
-    text-wrap: pretty;
-}
-
-a {
-    color: inherit;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 0.2em;
-}
-
-button,
-input,
-select,
-textarea {
-    font: inherit;
-    color: inherit;
-    letter-spacing: inherit;
-}
-
-button {
-    cursor: pointer;
-}
-
-button:disabled {
-    cursor: not-allowed;
-}
-
-img,
-svg {
-    display: block;
-}
-
-::selection {
-    background: var(--selection);
-    color: var(--ink);
-}
-
-input {
-    caret-color: var(--gi, var(--ink));
-}
-
-:focus {
-    outline: none;
-}
-
-:focus-visible {
-    outline: 3px solid var(--focus);
-    outline-offset: 3px;
-    border-radius: 6px;
-}
-
-/* scrollbars carry the palette too */
-* {
-    scrollbar-width: thin;
-    scrollbar-color: var(--rule-strong) transparent;
-}
-
-::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
-}
-
-::-webkit-scrollbar-thumb {
-    background: var(--rule-strong);
-    border-radius: 10px;
-    border: 3px solid var(--ground);
-}
-
-::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-[hidden] {
-    display: none !important;
-}
-
-.visually-hidden {
-    position: absolute !important;
+.sr-only {
+    position: absolute;
     width: 1px;
     height: 1px;
-    padding: 0;
-    margin: -1px;
     overflow: hidden;
-    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
     white-space: nowrap;
-    border: 0;
 }
 
-.sprite {
+.skip {
     position: absolute;
-    width: 0;
-    height: 0;
-    overflow: hidden;
-}
-
-.skip-link {
-    position: absolute;
-    left: var(--s-4);
+    z-index: 40;
+    left: 16px;
     top: -100px;
-    z-index: 50;
-    padding: var(--s-2) var(--s-4);
-    border-radius: var(--r-sm);
+    padding: 12px 16px;
     background: var(--ink);
     color: var(--ground);
+    font-weight: 600;
+}
+.skip:focus { top: 12px; }
+
+#main:focus,
+h1[tabindex="-1"]:focus { outline: none; }
+
+.noscript { padding: 24px var(--gut); font-size: 19px; }
+
+/* ============================================================ the filled numeral */
+
+/* Two copies of the same figures: the empty vessel (a faint inside, a drawn edge)
+   and the gem-coloured copy, cut off flat at the level (--lvl, 0 to 1). The box
+   is trimmed to the cap height and the baseline, so the level is a share of the
+   figures themselves. Only clip-path is transitioned; --lvl is never registered. */
+.nf {
+    position: relative;
+    display: block;
+    width: max-content;
+    font-family: var(--f-display);
     font-weight: 700;
-    text-decoration: none;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums lining-nums;
+    color: var(--edge);
+    -webkit-text-fill-color: var(--void);
+    -webkit-text-stroke: max(1.5px, 0.012em) currentColor;
+    paint-order: stroke fill;
+    text-box: trim-both cap alphabetic;
+    pointer-events: none;
 }
 
-.skip-link:focus-visible {
-    top: var(--s-2);
+.nf-fill {
+    position: absolute;
+    inset: 0;
+    -webkit-text-fill-color: var(--g, var(--ink));
+    -webkit-text-stroke-color: var(--gi, var(--ink));
+    text-box: trim-both cap alphabetic;
+    /* a hard, flat edge at the level */
+    clip-path: inset(calc((1 - var(--lvl, 0)) * 100%) -12% -0.02em -12%);
+    transition: clip-path var(--rise) var(--ease-rise);
+}
+.nf.is-empty .nf-fill { visibility: hidden; }
+
+/* A week fills with each day in turn: one copy per day, cut to its own band. */
+.nf-band {
+    position: absolute;
+    inset: 0;
+    -webkit-text-fill-color: var(--g);
+    -webkit-text-stroke-color: var(--gi);
+    text-box: trim-both cap alphabetic;
+    clip-path: inset(calc((1 - var(--to)) * 100%) -12% calc(var(--from) * 100%) -12%);
+}
+.nf-band.is-first { clip-path: inset(calc((1 - var(--to)) * 100%) -12% -0.02em -12%); }
+
+/* On a dark ground the filled copy's edge is the fill itself. */
+:root[data-mode="dark"] :is(.nf-fill, .nf-band) { -webkit-text-stroke-color: var(--g, var(--ink)); }
+@media (prefers-color-scheme: dark) {
+    :root:not([data-mode="light"]) :is(.nf-fill, .nf-band) { -webkit-text-stroke-color: var(--g, var(--ink)); }
 }
 
-.num {
-    font-variant-numeric: tabular-nums;
-}
-
-.mono {
-    font-family: var(--font-mono);
-}
-
-.noscript {
-    padding: var(--s-8) var(--gutter);
-    font-size: var(--t-lg);
-}
+/* ============================================================ motion */
 
 @media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-        animation-duration: 1ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 1ms !important;
+    *, *::before, *::after {
+        transition: none !important;
+        animation: none !important;
         scroll-behavior: auto !important;
     }
 }
