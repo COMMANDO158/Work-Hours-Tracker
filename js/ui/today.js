@@ -1,313 +1,487 @@
-// Today: the work card (today's dial, which flips to its break face during a
-// break, the break line, one button), the week as seven dials, and the
-// Today / Week / To goal tiles.
+// Today: the flood. The day's gem colour fills the screen from the bottom up,
+// full at 6h, with today's hours riding on the level line and the one thing to
+// do under them. Beside it (or a swipe away on a phone), the week as seven
+// filled numerals.
+//
+// Rendered every second, so everything is built once and updated in place:
+// text only when it changes, levels only when the minute changes. The flood and
+// the figures move by clip-path and transform transitions read from plain
+// custom properties (--level, --cut, --fig-y), never by per-frame script.
 import { S } from '../state.js';
-import { h, icon, clear, setText } from './dom.js';
-import { createWorkDial, createBreakDial, miniDial, stone } from './dial.js';
+import { h, clear, setText, setAttr, setVar } from './dom.js';
+import { nf, setNf, rise, release } from './numeral.js';
+import { gem as gemStone } from './gem.js';
+import { mountNav, renderShellToday } from './shell.js';
 import { deriveTodayState } from '../today-state.js';
-import { liveTodaySeconds, liveWeekData, getIntent, setIntent } from '../store.js';
+import { liveTodaySeconds, liveWeekData, getIntent, setIntent, readIntents } from '../store.js';
 import { startTimer, pauseTimer, finishDay, keepGap, trimGap } from '../timer.js';
 import { startBreak, endBreak, breakActive, breakRemainingSeconds, breakUsedToday } from '../breaks.js';
-import { weekSeries, weekPace } from '../insights.js';
+import { weekSeries, weekPlan } from '../insights.js';
 import { DAILY_GOAL, WEEKLY_GOAL } from '../config.js';
-import { gemFor } from '../gems.js';
-import { todayKey, today, isOffDay, weekdayLong, weekdayShort, parseDateKey } from '../dates.js';
-import { formatHM, formatRemaining, formatClock, formatTimeOfDay } from '../format.js';
+import { todayKey, today, isOffDay, weekdayLong, weekdayShort, parseDateKey, weekStart, getDateKey } from '../dates.js';
+import { formatHM, formatRemaining, formatClock, formatMinSec, formatTimeOfDay } from '../format.js';
+import { mono, spoken, hmParts, dayLevel, longDate, shortDate, range } from './words.js';
+
+const phoneMq = matchMedia('(max-width: 719px)');
+const reduceMq = matchMedia('(prefers-reduced-motion: reduce)');
+
+const PRIMARY = {
+  'idle-fresh': 'Start work',
+  idle: 'Start work',
+  working: 'Pause',
+  paused: 'Resume',
+  'on-break': 'Back to work',
+  'break-exhausted': 'Back to work',
+  'day-done': 'Start again'
+};
 
 let els = null;
-let workDial = null;
-let breakDial = null;
-let lastActionSig = '';
-let lastWeekSig = '';
-let lastGapSig = '';
-let intentTimer = null;
+let week = null;          // { key, rows }
 let intentKey = null;
-let face = 'work';
-let flipTimer = null;
-let firstRender = true;
+let intentTimer = null;
+let lastState = null;
+let lastFigMin = -1;
+let lastWeekSig = '';
+let lastGapSig = null;
+let fitted = 0;
+let rising = true;        // the first paint holds the flood at 0 so it rises in
 
-function hmWords(seconds) {
-  const s = Math.floor(seconds);
-  const hh = Math.floor(s / 3600);
-  const mm = Math.floor((s % 3600) / 60);
-  if (!s) return 'nothing logged';
-  if (!hh) return `${mm} minutes`;
-  return `${hh} hour${hh === 1 ? '' : 's'}${mm ? ` ${mm} minutes` : ''}`;
-}
+// ------------------------------------------------------------- markup
 
-const minutes = (s) => `${Math.floor(Math.max(0, s) / 60)}m`;
+// "4h 15m" with the units set small. The hour part hides below an hour.
+const FIG = '<span class="u">h</span><span class="u">m</span>';
+const two = (cls, inner) => `<p class="ink2 ${cls}"${cls === 'figure' ? ' aria-hidden="true"' : ''}><span class="i-dry">${inner}</span><span class="i-wet" aria-hidden="true">${inner}</span></p>`;
+const SCALE = [1, 2, 3, 4, 5, 6].map((n) => `<li class="${n === 6 ? 'six' : ''}" style="--h:${n}"><span>${n}h</span></li>`).join('');
+
+const TEMPLATE = `
+<section class="stage pane" id="stage" data-state="idle-fresh" aria-labelledby="day-title">
+  <div class="flood" aria-hidden="true"><ol class="scale">${SCALE}</ol></div>
+  <div class="display">
+    <ol class="scale" aria-hidden="true">${SCALE}</ol>
+    <div class="band" aria-hidden="true" hidden></div>
+    <div class="band-line" aria-hidden="true" hidden><span class="band-label">The break ends at this line</span></div>
+    <div class="readout">
+      <p class="sr-only" data-k="figure-sr"></p>
+      ${two('figure', FIG)}
+      ${two('status', '<strong data-k="label"></strong><span class="clock" data-k="clock"></span><span class="clock-note" data-k="note"></span>')}
+      ${two('subline', '<span data-k="sub"></span>')}
+    </div>
+    <p class="figure figure-probe" aria-hidden="true"><span>6<span class="u">h</span> 48<span class="u">m</span></span></p>
+  </div>
+
+  <header class="top">
+    <div class="mark" data-ink>
+      <span class="seat" id="seat"></span>
+      <div>
+        <h1 id="day-title" tabindex="-1"></h1>
+        <p class="sub"><span id="todayDate"></span> · <span class="sync" data-sync-label></span></p>
+      </div>
+    </div>
+    <nav class="nav" aria-label="Screens" data-ink data-nav-host="nav-a"></nav>
+    <div class="menu-wrap" data-ink>
+      <button class="menu-btn" type="button" aria-expanded="false" aria-controls="todayMenu">Menu</button>
+      <div class="menu" id="todayMenu" data-menu hidden></div>
+    </div>
+  </header>
+
+  <div class="controls">
+    <div class="gap-slot"></div>
+    <div class="note" data-ink>
+      <label for="intentInput">Working on</label>
+      <input id="intentInput" type="text" maxlength="140" autocomplete="off" enterkeyhint="done" placeholder="Add a note">
+    </div>
+    <button class="btn btn-primary" id="primaryAction" type="button" data-ink>Start work</button>
+    <div class="secondary">
+      <button class="btn" id="breakAction" type="button" data-ink>Take a break</button>
+      <button class="btn" id="finishAction" type="button" data-ink>Finish day</button>
+    </div>
+    <button class="week-link" type="button" data-ink aria-controls="week">
+      <span class="wl-sum"></span><span class="wl-go">Week ›</span>
+    </button>
+  </div>
+
+  <p class="sr-only" aria-live="polite" data-k="announce"></p>
+</section>
+
+<section class="week pane" id="week" aria-labelledby="week-title">
+  <div class="week-head-row">
+    <h2 id="week-title">This week <span class="range"></span></h2>
+    <button class="back-link" type="button">‹ Today</button>
+  </div>
+  <p class="week-total"><span class="big">${FIG}</span><span class="week-of">of 30h</span></p>
+  <div class="bar" aria-hidden="true"><span></span></div>
+  <p class="week-plan"><strong></strong><span></span></p>
+  <div class="wk-wrap">
+    <ol class="wk-days" aria-label="Saturday to Friday"></ol>
+  </div>
+  <div class="week-foot">
+    <p class="week-key">Each figure is full at 6h.</p>
+    <a href="#/log">Log ›</a>
+  </div>
+</section>`;
+
+// ------------------------------------------------------------- mount
 
 export function mountToday(root) {
-  workDial = createWorkDial();
-  breakDial = createBreakDial();
+  root.innerHTML = TEMPLATE;
+  const q = (s) => root.querySelector(s);
+  const all = (k) => [...root.querySelectorAll(`[data-k="${k}"]`)];
+  els = {
+    root,
+    panes: root,
+    stage: q('#stage'),
+    readout: q('.readout'),
+    figure: q('.readout .figure'),
+    figGroups: [...q('.readout .figure').children],
+    probe: q('.figure-probe'),
+    inks: [...root.querySelectorAll('.readout .ink2')],
+    top: q('.top'),
+    controls: q('.controls'),
+    band: q('.band'),
+    bandLine: q('.band-line'),
+    figureSr: all('figure-sr')[0],
+    label: all('label'),
+    clock: all('clock'),
+    note: all('note'),
+    sub: all('sub'),
+    announce: all('announce')[0],
+    gap: q('.gap-slot'),
+    intent: q('#intentInput'),
+    primary: q('#primaryAction'),
+    breakBtn: q('#breakAction'),
+    finish: q('#finishAction'),
+    weekLink: q('.week-link'),
+    wlSum: q('.wl-sum'),
+    weekPane: q('#week'),
+    backLink: q('.back-link'),
+    range: q('.week h2 .range'),
+    weekBig: q('.week-total .big'),
+    bar: q('.week .bar > span'),
+    planLead: q('.week-plan strong'),
+    planRest: q('.week-plan span'),
+    weekKey: q('.week-key'),
+    days: q('.wk-days')
+  };
 
-  const primary = h('button', { class: 'btn btn-primary btn-block', type: 'button', id: 'primaryAction' }, [
-    h('span', { class: 'btn-glyph' }), h('span', { class: 'btn-label' }), h('span', { class: 'btn-meta num', 'aria-hidden': 'true' })
-  ]);
-  primary.addEventListener('click', onPrimary);
+  mountNav(root);
 
-  const finish = h('button', { class: 'btn-text', type: 'button' }, 'Finish day');
-  finish.addEventListener('click', () => finishDay());
+  els.primary.addEventListener('click', onPrimary);
+  els.breakBtn.addEventListener('click', () => startBreak());
+  els.finish.addEventListener('click', () => { finishDay(); els.primary.focus(); });
 
-  const breakBtn = h('button', { class: 'btn btn-quiet btn-small btn-break', type: 'button' }, 'Take a break');
-  breakBtn.addEventListener('click', () => startBreak());
-
-  const intent = h('input', {
-    class: 'note-input', id: 'intentInput', type: 'text', maxlength: '140',
-    placeholder: 'What are you working on?', autocomplete: 'off', enterkeyhint: 'done'
-  });
+  const intent = els.intent;
   intent.addEventListener('input', () => {
     clearTimeout(intentTimer);
     const key = intentKey;
     intentTimer = setTimeout(() => setIntent(key, intent.value), 400);
   });
   intent.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') { e.preventDefault(); setIntent(intentKey, intent.value); intent.blur(); }
+    if (e.key === 'Enter' || e.key === 'Escape') { e.preventDefault(); intent.blur(); }
   });
-  intent.addEventListener('blur', () => setIntent(intentKey, intent.value));
+  intent.addEventListener('blur', () => { clearTimeout(intentTimer); setIntent(intentKey, intent.value); });
 
-  els = {
-    gap: h('div', { class: 'gap-slot' }),
-    heading: h('h2', { class: 'label', id: 'workHeading' }, 'Work session'),
-    figure: h('p', { class: 'figure num' }),
-    statusLive: h('span', { role: 'status', 'aria-live': 'polite' }),
-    statusExtra: h('span', { class: 'status-extra num' }),
-    dialLabel: h('p', { class: 'visually-hidden' }),
-    flip: h('div', { class: 'flip', 'data-face': 'work' }, [
-      h('div', { class: 'flip-card' }, [
-        h('div', { class: 'flip-face face-work' }, [workDial.el]),
-        h('div', { class: 'flip-face face-break' }, [breakDial.el])
-      ])
-    ]),
-    breakLine: h('div', { class: 'break-line' }),
-    breakText: h('p', { class: 'break-line-text' }),
-    breakBtn,
-    finish,
-    primary,
-    intent,
-    workCard: null,
-    weekDials: h('ol', { class: 'week-dials', 'aria-label': 'This week, Saturday to Friday' }),
-    tileToday: h('p', { class: 'tile-figure num' }),
-    tileTodayStone: h('span', { class: 'tile-stone' }),
-    tileWeek: h('p', { class: 'tile-figure num' }),
-    tileGoal: h('p', { class: 'tile-figure num' }),
-    tileGoalSub: h('p', { class: 'tile-sub' })
-  };
-  els.breakLine.append(icon('cup', 'break-line-icon'), els.breakText);
+  const smooth = () => (reduceMq.matches ? 'auto' : 'smooth');
+  els.weekLink.addEventListener('click', () => els.panes.scrollTo({ left: els.panes.clientWidth, behavior: smooth() }));
+  els.backLink.addEventListener('click', () => {
+    els.panes.scrollTo({ left: 0, behavior: smooth() });
+    els.weekLink.focus({ preventScroll: true });
+  });
 
-  els.workCard = h('article', { class: 'card work-card', 'aria-labelledby': 'workHeading' }, [
-    h('header', { class: 'card-head' }, [els.heading, finish]),
-    els.figure,
-    h('p', { class: 'status' }, [els.statusLive, els.statusExtra]),
-    els.flip,
-    els.dialLabel,
-    els.breakLine,
-    primary,
-    h('label', { class: 'note' }, [h('span', { class: 'visually-hidden' }, 'Working on'), icon('pencil', 'note-icon'), intent])
-  ]);
+  addEventListener('resize', () => { fitted = 0; layoutNow(); });
+  phoneMq.addEventListener('change', () => { fitted = 0; layoutNow(); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { fitted = 0; layoutNow(); });
 
-  clear(root);
-  root.append(
-    h('h1', { class: 'visually-hidden' }, 'Today'),
-    els.gap,
-    els.workCard,
-    h('article', { class: 'card week-card', 'aria-labelledby': 'weekHeading' }, [
-      h('header', { class: 'card-head' }, [h('h2', { class: 'label', id: 'weekHeading' }, 'This week')]),
-      els.weekDials
-    ]),
-    h('div', { class: 'tiles' }, [
-      h('article', { class: 'tile', 'aria-labelledby': 'tileTodayH' }, [
-        h('div', {}, [h('h3', { class: 'label', id: 'tileTodayH' }, 'Today'), els.tileToday]),
-        els.tileTodayStone
-      ]),
-      h('article', { class: 'tile', 'aria-labelledby': 'tileWeekH' }, [
-        h('div', {}, [h('h3', { class: 'label', id: 'tileWeekH' }, 'Week'), els.tileWeek, h('p', { class: 'tile-sub' }, 'of 30h')]),
-        h('span', { class: 'tile-stone' }, [stone('clear', 20)])
-      ]),
-      h('article', { class: 'tile', 'aria-labelledby': 'tileGoalH' }, [
-        h('div', {}, [h('h3', { class: 'label', id: 'tileGoalH' }, 'To goal'), els.tileGoal, els.tileGoalSub]),
-        h('span', { class: 'tile-stone' }, [stone('clear', 20)])
-      ])
-    ])
-  );
-  renderToday();
+  // First paint: the flood starts empty and rises to the day's level.
+  renderToday(true);
+  requestAnimationFrame(() => requestAnimationFrame(() => { rising = false; renderToday(true); }));
 }
 
-function currentState() {
-  const ref = today();
-  const pace = weekPace(liveWeekData(), ref);
+// ------------------------------------------------------------- state
+
+function currentState(ref, total, data) {
+  const days = weekSeries(data, ref);
   return deriveTodayState({
     isRunning: S.isRunning,
     pausedTime: S.pausedTime,
     todaySeconds: S.todaySeconds,
-    todayTotal: liveTodaySeconds(),
+    todayTotal: total,
     breakActive: breakActive(),
     breakUsed: breakUsedToday(),
     breakCappedAt: S.breakCappedAt,
     doneAt: S.doneAt,
     offDay: isOffDay(ref),
-    weekMet: pace.met
+    weekMet: days.reduce((s, d) => s + d.seconds, 0) >= WEEKLY_GOAL
   });
 }
 
 function onPrimary() {
-  const st = currentState();
+  const ref = today();
+  const total = liveTodaySeconds();
+  const st = currentState(ref, total, liveWeekData());
   if (st.primary.action === 'start') startTimer();
   else if (st.primary.action === 'pause') pauseTimer();
   else if (st.primary.action === 'resume-from-break') endBreak();
 }
 
-// Flip the dial between its work and break faces. Only one face is ever
-// displayed, so nothing depends on backface hiding: the card turns edge-on,
-// the face swaps, and it turns back.
-function setFace(next) {
-  if (next === face) return;
-  face = next;
-  const el = els.flip;
-  clearTimeout(flipTimer);
-  const still = firstRender || matchMedia('(prefers-reduced-motion: reduce)').matches || document.hidden || !el.isConnected || el.offsetParent === null;
-  if (still) {
-    el.classList.remove('is-turning-out', 'is-turning-in', 'is-turned');
-    el.dataset.face = next;
-    return;
+// The words on the stage: the state, a clock, and one plain sentence.
+function stageWords(st, total) {
+  const left = DAILY_GOAL - total;
+  const toSix = st.offDay
+    ? 'A rest day: any time logged still counts toward the week.'
+    : left > 0 ? `${formatRemaining(left)} to 6h today.`
+      : st.state === 'working' ? '6h reached. The clock is still counting.' : '6h reached today.';
+  switch (st.state) {
+    case 'working':
+      return { label: 'Working', clock: formatClock(S.todaySeconds), note: 'this session', sub: toSix };
+    case 'paused':
+      return { label: 'Paused', clock: '', note: '', sub: `The clock is stopped. ${toSix}` };
+    case 'idle':
+      return { label: 'Stopped', clock: '', note: '', sub: `The clock is stopped. ${toSix}` };
+    case 'on-break':
+      return { label: 'On break', clock: formatMinSec(breakRemainingSeconds()), note: 'of break left', sub: 'Break counts as work, up to the line above.' };
+    case 'break-exhausted':
+      return { label: 'Break used up', clock: '', note: '', sub: 'The day’s 30 break minutes are used, so the clock has stopped.' };
+    case 'day-done':
+      return { label: 'Day finished', clock: '', note: '', sub: `Finished at ${formatTimeOfDay(S.doneAt)}. Today is saved; start again if you come back to it.` };
+    default:
+      return st.offDay
+        ? { label: 'Rest day', clock: '', note: '', sub: 'Nothing recorded today. It is a rest day; any time you log still counts toward the week.' }
+        : { label: 'Not started', clock: '', note: '', sub: 'Nothing recorded yet today. The screen fills as you work, and is full at 6h.' };
   }
-  el.classList.remove('is-turning-in', 'is-turned');
-  el.classList.add('is-turning-out');
-  flipTimer = setTimeout(() => {
-    el.dataset.face = next;
-    el.classList.remove('is-turning-out');
-    el.classList.add('is-turned');
-    void el.offsetWidth; // commit the edge-on start before turning back
-    el.classList.remove('is-turned');
-    el.classList.add('is-turning-in');
-    flipTimer = setTimeout(() => el.classList.remove('is-turning-in'), 320);
-  }, 240);
 }
 
-export function renderToday() {
+// The digits are text nodes beside the unit spans (made once, then rewritten in place).
+const figNodes = new WeakMap();
+function setFig(root, seconds) {
+  let n = figNodes.get(root);
+  if (!n) {
+    const [hu, mu] = root.querySelectorAll('.u');
+    n = { h: document.createTextNode(''), hu, m: document.createTextNode('') };
+    root.insertBefore(n.h, hu);
+    root.insertBefore(n.m, mu);
+    figNodes.set(root, n);
+  }
+  const p = hmParts(seconds);
+  if (n.h.nodeValue !== p.h) n.h.nodeValue = p.h;
+  if (n.hu.hidden !== !p.h) n.hu.hidden = !p.h;
+  const m = p.h ? ` ${p.m}` : p.m;
+  if (n.m.nodeValue !== m) n.m.nodeValue = m;
+}
+
+const setAll = (list, text) => list.forEach((el) => setText(el, text));
+
+// ------------------------------------------------------------- render
+
+// full: also refresh what changes only on events (the week's notes, the gap check).
+export function renderToday(full = false) {
   if (!els) return;
   const ref = today();
   const key = todayKey();
-  const gem = gemFor(ref).id;
   const total = liveTodaySeconds();
-  const st = currentState();
-  const onBreak = st.state === 'on-break';
-  const used = breakUsedToday();
-  const left = breakRemainingSeconds();
+  renderShellToday(total);
 
   if (intentKey !== key) {
     intentKey = key;
     els.intent.value = getIntent(key);
   }
-  els.intent.disabled = S.readOnly;
+  if (els.intent.disabled !== S.readOnly) els.intent.disabled = S.readOnly;
 
-  // work card
-  els.workCard.dataset.state = st.state;
-  workDial.update(total, gem);
-  breakDial.update(used);
-  // The face stays on the break side at the 30-minute stop, full, until Back to work.
-  const capped = st.state === 'break-exhausted';
-  setFace(onBreak || capped ? 'break' : 'work');
-  setText(els.figure, formatHM(total));
-  const { live, extra } = statusLine(st, total);
-  setText(els.statusLive, live);
-  setText(els.statusExtra, extra);
-  setText(els.dialLabel, onBreak || capped
-    ? `Break dial: ${minutes(used)} of 30 used, ${minutes(Math.ceil(left / 60) * 60)} left.`
-    : `Today's dial: ${hmWords(total)} of 6 hours.`);
+  // Away from Today only the shell needs the clock; the route back renders in full.
+  if (!full && document.body.dataset.route !== 'today') return;
 
-  // break line
-  els.breakLine.classList.toggle('is-active', onBreak || capped);
-  const leftText = minutes(Math.ceil(left / 60) * 60);
-  let breakText;
-  if (onBreak) breakText = [h('strong', {}, 'On break'), ` · ${minutes(used)} used · ${leftText} left`];
-  else if (capped) breakText = [h('strong', {}, '30m used'), ' · break over'];
-  else if (st.breakAllUsed) breakText = [h('strong', {}, '30m used'), ' · no break left today'];
-  else if (used > 0) breakText = [h('strong', {}, `${minutes(used)} used`), ` · ${leftText} left`];
-  else breakText = [h('strong', {}, 'Break'), ' · 30m available'];
-  const textSig = JSON.stringify(breakText.map((p) => (typeof p === 'string' ? p : p.textContent)));
-  if (els.breakText.dataset.sig !== textSig) {
-    els.breakText.dataset.sig = textSig;
-    clear(els.breakText).append(...breakText);
-  }
-
-  // controls, rebuilt only when the state changes
-  const sig = `${st.state}|${st.canBreak}|${st.breakAllUsed}|${S.readOnly}`;
-  if (sig !== lastActionSig) {
-    lastActionSig = sig;
-    const p = st.primary;
-    clear(els.primary.querySelector('.btn-glyph')).appendChild(icon(p.icon));
-    setText(els.primary.querySelector('.btn-label'), p.label);
-    els.primary.disabled = S.readOnly;
-    els.primary.dataset.action = p.action;
-    els.primary.setAttribute('aria-label', p.label === 'Start' ? 'Start work' : p.label);
-
-    const canFinish = st.secondary.some((a) => a.action === 'finish');
-    els.finish.hidden = !canFinish;
-    els.finish.disabled = S.readOnly;
-
-    const showBreakBtn = !onBreak && st.canBreak;
-    if (showBreakBtn && !els.breakBtn.isConnected) els.breakLine.appendChild(els.breakBtn);
-    if (!showBreakBtn && els.breakBtn.isConnected) els.breakBtn.remove();
-    els.breakBtn.disabled = S.readOnly;
-  }
-
-  // The running stretch rides on the button; a break doesn't reset it.
-  const meta = els.primary.querySelector('.btn-meta');
-  const showStretch = st.state === 'working' || st.state === 'paused' || st.state === 'on-break' || st.state === 'break-exhausted';
-  setText(meta, showStretch ? formatClock(S.todaySeconds) : '');
-
-  renderWeek(ref, gem, total);
-  renderGap();
-  firstRender = false;
-}
-
-// The goal always sits beside the figure: "Today · 6h goal · 2h 15m to go".
-function statusLine(st, total) {
-  const toGoal = Math.max(0, DAILY_GOAL - total);
-  const goal = total === 0 ? ' · 6h goal' : (toGoal > 0 ? ` · 6h goal · ${formatRemaining(toGoal)} to go` : ' · 6h goal reached');
-  switch (st.state) {
-    case 'working': return { live: 'Working', extra: goal };
-    case 'paused': return { live: 'Paused', extra: goal };
-    case 'on-break': return { live: 'On break', extra: goal };
-    case 'break-exhausted': return { live: 'Break over', extra: ' · stopped at 30m' };
-    case 'day-done': return { live: `Day closed at ${formatTimeOfDay(S.doneAt)}`, extra: goal };
-    default: return { live: st.offDay ? 'Rest day' : 'Today', extra: st.offDay && total === 0 ? ' · anything logged still counts' : goal };
-  }
-}
-
-function renderWeek(ref, gem, total) {
   const data = liveWeekData();
-  const days = weekSeries(data, ref);
-  const pace = weekPace(data, ref);
-  const sig = days.map((d) => `${d.key}:${Math.floor(d.seconds / 60)}`).join('|');
-  if (sig !== lastWeekSig) {
-    lastWeekSig = sig;
-    clear(els.weekDials);
-    for (const d of days) {
-      const value = d.seconds ? formatHM(d.seconds) : (d.off ? 'Rest' : '–');
-      const label = `${weekdayLong(d.date)}${d.isToday ? ' (today)' : ''}: ${d.seconds ? hmWords(d.seconds) : (d.off ? 'rest day' : 'nothing logged')}`;
-      els.weekDials.appendChild(h('li', { class: `wd${d.isToday ? ' is-today' : ''}${d.off ? ' is-off' : ''}${d.isFuture ? ' is-future' : ''}` }, [
-        h('a', { class: 'wd-link', href: d.isFuture ? null : `#/log/${d.key}`, 'aria-label': label, 'aria-disabled': d.isFuture ? 'true' : null }, [
-          h('span', { class: 'wd-day' }, weekdayShort(d.date).slice(0, 2).toUpperCase()),
-          miniDial({ seconds: d.seconds, gem: d.gem, off: d.off, isToday: d.isToday, isFuture: d.isFuture, size: 44 }),
-          h('span', { class: 'wd-hours num' }, value)
-        ])
-      ]));
-    }
+  const st = currentState(ref, total, data);
+  const stage = els.stage;
+  setAttr(stage, 'data-state', st.state);
+
+  // the figure, once a minute
+  const minute = Math.floor(total / 60);
+  if (minute !== lastFigMin || full) {
+    lastFigMin = minute;
+    els.figGroups.forEach((g) => setFig(g, total));
+    setText(els.figureSr, `Today so far: ${spoken(total)}${st.offDay ? '' : ' of 6 hours'}.`);
   }
 
-  // tiles
-  setText(els.tileToday, formatHM(total));
-  if (els.tileTodayStone.dataset.gem !== gem) {
-    els.tileTodayStone.dataset.gem = gem;
-    clear(els.tileTodayStone).appendChild(stone(gem, 20));
+  const w = stageWords(st, total);
+  setAll(els.label, w.label);
+  setAll(els.clock, w.clock);
+  setAll(els.note, w.note);
+  setAll(els.sub, w.sub);
+
+  // the controls
+  setText(els.primary, PRIMARY[st.state] || 'Start work');
+  if (els.primary.disabled !== S.readOnly) els.primary.disabled = S.readOnly;
+  const offerBreak = st.state === 'working' || st.state === 'paused' || st.state === 'idle';
+  els.breakBtn.hidden = !offerBreak;
+  const noBreak = st.breakAllUsed;
+  setText(els.breakBtn, noBreak ? 'No break left today' : 'Take a break');
+  const breakOff = S.readOnly || !offerBreak || !st.canBreak;
+  if (els.breakBtn.disabled !== breakOff) els.breakBtn.disabled = breakOff;
+  els.finish.hidden = !st.secondary.some((a) => a.action === 'finish');
+  if (els.finish.disabled !== S.readOnly) els.finish.disabled = S.readOnly;
+
+  if (st.state !== lastState) {
+    if (lastState !== null) setText(els.announce, `${w.label}. ${formatHM(total)} today.`);
+    lastState = st.state;
   }
-  setText(els.tileWeek, formatHM(pace.total));
-  setText(els.tileGoal, pace.met ? 'Done' : formatRemaining(pace.remaining));
-  const leftNames = pace.workdaysLeft > 3 ? `${pace.workdaysLeft} workdays` : pace.workdaysLeftNames.join(', ');
-  setText(els.tileGoalSub, pace.met ? `${formatHM(pace.total - WEEKLY_GOAL)} over` : (pace.workdaysLeft ? leftNames : 'this week'));
+
+  renderWeek(data, ref, st, full);
+  renderGap();
+  layout(total, st);
 }
+
+// ------------------------------------------------------------- layout: level, figure, controls, inks
+
+function fit(W, H) {
+  const w100 = els.probe.getBoundingClientRect().width;
+  if (!w100) return;
+  const cs = getComputedStyle(els.stage);
+  const xAvail = W - parseFloat(cs.getPropertyValue('--x0')) - parseFloat(cs.getPropertyValue('--gut-r'));
+  const size = Math.floor(Math.min((xAvail / w100) * 100, H * (phoneMq.matches ? 0.2 : 0.4), 400));
+  setVar(els.stage, '--fig-size', `${Math.max(48, size)}px`);
+  fitted = W * 10000 + H;
+}
+
+let lastTotal = 0;
+let lastSt = null;
+function layoutNow() {
+  if (els && lastSt) layout(lastTotal, lastSt);
+}
+
+function layout(total, st) {
+  lastTotal = total;
+  lastSt = st;
+  const stage = els.stage;
+  if (document.body.dataset.route !== 'today') return;
+  const W = stage.clientWidth;
+  const H = stage.clientHeight;
+  if (!W || !H) return;
+  if (fitted !== W * 10000 + H) fit(W, H);
+
+  // The level moves once a minute, with the figure; the transition carries it.
+  const shown = rising ? 0 : Math.floor(total / 60) * 60;
+  const level = Math.min(1, shown / DAILY_GOAL);
+  setVar(stage, '--level', level.toFixed(5));
+
+  const onBreak = st.state === 'on-break';
+  els.band.hidden = !onBreak;
+  els.bandLine.hidden = !onBreak;
+  if (onBreak) {
+    const cap = Math.min(1, (Math.round((total + breakRemainingSeconds()) / 60) * 60) / DAILY_GOAL);
+    setVar(stage, '--cap', cap.toFixed(5));
+    setVar(stage, '--cap-y', `${Math.round(H * (1 - cap))}px`);
+  }
+
+  const { readout, figure, top, controls } = els;
+  const levelY = H * (1 - level);
+  const wide = !phoneMq.matches;
+  const minY = top.offsetTop + top.offsetHeight + 36;
+  // Wide screens: the controls ride directly under the status, so the day reads as one group.
+  const gap = 40;
+  const below = wide ? gap + controls.offsetHeight : 0;
+  const floor = wide ? H - 36 : controls.offsetTop - 36;
+  const maxY = floor - below - readout.offsetHeight;
+  const y = Math.round(Math.max(minY, Math.min(levelY - figure.offsetHeight / 2, Math.max(minY, maxY))));
+  setVar(stage, '--fig-y', `${y}px`);
+  const ctlY = y + readout.offsetHeight + gap;
+  if (wide) setVar(stage, '--ctl-y', `${ctlY}px`);
+
+  // where the level crosses each two-ink line
+  for (const el of els.inks) {
+    const cut = Math.max(-400, Math.min(el.offsetHeight + 400, levelY - y - el.offsetTop));
+    setVar(el, '--cut', `${Math.round(cut)}px`);
+  }
+
+  // Which side of the level each control sits on, from where it is going, not where it is mid-move.
+  const sTop = stage.getBoundingClientRect().top;
+  const cRect = controls.getBoundingClientRect();
+  stage.querySelectorAll('[data-ink]').forEach((el) => {
+    const r = el.getBoundingClientRect();
+    if (!r.height) return;
+    let mid = (r.top + r.bottom) / 2 - sTop;
+    if (wide && controls.contains(el)) mid = ctlY + (r.top - cRect.top) + r.height / 2;
+    const wet = mid > levelY;
+    if (el.classList.contains('is-wet') !== wet) el.classList.toggle('is-wet', wet);
+  });
+}
+
+// ------------------------------------------------------------- the week: seven filled numerals
+
+function buildWeek(ref, data) {
+  release(els.days);
+  clear(els.days);
+  const rows = weekSeries(data, ref).map((d) => {
+    const sr = h('span', { class: 'sr-only' });
+    const figure = nf('', 0);
+    const gemSlot = h('span', { class: 'wk-gem' }, [gemStone(d.gem, 20, { motion: 'none' })]);
+    const line = h('span', { class: 'wk-line' });
+    const li = h('li', { class: 'wk-day', 'data-gem': d.gem }, [
+      sr,
+      figure,
+      h('span', { class: 'wk-meta', 'aria-hidden': 'true' }, [
+        h('span', { class: 'wk-name' }, [gemSlot, h('span', { class: 'long' }, weekdayLong(d.date)), h('span', { class: 'short' }, weekdayShort(d.date)), ' ', h('span', { class: 'date' }, shortDate(d.date))]),
+        line
+      ])
+    ]);
+    els.days.appendChild(li);
+    return { key: d.key, li, nf: figure, line, sr };
+  });
+  week = { key: getDateKey(weekStart(ref)), rows };
+  rise(els.days);
+}
+
+function renderWeek(data, ref, st, full) {
+  const startKey = getDateKey(weekStart(ref));
+  if (!week || week.key !== startKey) { buildWeek(ref, data); full = true; }
+  const days = weekSeries(data, ref);
+  const sig = `${days.map((d) => Math.floor(d.seconds / 60)).join(',')}|${st.state === 'day-done'}|${todayKey()}`;
+  if (!full && sig === lastWeekSig) return;
+  lastWeekSig = sig;
+
+  const plan = weekPlan(data, ref, { todayClosed: st.state === 'day-done' });
+  const per = plan.perWorkday;
+  const n = plan.workdays.length;
+  const notes = readIntents();
+
+  setText(els.range, range(weekStart(ref), ref));
+  setFig(els.weekBig, plan.total);
+  setVar(els.bar, '--p', Math.min(1, plan.total / WEEKLY_GOAL).toFixed(4));
+  if (plan.met) {
+    setText(els.planLead, '30h reached.');
+    setText(els.planRest, ' Any more time this week still counts.');
+  } else if (!n) {
+    setText(els.planLead, `${formatRemaining(plan.remaining)} to go.`);
+    setText(els.planRest, ' No workdays are left this week; time on a rest day still counts.');
+  } else {
+    setText(els.planLead, `${formatRemaining(plan.remaining)} to go.`);
+    setText(els.planRest, ` That is ${formatHM(per)} on ${n === 1 ? 'the one workday' : `each of the ${n} workdays`} left${plan.includesToday ? ', today included' : ''}.`);
+  }
+  setText(els.weekKey, per > 0 ? 'Each figure is full at 6h. The outlined ones are what each workday ahead needs.' : 'Each figure is full at 6h.');
+  setText(els.wlSum, `This week ${formatHM(plan.total)} of 30h`);
+
+  week.rows.forEach((row, i) => {
+    const d = days[i];
+    let text; let lvl; let words; let said;
+    if (d.isFuture && d.off) {
+      text = 'Rest'; lvl = 0; words = 'Rest day'; said = 'rest day';
+    } else if (d.isFuture) {
+      text = mono(per); lvl = 0; words = per ? 'Ahead' : 'Ahead, 30h already in';
+      said = per ? `ahead, ${spoken(per)} would keep the week on 30 hours` : 'ahead';
+    } else if (d.off && !d.seconds) {
+      text = 'Rest'; lvl = 0; words = 'Rest day'; said = d.isToday ? 'rest day, today, nothing logged yet' : 'rest day, nothing logged';
+    } else {
+      text = mono(d.seconds); lvl = dayLevel(d.seconds);
+      words = d.isToday ? 'Today' : [d.off ? 'Rest day' : '', notes[d.key] || ''].filter(Boolean).join(' · ') || ' ';
+      said = `${spoken(d.seconds)}${d.isToday ? ', today so far' : ''}${d.off ? ', on a rest day' : ''}`;
+    }
+    setNf(row.nf, text, lvl);
+    row.li.classList.toggle('is-today', d.isToday);
+    setText(row.line, words);
+    setText(row.sr, `${weekdayLong(d.date)} ${longDate(d.date)}: ${said}.`);
+  });
+}
+
+// ------------------------------------------------------------- time counted while closed
 
 function timeValue(ms) {
   const d = new Date(ms);
@@ -316,31 +490,39 @@ function timeValue(ms) {
 
 function renderGap() {
   const g = S.gapReview;
-  const sig = g ? `${g.kind}|${g.dayKey}|${g.lastSeenAt}` : '';
+  const sig = g ? `${g.kind}|${g.dayKey}|${g.lastSeenAt}|${S.readOnly}` : '';
   if (sig === lastGapSig) return;
   lastGapSig = sig;
+  const hadFocus = els.gap.contains(document.activeElement);
   clear(els.gap);
-  if (!g) return;
+  if (!g) {
+    if (hadFocus) els.primary.focus();
+    return;
+  }
   const dayName = weekdayLong(parseDateKey(g.dayKey));
   const seen = formatTimeOfDay(g.lastSeenAt);
   const text = g.kind === 'carried'
     ? `${dayName}’s timer was still running when FlowFocus closed, so it was counted until midnight. FlowFocus was last open at ${seen}.`
     : g.kind === 'asleep'
-      ? `The timer kept counting while this device was asleep, since ${seen}.`
-      : `The timer kept counting while FlowFocus was closed, since ${seen}.`;
-  const timeInput = h('input', { type: 'time', class: 'gap-time', value: timeValue(g.lastSeenAt), 'aria-label': 'Stop time' });
-  const keep = h('button', { class: 'btn btn-soft btn-small', type: 'button' }, g.kind === 'carried' ? 'Keep it' : 'Keep counting');
-  const trim = h('button', { class: 'btn btn-primary btn-small', type: 'button' }, 'Stop it at this time');
+      ? `The timer kept counting while this device was asleep, since ${seen}. Keep that time, or stop it when you stopped working.`
+      : `The timer kept counting while FlowFocus was closed, since ${seen}. Keep that time, or stop it when you stopped working.`;
+  const input = h('input', { type: 'time', id: 'gapTime', value: timeValue(g.lastSeenAt), disabled: S.readOnly });
+  const trim = h('button', { class: 'b b-solid', type: 'button', disabled: S.readOnly }, 'Stop it at this time');
+  const keep = h('button', { class: 'b', type: 'button', disabled: S.readOnly }, g.kind === 'carried' ? 'Keep it' : 'Keep counting');
   keep.addEventListener('click', () => keepGap());
   trim.addEventListener('click', () => {
-    const [hh, mm] = (timeInput.value || '').split(':').map(Number);
-    if (!Number.isFinite(hh) || !Number.isFinite(mm)) return;
+    const [hh, mm] = (input.value || '').split(':').map(Number);
+    if (!Number.isFinite(hh) || !Number.isFinite(mm)) { input.focus(); return; }
     const base = parseDateKey(g.dayKey);
     base.setHours(hh, mm, 0, 0);
     trimGap(base.getTime());
   });
-  els.gap.appendChild(h('div', { class: 'card banner banner-gap', role: 'region', 'aria-label': 'Check the time counted' }, [
-    h('p', { class: 'banner-text' }, text),
-    h('div', { class: 'banner-actions' }, [h('label', { class: 'gap-field' }, [h('span', {}, 'Stopped at'), timeInput]), trim, keep])
+  els.gap.appendChild(h('div', { class: 'gap', role: 'region', 'aria-label': 'Check the time counted' }, [
+    h('p', { class: 'gap-text' }, text),
+    h('div', { class: 'gap-actions' }, [
+      h('div', { class: 'field' }, [h('label', { for: 'gapTime' }, 'Stopped at'), input]),
+      trim,
+      keep
+    ])
   ]));
 }

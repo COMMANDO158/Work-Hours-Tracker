@@ -1,565 +1,275 @@
-/* ------------------------------------------------------------ icons */
+/* Components shared by every screen: the shell, links, the menu, buttons,
+   fields, the week bar, notices and the view-only banner. */
 
-.icon {
-    width: 24px;
-    height: 24px;
-    flex: none;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 1.75;
-    stroke-linecap: round;
-    stroke-linejoin: round;
+/* ============================================================ the shell (every screen but Today) */
+
+/* Today's level, always at the window's left edge: a thin flood. */
+.dayband {
+    position: fixed;
+    z-index: 5;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: var(--band);
+    background: var(--track);
+}
+.dayband-fill {
+    position: absolute;
+    inset: 0;
+    background: var(--g);
+    clip-path: inset(calc((1 - var(--lvl, 0)) * 100%) 0 0 0);
+    transition: clip-path var(--rise) var(--ease-rise);
 }
 
-/* ------------------------------------------------------------ cards and labels */
-
-.card {
-    background: var(--card);
-    border: 1px solid var(--card-edge);
-    border-radius: var(--r-card);
-    box-shadow: var(--shadow-card);
-}
-
-/* Small tracked headings name each card; they are the headings, not eyebrows. */
-.label {
-    margin: 0;
-    color: var(--ink-3);
-    font-size: var(--t-xs);
-    font-weight: 600;
-    letter-spacing: var(--tracking-label);
-    line-height: 1.3;
-    text-transform: uppercase;
-}
-
-.card-head {
+.shell {
+    position: relative;
+    z-index: 6;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: var(--s-3);
-    min-height: 28px;
+    gap: 16px;
+    min-height: 88px;
+    padding: 16px var(--gut) 8px;
 }
 
-/* ------------------------------------------------------------ dials */
+body[data-route="today"] :is(.shell, .dayband) { display: none; }
 
-.dial {
-    width: 100%;
-    height: auto;
-    overflow: visible;
+.brand { display: flex; align-items: center; gap: 14px; min-width: 0; text-decoration: none; }
+.brand-gem { flex: none; display: grid; place-items: center; width: 40px; height: 40px; }
+.brand-text { display: grid; min-width: 0; }
+.brand-name { font: 700 24px/1.05 var(--f-display); }
+.brand-sub { font-size: 15px; line-height: 1.35; color: var(--muted); white-space: nowrap; }
+.brand-sub .short { display: none; }
+.brand:hover .brand-name { text-decoration: underline; text-underline-offset: 0.18em; }
+
+.sync.is-error { color: var(--warn); font-weight: 600; }
+
+.nav { display: flex; align-items: center; gap: 4px; margin-right: -12px; }
+.nav-a,
+.menu-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 44px;
+    padding: 0 12px;
+    font-size: 17px;
+    font-weight: 500;
+    text-decoration: none;
+    background: none;
+    border: 0;
+    cursor: pointer;
 }
-
-.dial-face {
-    fill: var(--face);
-    stroke: var(--face-edge);
-    stroke-width: 1;
-}
-
-/* a full-strength ink edge keeps pale gems (Topaz, Diamond) at 3:1 against the face */
-.dial-gem .sector {
-    fill: var(--g);
-    stroke: var(--gi);
-    stroke-width: 1.5;
-    stroke-linejoin: round;
-}
-
-/* The gem tint: still a flat wedge, but each gem's own gentle straight tint
-   (gt-<id>-<size>, built in dial.js and set on each wedge from the stone's
-   --c-hi/--c-mid ramp) instead of one colour. The flat --g above is what shows
-   if the gradient sprite is missing.
-   To go back to the old one-colour fill, add data-dial-fill="flat" to <html>
-   (or remove the tintFill() calls and the sprite in dial.js). */
-.gem-grad .gs-a { stop-color: color-mix(in oklch, var(--c-hi) 55%, var(--c-mid)); }
-.gem-grad .gs-b { stop-color: var(--c-mid); }
-
-:root[data-dial-fill="flat"] .dial-gem .sector { fill: var(--g) !important; }
-
-.sector-lap {
-    fill: var(--gi);
-    opacity: 0.5;
-}
-
-.tick {
-    stroke: var(--tick-soft);
-    stroke-width: 1.5;
-    stroke-linecap: round;
-}
-
-.tick-major {
-    stroke: var(--tick);
-    stroke-width: 3;
-}
-
-.numeral {
-    fill: var(--ink);
-    font-family: var(--font);
-    font-size: 19px;
+.nav-a:hover,
+.menu-btn:hover { text-decoration: underline; text-underline-offset: 0.25em; }
+.nav-a[aria-current="page"] {
     font-weight: 600;
-    dominant-baseline: central;
-    font-variant-numeric: tabular-nums;
+    text-decoration: underline;
+    text-decoration-thickness: 3px;
+    text-underline-offset: 0.35em;
 }
+.nav-fig { color: var(--muted); font-weight: 500; font-variant-numeric: tabular-nums; }
+[aria-current="page"] > .nav-fig { display: none; }
 
-.dial-hub {
-    fill: var(--hub);
+.menu-wrap { position: relative; display: none; }
+.menu-btn { margin-right: -12px; font-weight: 600; }
+.menu {
+    position: absolute;
+    z-index: 30;
+    top: calc(100% + 8px);
+    right: -8px;
+    width: min(320px, calc(100vw - 32px));
+    padding: 8px 0 16px;
+    background: var(--ground);
+    color: var(--ink);
+    box-shadow: var(--shadow); /* the menu floats over the page */
 }
-
-/* the sector carries an ink edge so pale gems still read against the face */
-.break-sector {
-    fill: var(--break);
-    stroke: var(--break-ink);
-    stroke-width: 1.5;
-    stroke-linejoin: round;
+.menu-a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 52px;
+    padding: 0 20px;
+    font-size: 19px;
+    font-weight: 500;
+    text-decoration: none;
 }
+.menu-a:hover { background: var(--surface); }
+.menu-a[aria-current="page"] { font-weight: 600; }
+.menu-a[aria-current="page"]::after { content: "· here"; color: var(--muted); font-weight: 400; font-size: 16px; }
+.menu-sync { padding: 10px 20px 0; font-size: 15px; color: var(--muted); }
+.menu-sync strong { color: var(--ink); font-weight: 600; }
 
-/* ------------------------------------------------------------ the flip
-   Work and break are the two faces of one dial. Only one face is ever shown:
-   the dial turns edge-on, the face swaps, and it turns back. */
-
-.flip {
-    perspective: 1100px;
+/* The page title and its sentence. */
+.wrap { padding: 0 var(--gut) 120px; }
+.page-head {
+    display: grid;
+    grid-template-columns: auto minmax(0, 46ch);
+    align-items: end;
+    justify-content: space-between;
+    gap: 16px 48px;
+    padding: 40px 0 64px;
 }
+.page-head h1 { font: 700 clamp(56px, 3rem + 3vw, 96px)/0.9 var(--f-display); letter-spacing: -0.01em; }
+.page-head h1:focus { outline: none; }
+.lede { font-size: 19px; line-height: 1.45; padding-bottom: 6px; }
 
-.flip-card {
-    border-radius: 50%;
-    box-shadow: var(--shadow-dial);
-    transform: rotateY(0deg);
-}
+/* ============================================================ buttons */
 
-.flip.is-turning-out .flip-card {
-    transform: rotateY(90deg);
-    transition: transform 240ms cubic-bezier(0.55, 0, 1, 0.45);
-}
-
-.flip.is-turned .flip-card {
-    transform: rotateY(-90deg);
-    transition: none;
-}
-
-.flip.is-turning-in .flip-card {
-    transform: rotateY(0deg);
-    transition: transform 320ms var(--ease-out);
-}
-
-.flip[data-face="work"] .face-break,
-.flip[data-face="break"] .face-work {
-    display: none;
-}
-
-/* day dials */
-.mini {
-    overflow: visible;
-    flex: none;
-}
-
-.mini-face {
-    fill: var(--face);
-    stroke: var(--face-edge);
-    stroke-width: 1;
-}
-
-.mini .sector {
-    stroke-width: 1;
-}
-
-.mini-tick {
-    stroke: var(--tick-soft);
-    stroke-width: 1.2;
-    stroke-linecap: round;
-}
-
-.mini-hub {
-    fill: var(--hub);
-}
-
-.mini-off .mini-face {
-    fill: var(--soft);
-    stroke: var(--rule-strong);
-}
-
-.mini-off .mini-hub {
-    fill: var(--tick-soft);
-}
-
-.mini-future {
-    opacity: 0.55;
-}
-
-.rosette {
-    overflow: visible;
-    flex: none;
-}
-
-.rosette .rosette-seg {
-    stroke: var(--face);
-    stroke-width: 1.2;
-    stroke-opacity: 1;
-}
-
-.rosette-tick {
-    stroke-width: 2.2;
-}
-
-/* ------------------------------------------------------------ buttons */
-
-.btn {
+.b {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: var(--s-2);
     min-height: 48px;
-    padding: 0 var(--s-5);
-    border: 1px solid transparent;
-    border-radius: var(--r-md);
-    font-size: var(--t-md);
+    padding: 0 22px;
+    border: 2px solid var(--ink);
+    border-radius: 0;
+    background: transparent;
+    color: var(--ink);
+    font-size: 17px;
     font-weight: 600;
-    line-height: 1.2;
     text-decoration: none;
-    white-space: nowrap;
-    transition: background-color var(--d-fast) var(--ease-out), border-color var(--d-fast) var(--ease-out), transform var(--d-fast) var(--ease-out), opacity var(--d-fast) linear;
+    cursor: pointer;
+    transition: background-color 160ms ease, color 160ms ease, transform 120ms ease;
 }
+.b:hover { background: var(--ink); color: var(--ground); }
+.b:active { transform: translateY(1px); }
+.b-solid { background: var(--ink); color: var(--ground); }
+.b-solid:hover { background: color-mix(in oklab, var(--ink) 84%, var(--ground)); }
+.b-warn { border-color: var(--warn); color: var(--warn); }
+.b-warn:hover { background: var(--warn); color: var(--ground); }
+.b:disabled,
+.b[aria-disabled="true"] { cursor: default; border-style: dashed; background: transparent; color: var(--muted); border-color: var(--muted); transform: none; }
 
-.btn .icon {
-    width: 20px;
-    height: 20px;
-}
+/* ============================================================ fields */
 
-.btn:active:not(:disabled) {
-    transform: scale(0.985);
-}
-
-.btn:disabled {
-    opacity: 0.45;
-}
-
-.btn-primary {
-    background: var(--primary);
-    color: var(--primary-ink);
-}
-
-.btn-primary:hover:not(:disabled) {
-    background: var(--primary-hover);
-}
-
-.btn-block {
-    width: 100%;
-    min-height: 58px;
-    border-radius: var(--r-cta);
-    font-size: var(--t-lg);
-}
-
-.btn-block .icon {
-    width: 22px;
-    height: 22px;
-}
-
-.btn-glyph {
-    display: inline-flex;
-}
-
-/* the stretch stopwatch rides on the primary button */
-.btn-meta {
-    margin-left: var(--s-2);
-    font-size: var(--t-sm);
-    font-weight: 500;
-    opacity: 0.7;
-}
-
-.btn-meta:empty {
-    display: none;
-}
-
-.btn-soft {
-    background: var(--soft);
-    color: var(--ink);
-}
-
-.btn-soft:hover:not(:disabled) {
-    background: var(--soft-hover);
-}
-
-.btn-quiet {
-    background: var(--card);
-    color: var(--ink);
-    border-color: var(--rule-strong);
-}
-
-.btn-quiet:hover:not(:disabled) {
-    background: var(--panel);
-    border-color: var(--ink-3);
-}
-
-.btn-danger {
-    background: var(--danger);
-    color: var(--card);
-}
-
-.btn-danger:hover {
-    opacity: 0.9;
-}
-
-.btn-small {
-    min-height: 40px;
-    padding: 0 var(--s-4);
-    font-size: var(--t-sm);
-    border-radius: var(--r-sm);
-}
-
-.btn-small .icon {
-    width: 18px;
-    height: 18px;
-}
-
-.btn-text {
-    min-height: 32px;
-    padding: 0 var(--s-2);
-    margin-right: calc(-1 * var(--s-2));
-    border: 0;
-    border-radius: var(--r-sm);
-    background: transparent;
-    color: var(--ink-2);
-    font-size: var(--t-sm);
-    font-weight: 600;
-    transition: background-color var(--d-fast) var(--ease-out), color var(--d-fast) var(--ease-out);
-}
-
-.btn-text:hover:not(:disabled) {
-    background: var(--soft);
-    color: var(--ink);
-}
-
-.icon-btn {
-    display: inline-grid;
-    place-items: center;
-    width: 44px;
-    height: 44px;
-    border-radius: var(--r-sm);
-    color: var(--ink);
-    transition: background-color var(--d-fast) var(--ease-out);
-}
-
-.icon-btn:hover,
-.icon-btn[aria-current="page"] {
-    background: var(--soft);
-}
-
-/* ------------------------------------------------------------ sync status */
-
-.sync {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    min-height: 40px;
-    padding: 0 10px;
-    border: 0;
-    border-radius: var(--r-pill);
-    background: transparent;
-    color: var(--ink-2);
-    font-size: var(--t-sm);
-    font-weight: 500;
-    white-space: nowrap;
-    transition: background-color var(--d-fast) var(--ease-out);
-}
-
-.sync:hover {
-    background: var(--soft);
-}
-
-.sync-dot {
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    background: var(--tick-soft);
-    flex: none;
-}
-
-.sync[data-state="ok"] .sync-dot { background: var(--ok); }
-.sync[data-state="syncing"] .sync-dot,
-.sync[data-state="idle"] .sync-dot { background: var(--ink-2); }
-.sync[data-state="offline"] .sync-dot,
-.sync[data-state="retry"] .sync-dot { background: var(--warn); }
-.sync[data-state="auth"] .sync-dot,
-.sync[data-state="missing"] .sync-dot,
-.sync[data-state="data"] .sync-dot { background: var(--danger); }
-
-.sync[data-state="auth"],
-.sync[data-state="missing"],
-.sync[data-state="data"] {
-    color: var(--danger);
-}
-
-/* ------------------------------------------------------------ segmented control */
-
-.seg {
-    display: inline-flex;
-    flex-wrap: wrap;
-    gap: 4px;
-    padding: 4px;
-    border-radius: var(--r-md);
-    background: var(--soft);
-}
-
-.seg-btn {
-    min-height: 38px;
-    padding: 0 14px;
-    border: 0;
-    border-radius: 10px;
-    background: transparent;
-    color: var(--ink-2);
-    font-size: var(--t-sm);
-    font-weight: 600;
-    transition: background-color var(--d-fast) var(--ease-out), color var(--d-fast) var(--ease-out);
-}
-
-.seg-btn:hover {
-    color: var(--ink);
-}
-
-.seg-btn[aria-checked="true"] {
-    background: var(--card);
-    color: var(--ink);
-    box-shadow: var(--shadow-card);
-}
-
-/* ------------------------------------------------------------ fields */
-
-.field-label {
-    font-size: var(--t-sm);
-    font-weight: 600;
-}
-
-.field-input {
+/* A filled field with a firm bottom edge. */
+.field { display: grid; gap: 8px; min-width: 0; }
+.field label { font-size: 15px; font-weight: 600; }
+.field input {
     width: 100%;
     min-height: 48px;
     padding: 0 14px;
-    border: 1px solid var(--rule-strong);
-    border-radius: var(--r-field);
-    background: var(--card);
-    transition: border-color var(--d-fast) var(--ease-out), box-shadow var(--d-fast) var(--ease-out);
-}
-
-.field-input::placeholder {
-    color: var(--ink-3);
-}
-
-.field-input:focus {
-    border-color: var(--ink);
-    box-shadow: 0 0 0 1px var(--ink);
-}
-
-.field-help {
-    color: var(--ink-3);
-    font-size: var(--t-sm);
-}
-
-.field-error {
-    color: var(--danger);
-    font-size: var(--t-sm);
-    font-weight: 600;
-}
-
-/* ------------------------------------------------------------ banners and notices */
-
-.banner {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--s-3) var(--s-4);
-    padding: var(--s-4);
-}
-
-.banner-text {
-    flex: 1 1 18rem;
+    border: 0;
+    border-bottom: 2px solid var(--edge);
+    border-radius: 0;
+    background: var(--raised);
     color: var(--ink);
 }
+.field input:focus-visible { outline-offset: 2px; border-bottom-color: var(--ink); }
+.field input::placeholder { color: var(--muted); opacity: 1; }
+.field input[aria-invalid="true"] { border-bottom-color: var(--warn); }
 
-.banner-actions {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--s-2);
+/* What a section says back after an action. */
+.say { font-size: 16px; color: var(--muted); min-height: 1.5em; }
+.say.is-error { color: var(--warn); font-weight: 600; }
+
+/* A thin bar: a total against 30h. Scaled, never resized. */
+.bar { height: 8px; background: var(--track); overflow: hidden; }
+.bar > span {
+    display: block;
+    height: 100%;
+    background: var(--ink);
+    transform: scaleX(var(--p, 0));
+    transform-origin: left center;
+    transition: transform 900ms var(--ease-rise);
 }
+
+/* A choice of a few: 4 weeks, 8 weeks... */
+.seg { display: inline-flex; flex-wrap: wrap; gap: 4px; }
+.seg button {
+    min-height: 44px;
+    padding: 0 16px;
+    border: 2px solid var(--ink);
+    border-radius: 0;
+    background: transparent;
+    font-weight: 600;
+    cursor: pointer;
+}
+.seg button:hover { background: var(--surface); }
+.seg button[aria-checked="true"] { background: var(--ink); color: var(--ground); }
+
+/* ============================================================ notices */
 
 .notices {
     position: fixed;
-    left: 50%;
-    bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom) + 12px);
-    z-index: 40;
-    width: min(440px, calc(100% - 2 * var(--gutter)));
+    z-index: 35;
+    right: 24px;
+    bottom: 24px;
     display: grid;
-    gap: var(--s-2);
-    transform: translateX(-50%);
+    gap: 8px;
+    width: min(420px, calc(100vw - 32px));
     pointer-events: none;
 }
-
 .notice {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--s-3);
-    padding: 12px 8px 12px 16px;
-    border-radius: var(--r-md);
-    background: var(--primary);
-    color: var(--primary-ink);
-    box-shadow: var(--shadow-float);
-    pointer-events: auto;
-    animation: notice-in var(--d-base) var(--ease-out);
-}
-
-.notice.is-leaving {
-    opacity: 0;
-    transform: translateY(6px);
-    transition: opacity var(--d-fast) linear, transform var(--d-fast) var(--ease-out);
-}
-
-@keyframes notice-in {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: none; }
-}
-
-.notice-body {
-    flex: 1;
-    min-width: 0;
-    padding-top: 2px;
-}
-
-.notice-title {
-    font-weight: 700;
-}
-
-.notice-text {
-    font-size: var(--t-sm);
-    opacity: 0.88;
-}
-
-.notice-action {
-    align-self: center;
-    min-height: 40px;
-    padding: 0 12px;
-    border: 1px solid currentColor;
-    border-radius: var(--r-sm);
-    background: transparent;
-    color: inherit;
-    font-weight: 700;
-}
-
-.notice-close {
     display: grid;
-    place-items: center;
-    width: 40px;
-    height: 40px;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    align-items: center;
+    gap: 4px 8px;
+    padding: 14px 8px 14px 18px;
+    background: var(--ink);
+    color: var(--ground);
+    box-shadow: var(--shadow); /* it floats over whatever is under it */
+    pointer-events: auto;
+    transition: opacity 160ms ease, transform 160ms ease;
+}
+.notice.is-leaving { opacity: 0; transform: translateY(6px); }
+.notice-title { font-weight: 600; }
+.notice-text { font-size: 15px; line-height: 1.4; color: color-mix(in oklab, var(--ground) 82%, var(--ink)); }
+.notice-action,
+.notice-close {
+    min-height: 44px;
+    padding: 0 12px;
+    background: none;
     border: 0;
-    border-radius: var(--r-sm);
-    background: transparent;
     color: inherit;
-    opacity: 0.8;
+    font-weight: 600;
+    cursor: pointer;
+}
+.notice-action { text-decoration: underline; text-underline-offset: 0.2em; }
+.notice-close { display: grid; place-items: center; width: 44px; padding: 0; }
+.notice-close svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2; fill: none; }
+.notice :focus-visible { outline-color: var(--ground); }
+
+/* ============================================================ the view-only banner */
+
+.window-banner {
+    position: fixed;
+    z-index: 34;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 24px;
+    padding: 16px var(--gut) max(16px, env(safe-area-inset-bottom));
+    background: var(--ink);
+    color: var(--ground);
+}
+.window-banner p { max-width: 64ch; }
+.window-banner .b { border-color: var(--ground); color: var(--ground); }
+.window-banner .b:hover { background: var(--ground); color: var(--ink); }
+.window-banner :focus-visible { outline-color: var(--ground); }
+
+/* ============================================================ narrower screens */
+
+@media (max-width: 1100px) {
+    .nav { display: none; }
+    .menu-wrap { display: block; }
 }
 
-.notice-close:hover {
-    opacity: 1;
-}
+@media (max-width: 719px) {
+    :root { --gut: 20px; --band: 6px; }
+    .shell { min-height: 72px; padding-top: 12px; }
+    .brand-gem { width: 36px; height: 36px; }
+    .brand-name { font-size: 22px; }
+    .brand-sub { font-size: 14px; }
+    .brand-sub .long { display: none; }
+    .brand-sub .short { display: inline; }
+    .page-head { grid-template-columns: 1fr; padding: 24px 0 40px; }
+    .lede { font-size: 17px; }
 
-.notice-close .icon {
-    width: 20px;
-    height: 20px;
-}
-
-.notice :focus-visible {
-    outline-color: var(--primary-ink);
+    /* On a phone the notices sit at the top, clear of the big button. */
+    .notices { left: 16px; right: 16px; top: max(12px, env(safe-area-inset-top)); bottom: auto; width: auto; }
 }

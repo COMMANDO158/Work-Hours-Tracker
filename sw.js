@@ -2,7 +2,7 @@
 // Bump CACHE_VERSION on every deploy. The app shell is precached in one
 // versioned cache; pages, styles and scripts are then fetched network-first
 // (see the fetch handler), so the cache is the offline fallback.
-const CACHE_VERSION = 'v16';
+const CACHE_VERSION = 'v17';
 const CACHE_NAME = `flowfocus-${CACHE_VERSION}`;
 
 const APP_SHELL = [
@@ -33,15 +33,19 @@ const APP_SHELL = [
   './js/sync.js',
   './js/timer.js',
   './js/today-state.js',
-  './js/ui/dial.js',
   './js/ui/dom.js',
   './js/ui/gem.js',
   './js/ui/insights-view.js',
   './js/ui/log.js',
+  './js/ui/numeral.js',
   './js/ui/settings.js',
   './js/ui/shell.js',
   './js/ui/today.js',
-  './assets/fonts/inter-latin.woff2',
+  './js/ui/words.js',
+  './assets/fonts/barlow-condensed-700-latin.woff2',
+  './assets/fonts/barlow-400-latin.woff2',
+  './assets/fonts/barlow-500-latin.woff2',
+  './assets/fonts/barlow-600-latin.woff2',
   './icons/icon-192.png',
   './icons/icon-512.png',
   './icons/icon-maskable-512.png',

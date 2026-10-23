@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 
 import { getDateKey, weekKeys, weekStart, addDays, isOffDayKey, midnightAfter, parseDateKey } from '../js/dates.js';
 import { mergeRemoteData, mergeToday, cloudNeedsUpdate } from '../js/merge.js';
-import { calculateStreak, longestStreak, weekPace, weekdayPattern, lastDays, observations } from '../js/insights.js';
+import { calculateStreak, longestStreak, weekPace, weekPlan, standouts, weekdayPattern, lastDays, observations } from '../js/insights.js';
 import { parseDuration, formatHM, formatRemaining, clampDay, formatEditable } from '../js/format.js';
 import { deriveTodayState } from '../js/today-state.js';
 import { GEMS } from '../js/gems.js';
@@ -210,6 +210,64 @@ test('pace on Friday has no workdays left', () => {
   const p = weekPace({}, new Date(2026, 9, 2, 10));
   assert.equal(p.workdaysLeft, 0);
   assert.equal(p.met, false);
+});
+
+test('week plan spreads what is left over the workdays that remain, today included', () => {
+  // Wednesday 30 Sep 2026; week Sat 26 – Fri 2. 18h in; Wed and Thu remain.
+  const d = data({ '2026-09-26': 6 * H, '2026-09-27': 6 * H, '2026-09-28': 6 * H });
+  const p = weekPlan(d, new Date(2026, 8, 30, 10));
+  assert.equal(p.total, 18 * H);
+  assert.equal(p.remaining, 12 * H);
+  assert.deepEqual(p.workdays.map((x) => x.key), ['2026-09-30', '2026-10-01']);
+  assert.equal(p.perWorkday, 6 * H);
+  assert.equal(p.includesToday, true);
+  assert.equal(p.met, false);
+});
+
+test('week plan: a finished today drops out, and the share rounds up to the minute', () => {
+  const d = data({ '2026-09-26': 6 * H, '2026-09-30': 4 * H + 15 * 60 });
+  const p = weekPlan(d, new Date(2026, 8, 30, 18), { todayClosed: true });
+  assert.deepEqual(p.workdays.map((x) => x.key), ['2026-10-01']);
+  assert.equal(p.includesToday, false);
+  assert.equal(p.perWorkday, 30 * H - 10 * H - 15 * 60);
+  // 25h 45m over 5 workdays is 5h 09m each, rounded up from 5h 09m 00s exactly
+  const s = weekPlan(data({ '2026-10-03': 4 * H + 15 * 60 + 30 }), new Date(2026, 9, 3, 12));
+  assert.equal(s.workdays.length, 5);
+  assert.equal(s.perWorkday % 60, 0);
+  assert.ok(s.perWorkday * s.workdays.length >= s.remaining);
+});
+
+test('week plan: a rest day today is never a workday, and a met week needs nothing', () => {
+  const rest = weekPlan({}, new Date(2026, 8, 29, 10)); // Tuesday
+  assert.equal(rest.includesToday, false);
+  assert.deepEqual(rest.workdays.map((x) => x.key), ['2026-09-30', '2026-10-01']);
+  const met = weekPlan(data({ '2026-09-26': 16 * H, '2026-09-27': 15 * H }), new Date(2026, 8, 28, 10));
+  assert.equal(met.met, true);
+  assert.equal(met.remaining, 0);
+  assert.equal(met.perWorkday, 0);
+  const friday = weekPlan({}, new Date(2026, 9, 2, 10));
+  assert.equal(friday.workdays.length, 0);
+  assert.equal(friday.perWorkday, 0);
+});
+
+test('standouts: plain sentences with a lead, at most three, none without data', () => {
+  assert.deepEqual(standouts({}, new Date(2026, 9, 24, 12)), []);
+  const rows = {};
+  // Twelve weeks: Saturdays long, Sundays short, some rest days worked.
+  for (let d = new Date(2026, 6, 25); d < new Date(2026, 9, 24); d = addDays(d, 1)) {
+    const dow = d.getDay();
+    rows[getDateKey(d)] = dow === 6 ? 7 * H : dow === 0 ? 3 * H : (dow === 2 || dow === 5) ? (d.getDate() % 2 ? H : 0) : 5 * H;
+  }
+  const lines = standouts(rows, new Date(2026, 9, 24, 12));
+  assert.ok(lines.length >= 2 && lines.length <= 3);
+  for (const l of lines) {
+    assert.equal(typeof l.lead, 'string');
+    assert.equal(typeof l.rest, 'string');
+    assert.ok(!/!|great|amazing|awesome|incredible|well done/i.test(l.lead + l.rest), l.lead + l.rest);
+  }
+  assert.match(lines[0].lead, /^Saturdays are usually your longest workday$/);
+  assert.match(lines[0].rest, /Sundays are usually the shortest, at 3h 00m/);
+  assert.ok(lines.some((l) => /rest days$/.test(l.lead)));
 });
 
 test('weekday pattern starts Saturday and excludes today', () => {

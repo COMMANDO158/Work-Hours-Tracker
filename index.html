@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <title>FlowFocus</title>
+    <title>Today · FlowFocus</title>
     <meta name="description" content="A visual timer for your contracted hours: 6 a workday, 30 a week.">
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#F4F5F7" media="(prefers-color-scheme: light)">
-    <meta name="theme-color" content="#0E0F11" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#F3F3F1" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0B0C0E" media="(prefers-color-scheme: dark)">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -15,7 +15,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
     <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
     <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-    <link rel="preload" href="assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="assets/fonts/barlow-condensed-700-latin.woff2" as="font" type="font/woff2" crossorigin>
     <script>
         // Before first paint: today's gem and the saved appearance, so nothing flashes.
         (function () {
@@ -37,71 +37,35 @@
     <link rel="stylesheet" href="css/gems.css">
     <script type="module" src="js/app.js"></script>
 </head>
-<body>
-    <svg class="sprite" aria-hidden="true" focusable="false" width="0" height="0">
-        <defs>
-            <symbol id="i-play" viewBox="0 0 24 24"><path class="fill" fill="currentColor" stroke="none" d="M8 5.2v13.6a.8.8 0 0 0 1.2.7l10.6-6.8a.8.8 0 0 0 0-1.4L9.2 4.5A.8.8 0 0 0 8 5.2Z"/></symbol>
-            <symbol id="i-pause" viewBox="0 0 24 24"><rect class="fill" fill="currentColor" stroke="none" x="6" y="5" width="4.2" height="14" rx="1.2"/><rect class="fill" fill="currentColor" stroke="none" x="13.8" y="5" width="4.2" height="14" rx="1.2"/></symbol>
-            <symbol id="i-cup" viewBox="0 0 24 24"><path d="M4.5 9.5h11v4.5a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5V9.5Z"/><path d="M15.5 10.5h1.75a2.75 2.75 0 0 1 0 5.5H15"/><path d="M8.5 3.5v2.5M12 3.5v2.5"/></symbol>
-            <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
-            <symbol id="i-pencil" viewBox="0 0 24 24"><path d="M4.5 19.5h4l10-10a2.83 2.83 0 0 0-4-4l-10 10v4Z"/><path d="M13.5 6.5l4 4"/></symbol>
-            <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M7.5 18.5h9.25a4.25 4.25 0 0 0 .5-8.47A6 6 0 0 0 5.9 9.6 4.5 4.5 0 0 0 7.5 18.5Z"/></symbol>
-            <symbol id="i-cloud-check" viewBox="0 0 24 24"><path d="M7.5 18.5h9.25a4.25 4.25 0 0 0 .5-8.47A6 6 0 0 0 5.9 9.6 4.5 4.5 0 0 0 7.5 18.5Z"/><path d="M9.25 13.75l2 2 3.75-3.75"/></symbol>
-            <symbol id="i-cloud-off" viewBox="0 0 24 24"><path d="M7.5 18.5h9.25a4.25 4.25 0 0 0 .5-8.47A6 6 0 0 0 5.9 9.6 4.5 4.5 0 0 0 7.5 18.5Z"/><path d="M4 4l16 16"/></symbol>
-            <symbol id="i-cloud-alert" viewBox="0 0 24 24"><path d="M7.5 18.5h9.25a4.25 4.25 0 0 0 .5-8.47A6 6 0 0 0 5.9 9.6 4.5 4.5 0 0 0 7.5 18.5Z"/><path d="M12 10.5v3"/><path d="M12 16.25v.01"/></symbol>
-            <symbol id="i-device" viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="2.5"/><path d="M11 17.5h2"/></symbol>
-            <symbol id="i-sync" viewBox="0 0 24 24"><path d="M19.5 10.5A7.75 7.75 0 0 0 5.6 7.4L4.5 8.75"/><path d="M4.5 4.5v4.25h4.25"/><path d="M4.5 13.5a7.75 7.75 0 0 0 13.9 3.1l1.1-1.35"/><path d="M19.5 19.5v-4.25h-4.25"/></symbol>
-            <symbol id="i-settings" viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></symbol>
-            <symbol id="i-today" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path class="fill" fill="currentColor" stroke="none" d="M12 12V5.25A6.75 6.75 0 0 1 18.75 12Z"/><path d="M12 12V6"/></symbol>
-            <symbol id="i-log" viewBox="0 0 24 24"><path d="M9.5 6.5H20M9.5 12H20M9.5 17.5H20"/><circle cx="5" cy="6.5" r="1.4"/><circle cx="5" cy="12" r="1.4"/><circle cx="5" cy="17.5" r="1.4"/></symbol>
-            <symbol id="i-insights" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5V12l6 6"/><path d="M12 12H3.5"/></symbol>
-            <symbol id="i-close" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></symbol>
-            <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19.5h14"/></symbol>
-            <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 15V4M7.5 8.5L12 4l4.5 4.5M5 19.5h14"/></symbol>
-            <symbol id="i-unlink" viewBox="0 0 24 24"><path d="M10.5 6.5l1-1a4.24 4.24 0 0 1 6 6l-1 1"/><path d="M13.5 17.5l-1 1a4.24 4.24 0 0 1-6-6l1-1"/><path d="M4 4l16 16"/></symbol>
-        </defs>
-    </svg>
+<body data-route="today">
+    <a class="skip" href="#main">Skip to content</a>
 
-    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="dayband" aria-hidden="true" title="Today so far"><span class="dayband-fill" id="daybandFill"></span></div>
 
-    <div class="app">
-        <header class="topbar">
-            <div class="brand">
-                <span class="brand-gem" id="dayStone" aria-hidden="true"></span>
-                <p class="wordmark">FlowFocus</p>
-                <p class="dayline"><span id="dateLine"></span><span class="dayline-sep" aria-hidden="true">·</span><span id="gemName"></span></p>
-            </div>
-            <div class="topbar-tools">
-                <button class="sync" id="syncPill" type="button" data-state="local"></button>
-                <a class="icon-btn" href="#/settings" data-nav="settings" aria-label="Settings">
-                    <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-settings"/></svg>
-                </a>
-            </div>
-        </header>
+    <header class="shell" id="shell">
+        <a class="brand gem-host" href="#/today">
+            <span class="brand-gem" id="brandGem"></span>
+            <span class="brand-text">
+                <span class="brand-name">FlowFocus</span>
+                <span class="brand-sub"><span class="long" id="brandLong"></span><span class="short" id="brandShort"></span> · <span class="sync" data-sync-label></span></span>
+            </span>
+        </a>
+        <nav class="nav" aria-label="Screens" data-nav-host="nav-a"></nav>
+        <div class="menu-wrap">
+            <button class="menu-btn" type="button" aria-expanded="false" aria-controls="shellMenu">Menu</button>
+            <div class="menu" id="shellMenu" data-menu hidden></div>
+        </div>
+    </header>
 
-        <div class="window-banner banner" id="windowBanner" hidden></div>
+    <main id="main" tabindex="-1">
+        <div class="panes view-today" id="view-today" data-view="today"></div>
+        <div class="wrap view-log" id="view-log" data-view="log" hidden></div>
+        <div class="wrap view-insights" id="view-insights" data-view="insights" hidden></div>
+        <div class="wrap view-settings" id="view-settings" data-view="settings" hidden></div>
+    </main>
 
-        <section class="view view-today" id="view-today" data-view="today" aria-label="Today"></section>
-
-        <main class="main" id="main" tabindex="-1">
-            <nav class="tabs" aria-label="Views">
-                <a class="tab tab-today" href="#/today" data-nav="today">
-                    <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-today"/></svg><span>Today</span>
-                </a>
-                <a class="tab" href="#/log" data-nav="log">
-                    <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-log"/></svg><span>Log</span>
-                </a>
-                <a class="tab" href="#/insights" data-nav="insights">
-                    <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-insights"/></svg><span>Insights</span>
-                </a>
-            </nav>
-            <section class="view view-log" id="view-log" data-view="log" aria-label="Log" hidden></section>
-            <section class="view view-insights" id="view-insights" data-view="insights" aria-label="Insights" hidden></section>
-            <section class="view view-settings" id="view-settings" data-view="settings" aria-label="Settings" hidden></section>
-        </main>
-
-        <div class="notices" id="notices" aria-live="polite" aria-relevant="additions"></div>
-    </div>
+    <div class="window-banner" id="windowBanner" role="region" aria-label="View-only window" hidden></div>
+    <div class="notices" id="notices" aria-live="polite" aria-relevant="additions"></div>
 
     <noscript><p class="noscript">FlowFocus needs JavaScript to run its timer.</p></noscript>
 </body>
