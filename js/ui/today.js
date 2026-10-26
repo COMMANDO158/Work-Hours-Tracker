@@ -71,7 +71,7 @@ const TEMPLATE = `
 
   <header class="top">
     <div class="mark" data-ink>
-      <span class="seat" id="seat"></span>
+      <span class="seat gem-host" id="seat"></span>
       <div>
         <h1 id="day-title" tabindex="-1"></h1>
         <p class="sub"><span id="todayDate"></span> · <span class="sync" data-sync-label></span></p>

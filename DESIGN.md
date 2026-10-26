@@ -217,7 +217,7 @@ Today is a screen that fills. The day's gem colour rises from the bottom of the 
 
 Every other number that matters is a **filled numeral**: an outlined, faintly tinted figure with a copy in its gem colour cut off flat at its level, against 6h for a day or 30h for a week. Log, Insights and the week pane are built from them. Nothing else carries colour except the gems, the break's teal and the one warning red.
 
-Gems are the identity. Each weekday owns a gem: Saturday Topaz, Sunday Emerald, Monday Sapphire, Tuesday Amethyst, Wednesday Diamond, Thursday Ruby, Friday Tourmaline. Each has its own cut, built in CSS 3D (see Stone). The gem of the day turns at the top of Today, once on screen; small still stones mark the days elsewhere.
+Gems are the identity. Each weekday owns a gem: Saturday Topaz, Sunday Emerald, Monday Sapphire, Tuesday Amethyst, Wednesday Diamond, Thursday Ruby, Friday Tourmaline. Each has its own cut, built in CSS 3D (see Stone). The gem of the day plays its motion once at the top of Today, then rests; small still stones mark the days elsewhere.
 
 **Key Characteristics:**
 - Flat colour, hard edges, square corners. No cards, no glass, no gradients, no shadows except the floating menu and notices.
@@ -349,7 +349,7 @@ After more than two hours closed (or asleep) with the timer running, a square, i
 ### Stone
 Every gem is a convex solid built from flat faces in CSS 3D (`js/gem-cuts.js` holds the geometry, `js/ui/gem.js` builds one element per face, `css/gems.css` lights and moves them). Each cut comes from the gem's crystal or a classic cut:
 
-| Gem | Cut | Gem-of-the-day motion |
+| Gem | Cut | Gem-of-the-day motion (played once) |
 |---|---|---|
 | Emerald | Step cut: a long octagon, two crown steps, three pavilion steps | Rocks ±28° in the hand (3.5s each way) |
 | Sapphire | Hexagonal bipyramid, barrel-shaped, upright | Turns in 10s and floats |
@@ -360,7 +360,7 @@ Every gem is a convex solid built from flat faces in CSS 3D (`js/gem-cuts.js` ho
 | Topaz | Princess, corner forward | Turns in 12s and dips twice a turn |
 | Clear | Raw octahedron | Never the gem of the day |
 
-Each stone is cut glass: a three-stop OKLCH ramp per gem (`--c-deep`, `--c-mid`, `--c-hi` in `tokens.css`), lit live from each facet's normal by a key and a fill light, with a small bloom of its own colour. The gem of the day is 42px on Today (36px on a phone) with motion `hero`, and appears once; the header shows a 36px stone that turns once on hover; days are marked with 20px still stones; About shows 32px stones that turn once on hover. A new day swaps the gem: the old one sinks away (240ms) and the new one rises in (320ms). Every gem loop is stepped at 30 a second and pauses while the window is hidden (`.is-away`).
+Each stone is cut glass: a three-stop OKLCH ramp per gem (`--c-deep`, `--c-mid`, `--c-hi` in `tokens.css`), lit live from each facet's normal by a key and a fill light, with a small bloom of its own colour. The gem of the day is 42px on Today (36px on a phone) with motion `hero`: it plays its motion once, on opening and on a new day, and when every animation has finished `shell.js` makes it a `hover` gem; the header shows a 36px stone that turns once on hover; days are marked with 20px still stones; About shows 32px stones that turn once on hover. A new day swaps the gem: the old one sinks away (240ms) and the new one rises in (320ms). Every gem loop is stepped at 30 a second and pauses while the window is hidden (`.is-away`).
 
 ### App icon
 The installed-app mark is one gem: a Ruby brilliant in side view on a Ghost White tile (#F8F8FF), drawn flat on a 512-unit canvas, rendered from `icons/src/*.svg`.
@@ -372,7 +372,7 @@ The installed-app mark is one gem: a Ruby brilliant in side view on a Ghost Whit
 - **Reduced motion:** every transition and animation is off; numerals are set at once and gems hold their pose.
 
 ### Named Rules
-**The Memory Rule.** Never animate or transition a registered (`@property`) custom property. Smoothly animated registered properties fill Blink's computed-value cache with values that never repeat; left running, the gems once grew the renderer to about 7 GB. The gems' own loops are stepped keyframe tables at 30 a second and pause while hidden. Everything else transitions only standard properties (clip-path, transform, opacity, background-color, color) whose targets are plain, unregistered custom properties (`--lvl`, `--level`, `--cap`, `--cut`, `--fig-y`, `--ctl-y`, `--p`), written from the one-second tick only when they change. Views update text and levels in place; nothing is rebuilt every second.
+**The Memory Rule.** Never animate or transition a registered (`@property`) custom property. Smoothly animated registered properties fill Blink's computed-value cache with values that never repeat; left running, the gems once grew the renderer to about 7 GB. The gems' own motions are stepped keyframe tables at 30 a second, pause while hidden, and never loop: even stepped, a looping gem of the day held the main thread about two-thirds busy, the renderer near 1 GB and the GPU process near 900 MB, so it plays once and settles. Everything else transitions only standard properties (clip-path, transform, opacity, background-color, color) whose targets are plain, unregistered custom properties (`--lvl`, `--level`, `--cap`, `--cut`, `--fig-y`, `--ctl-y`, `--p`), written from the one-second tick only when they change. Views update text and levels in place; nothing is rebuilt every second.
 
 ## Do's and Don'ts
 

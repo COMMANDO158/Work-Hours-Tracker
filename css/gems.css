@@ -244,7 +244,10 @@
 
 /* ------------------------------------------------------------ the gem of the day */
 
-/* Each gem moves in its own way.
+/* Each gem moves in its own way, once: when the app opens and when a new day
+   arrives. Then ui/shell.js hands it the one hover turn the other gems have, so
+   nothing runs while the app sits open (looping, it kept the main thread about
+   two-thirds busy and the renderer near 1 GB).
 
    Every animated value is stepped, 30 to a second. The facets work out their
    light from --turn, --tip and --lift through registered, inheriting custom
@@ -256,17 +259,17 @@
    Keep every loop on that 30-a-second grid so combined loops repeat together. */
 @media (prefers-reduced-motion: no-preference) {
     .gem[data-motion="hero"] .gem-body {
-        animation: gem-turn 12s steps(360) infinite;
+        animation: gem-turn 12s steps(360) 1;
     }
 
     /* Emerald: turned in the hand, so the steps catch the light one by one */
     .gem[data-motion="hero"][data-cut="step"] .gem-body {
-        animation: gem-rock 3.5s step-end infinite alternate;
+        animation: gem-rock 3.5s step-end 2.5 alternate;
     }
 
     /* Sapphire: an upright spin, floating */
     .gem[data-motion="hero"][data-cut="spindle"] .gem-body {
-        animation: gem-turn 10s steps(300) infinite, gem-float 2.5s step-end infinite alternate;
+        animation: gem-turn 10s steps(300) 1, gem-float 2.5s step-end 4 alternate;
     }
 
     /* Amethyst: the slowest drift, for a rest day */
@@ -277,7 +280,7 @@
 
     /* Ruby: a third of a turn, a rest, and again: a working cadence */
     .gem[data-motion="hero"][data-cut="trillion"] .gem-body {
-        animation: gem-tick 9s step-end infinite;
+        animation: gem-tick 9s step-end 1;
     }
 
     /* Tourmaline: rolls along its length */
@@ -288,7 +291,7 @@
 
     /* Topaz: turns and dips twice a turn, flashing its table */
     .gem[data-motion="hero"][data-cut="princess"] .gem-body {
-        animation: gem-turn 12s steps(360) infinite, gem-dip 6s step-end infinite;
+        animation: gem-turn 12s steps(360) 1, gem-dip 6s step-end 2;
     }
 
     /* Out of sight, nothing runs (shell.js sets .is-away while the window is hidden). */
@@ -301,16 +304,16 @@
 
     /* Diamond: a steady turn with one glint each time round */
     .gem[data-motion="hero"] .gem-glint {
-        animation: gem-glint 12s linear infinite;
+        animation: gem-glint 12s linear 1;
     }
 
     .gem[data-motion="hero"]::before {
-        animation: gem-sparkle 4.6s ease-in-out infinite;
+        animation: gem-sparkle 4.6s ease-in-out 2;
         animation-delay: calc(var(--i, 0) * -0.9s);
     }
 
     .gem[data-motion="hero"]::after {
-        animation: gem-sparkle 5.8s ease-in-out infinite;
+        animation: gem-sparkle 5.8s ease-in-out 2;
         animation-delay: calc(var(--i, 0) * -1.7s - 2.1s);
     }
 }
