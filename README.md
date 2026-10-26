@@ -20,7 +20,7 @@ FlowFocus is a visual timer for contracted work hours. Instead of a clock you ha
 - **Streak:** workdays in a row with at least 30 minutes. Rest days neither add to it nor break it, and a new morning doesn't reset it before you've started.
 - A running timer survives a reload or the phone closing the app. If FlowFocus was closed for more than two hours while the timer ran, it asks whether to keep that time or stop it at the time you choose. It never counts past one midnight.
 - An optional "What are you working on?" note is saved for each day.
-- Each weekday has its gem. The day's gem turns at the top of Today, each gem in its own cut and its own motion, and the day floods in that gem's colour:
+- Each weekday has its gem, each in its own cut, and the day floods in that gem's colour. The day's gem sits at the top of Today: it plays its own motion once when the app opens and when a new day arrives, then rests and turns once when you hover it. An app left open keeps nothing animating, so it costs almost no CPU, GPU or memory in the background:
 
   | Day | Gem |
   | --- | --- |

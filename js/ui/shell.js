@@ -55,9 +55,21 @@ export function applyGem() {
   const label = `${g.name}, the gem for ${name}`;
   const brand = $('#brandGem');
   if (brand) clear(brand).appendChild(gemStone(g.id, 36, { motion: 'hover', label }));
-  // Today's gem turns on its own, and appears once.
+  // Today's gem moves in its own way once, then turns only when hovered.
   const seat = $('#seat');
-  if (seat) turnOver(seat, gemStone(g.id, 42, { motion: 'hero', label }), first);
+  if (seat) turnOver(seat, settleAfterHero(gemStone(g.id, 42, { motion: 'hero', label })), first);
+}
+
+// When every one of the gem's moves has played out, it becomes a hover gem, so
+// nothing keeps running while the app sits open.
+function settleAfterHero(stone) {
+  const done = () => {
+    if (stone.getAnimations({ subtree: true }).some((a) => a.playState !== 'finished')) return;
+    stone.removeEventListener('animationend', done);
+    stone.dataset.motion = 'hover';
+  };
+  stone.addEventListener('animationend', done);
+  return stone;
 }
 
 // A new day: the old gem sinks away and the new one rises in. Instant on first

@@ -2,7 +2,7 @@
 // Bump CACHE_VERSION on every deploy. The app shell is precached in one
 // versioned cache; pages, styles and scripts are then fetched network-first
 // (see the fetch handler), so the cache is the offline fallback.
-const CACHE_VERSION = 'v17';
+const CACHE_VERSION = 'v18';
 const CACHE_NAME = `flowfocus-${CACHE_VERSION}`;
 
 const APP_SHELL = [
